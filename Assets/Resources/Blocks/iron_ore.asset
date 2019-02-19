@@ -19,6 +19,7 @@ MonoBehaviour:
   behaviourType: 
   FaceTiling:
   - {x: 2, y: 2}
+  placementType: 0
   blockType: 2
-  spawnFrequency: 0
-  spawnDensity: 0
+  spawnFrequency: 0.01
+  spawnDensity: 10

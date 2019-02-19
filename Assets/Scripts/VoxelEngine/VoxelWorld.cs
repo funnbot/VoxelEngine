@@ -6,7 +6,7 @@ using VoxelEngine.ProceduralGeneration;
 namespace VoxelEngine {
 
     public class VoxelWorld : MonoBehaviour {
-        public const int Height = 80;
+        public const int Height = 48;
         public const int ChunkHeight = Height / Chunk.Size;
 
         public GameObject ChunkFab;
@@ -32,7 +32,7 @@ namespace VoxelEngine {
             generator = new ProceduralGenerator(this).Use(generatorType);
 
             LoadBehaviours();
-            LoadSpawn();
+            StartCoroutine(LoadSpawn());
         }
 
         void Update() {
@@ -140,7 +140,7 @@ namespace VoxelEngine {
             pos.Div(Chunk.Size);
 
         public Vector3Int RaycastToBlockPos(Vector3 point, Vector3 normal, bool adjacent) =>
-            Vector3Int.FloorToInt(point + Vector3.one * 0.5f + (adjacent ? -Vector3.Max(normal, Vector3.zero) : -Vector3.Min(normal, Vector3.zero)));
+            Vector3Int.FloorToInt(point + Vector3.one * 0.5f + (adjacent ? -Vector3.Max(normal, Vector3.zero) : Vector3.Min(normal, Vector3.zero)));
 
         void LoadBehaviours() {
             behaviours = new Dictionary<string, BlockBehaviour<Block>>();
@@ -148,19 +148,28 @@ namespace VoxelEngine {
             behaviours.Add("block", new BlockBehaviour<Block>().Awake(this));
         }
 
-        void LoadSpawn() {
-            for (int x = -8; x <= 8; x++) {
-                for (int z = -8; z <= 8; z++) {
+        IEnumerator LoadSpawn() {
+            int size = 7;
+            for (int x = -size - 1; x <= size + 1; x++) {
+                for (int z = -size - 1; z <= size + 1; z++) {
                     var pos = new Vector2Int(x, z);
                     LoadChunks(pos);
+                }
+            }
+
+            for (int x = -size - 1; x <= size + 1; x++) {
+                for (int z = -size - 1; z <= size + 1; z++) {
+                    var pos = new Vector2Int(x, z);
                     BuildChunks(pos);
+                    yield return null;
                 }
             }
             // Render the 3x3 spawn area
-            for (int x = -7; x <= 7; x++) {
-                for (int z = -7; z <= 7; z++) {
+            for (int x = -size; x <= size; x++) {
+                for (int z = -size; z <= size; z++) {
                     var pos = new Vector2Int(x, z);
                     RenderChunks(pos);
+                    yield return null;
                 }
             }
         }

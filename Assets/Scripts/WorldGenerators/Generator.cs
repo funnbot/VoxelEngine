@@ -34,7 +34,7 @@ namespace VoxelEngine.ProceduralGeneration {
             }
         }
 
-        protected virtual void GenerateChunk(Chunk chunk) {}
+        protected virtual void GenerateChunk(Chunk chunk) { }
 
         protected void SetBlock(Chunk chunk, Vector3Int localPos, Block block, bool replace = false) {
             var b = chunk.GetBlock(localPos);
@@ -54,6 +54,17 @@ namespace VoxelEngine.ProceduralGeneration {
             GetNoise(x, 0, z, scale, max);
         private float GetNoise(float x, float y, float z) {
             return (float) noise.Evaluate(x, y, z);
+        }
+
+        protected BlockData GetBlockData(string id) =>
+            ResourceStore.Blocks[id];
+
+        protected BlockData[] GetBlocksOfType(BlockType type) {
+            var blocks = new List<BlockData>(10);
+            foreach (KeyValuePair<string, BlockData> b in ResourceStore.Blocks) {
+                if (b.Value.blockType == type) blocks.Add(b.Value);
+            }
+            return blocks.ToArray();
         }
 
         protected bool GetChance(int x, int y, int z, float frequency, int density) {

@@ -117,6 +117,12 @@ namespace VoxelEngine {
             var pos = new Vector3(x, y, z);
             var posInt = new Vector3Int(x, y, z);
             var block = blocks[x, y, z];
+
+            if (block == null) {
+                // Debug.LogError("Attemping to render chunk with null blocks.");
+                return;
+            }
+
             if (block.data.meshType == BlockMeshType.Cube) {
                 for (int i = 0; i < 6; i++) {
                     int oppDirection = i % 2 == 0 ? i + 1 : i - 1;

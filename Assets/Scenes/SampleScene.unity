@@ -214,7 +214,7 @@ MonoBehaviour:
     type: 3}
   seed: 1337
   texturePixelResolution: 16
-  generatorType: 0
+  generatorType: 2
   tickSpeed: 2
 --- !u!4 &437277032
 Transform:
