@@ -1,20 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using VoxelEngine.ProceduralGeneration;
 
 namespace VoxelEngine {
 
     public class VoxelWorld : MonoBehaviour {
-        public const int Height = 64;
+        public const int Height = 80;
         public const int ChunkHeight = Height / Chunk.Size;
 
         public GameObject ChunkFab;
         public int seed = 1337;
         public int texturePixelResolution = 128;
-        public ProceduralGeneration generator;
+        public GeneratorType generatorType = GeneratorType.Classic;
+        public Generator generator;
 
         public int tickSpeed = 2;
-        public int tick;
+        private int tick;
 
         public Dictionary<Vector3Int, Chunk> chunks;
         public Dictionary<string, BlockBehaviour<Block>> behaviours;
@@ -24,10 +26,11 @@ namespace VoxelEngine {
 
         void Awake() {
             chunks = new Dictionary<Vector3Int, Chunk>();
-            generator = new ProceduralGeneration(this);
         }
 
         void Start() {
+            generator = new ProceduralGenerator(this).Use(generatorType);
+
             LoadBehaviours();
             LoadSpawn();
         }
@@ -73,7 +76,8 @@ namespace VoxelEngine {
 
         public void BuildChunks(Vector2Int col) {
             var pos = new Vector3Int(col.x, 0, col.y);
-            chunks[pos].Build();
+            var chunk = GetChunk(pos);
+            generator.GenerateChunks(pos);
         }
 
         public void RenderChunks(Vector2Int col) {
@@ -145,19 +149,16 @@ namespace VoxelEngine {
         }
 
         void LoadSpawn() {
-            // Build a 5x5 area twice so they account for connecting chunks;
-            for (int i = 0; i < 2; i++) {
-                for (int x = -2; x <= 2; x++) {
-                    for (int z = -2; z <= 2; z++) {
-                        var pos = new Vector2Int(x, z);
-                        LoadChunks(pos);
-                        BuildChunks(pos);
-                    }
+            for (int x = -8; x <= 8; x++) {
+                for (int z = -8; z <= 8; z++) {
+                    var pos = new Vector2Int(x, z);
+                    LoadChunks(pos);
+                    BuildChunks(pos);
                 }
             }
             // Render the 3x3 spawn area
-            for (int x = -1; x <= 1; x++) {
-                for (int z = -1; z <= 1; z++) {
+            for (int x = -7; x <= 7; x++) {
+                for (int z = -7; z <= 7; z++) {
                     var pos = new Vector2Int(x, z);
                     RenderChunks(pos);
                 }

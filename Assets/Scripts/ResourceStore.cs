@@ -9,7 +9,8 @@ public class ResourceStore : MonoBehaviour {
     public static Resource<StructureData> Structures;
 
     void Load() {
-        Blocks = new Resource<BlockData>("Blocks");
+        Blocks = new Resource<BlockData>("Blocks", new [] { "air", "stone", "grass", "dirt" });
+
         Structures = new Resource<StructureData>("Structures");
     }
 
@@ -38,12 +39,17 @@ public class Resource<T> : IEnumerable where T : ScriptableObject {
         }
     }
 
-    public Resource(string folder) {
+    public Resource(string folder, string[] required = null) {
         resources = new Dictionary<string, T>();
         var loaded = Resources.LoadAll(folder, typeof(T));
         foreach (T r in loaded) resources.Add(r.name, r);
+
+        if (required != null) {
+            foreach (var r in required)
+                if (!resources.ContainsKey(r))
+                    Debug.LogError("Missing required " + folder + " resource: " + r);
+        }
     }
 
-    public IEnumerator GetEnumerator() 
-        => resources.GetEnumerator();
+    public IEnumerator GetEnumerator() => resources.GetEnumerator();
 }

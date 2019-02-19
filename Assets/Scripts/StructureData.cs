@@ -10,13 +10,14 @@ using UnityEditor;
 public class StructureData : ScriptableObject {
     public int height;
     public Vector2Int size;
-    public Vector3Int origin;
+    public SerialVector3Int origin;
     public bool cutout;
     public string[] ids;
     public int opts { get => ids != null ? ids.Length : 0; }
 
     public Level[] levels;
     public int editLevel;
+
     public int fill;
 
     public int[] this [int level] {
@@ -61,7 +62,6 @@ public class StructureData : ScriptableObject {
     }
 
     public void Reset() {
-        origin = Vector3Int.one;
         if (height == 0) height = 1;
         if (size == Vector2Int.zero) size = Vector2Int.one;
 
@@ -79,8 +79,28 @@ public class StructureData : ScriptableObject {
         }
     }
 
-    public int GetValue(int level, int y, int x) => levels[level].row[y].col[x];
-    public void SetValue(int level, int y, int x, int val) => levels[level].row[y].col[x] = val;
+    public int GetValue(int y, int x) =>
+        levels[editLevel].row[y].col[x];
+    public void SetValue(int y, int x, int val) =>
+        levels[editLevel].row[y].col[x] = val;
+
+    [System.Serializable]
+    public class SerialVector3Int {
+        public int x, y, z;
+        public SerialVector3Int(int x, int y, int z) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
+
+        public static explicit operator Vector3Int(SerialVector3Int v) {
+            return new Vector3Int(v.x, v.y, v.z);
+        }
+
+        public static explicit operator SerialVector3Int(Vector3Int v) {
+            return new SerialVector3Int(v.x, v.y, v.z);
+        }
+    }
 }
 
 #if UNITY_EDITOR
@@ -99,7 +119,7 @@ public class StructureDataEditor : Editor {
         data.height = EditorGUILayout.IntField("Height", Mathf.Max(data.height, 1));
         data.size = EditorGUILayout.Vector2IntField("Size", Vector2Int.Max(data.size, Vector2Int.one));
         if (EditorGUI.EndChangeCheck()) data.Reset();
-        data.origin = EditorGUILayout.Vector3IntField(new GUIContent("Origin", "Starting from bottom left (1, 1, 1)"), Vector3Int.Max(data.origin, Vector3Int.one));
+        data.origin = (StructureData.SerialVector3Int)EditorGUILayout.Vector3IntField(new GUIContent("Origin", "Starting from bottom left (1, 1, 1)"), Vector3Int.Max((Vector3Int)data.origin, Vector3Int.one));
         EditorGUILayout.Space();
         data.cutout = EditorGUILayout.Toggle("Cutout Region", data.cutout);
 
@@ -118,9 +138,13 @@ public class StructureDataEditor : Editor {
         data.editLevel = Mathf.Clamp(EditorGUILayout.IntField(data.editLevel + 1, GUILayout.Width(30)), 1, data.height) - 1;
 
         EditorGUILayout.Space();
-        if (GUILayout.Button("Fill", GUILayout.Width(30)))
-            for (int i = 0; i < data.size.x * data.size.y; i++)
-                data.SetValue(data.editLevel, i / data.size.y, i % data.size.x, data.fill);
+        if (GUILayout.Button("Fill", GUILayout.Width(30))) {
+            for (int y = 0; y < data.size.y; y++) {
+                for (int x = 0; x < data.size.x; x++) {
+                    data.SetValue(y, x, data.fill);
+                }
+            }
+        }
         data.fill = Mathf.Clamp(EditorGUILayout.IntField(data.fill, GUILayout.Width(30)), 0, data.opts - 1);
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.Space();
@@ -128,9 +152,9 @@ public class StructureDataEditor : Editor {
         for (int y = 0; y < data.size.y; y++) {
             EditorGUILayout.BeginHorizontal();
             for (int x = 0; x < data.size.x; x++) {
-                int val = data.GetValue(data.editLevel, y, x);
+                int val = data.GetValue(y, x);
                 val = EditorGUILayout.IntField(val, GUILayout.Width(14), GUILayout.Height(14));
-                data.SetValue(data.editLevel, y, x, Mathf.Clamp(val, 0, data.opts - 1));
+                data.SetValue(y, x, Mathf.Clamp(val, 0, data.opts - 1));
             }
             EditorGUILayout.EndHorizontal();
         }

@@ -1,14 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using VoxelEngine.ProceduralGeneration;
 
 namespace VoxelEngine {
 
     public class Chunk : MonoBehaviour {
         public const int Size = 16;
+        public const int Rollover = 4;
 
-        public bool update { private get; set; }
-        public bool built { get; private set; }
+        public bool update;
+        public bool built;
 
         public float BlockUVTileSize;
         public float TransUVTileSize;
@@ -58,7 +60,7 @@ namespace VoxelEngine {
 
         public void Build() {
             // TODO: load from saves
-            TerrainGen.GenerateChunks(this);
+            world.generator.GenerateChunks(position);
             built = true;
         }
 
@@ -93,7 +95,7 @@ namespace VoxelEngine {
             if (InRange(pos)) blocks[pos.x, pos.y, pos.z] = block;
             else {
                 pos = BlockToWorldPos(pos);
-                world.SetBlock(pos, block);
+                world.SetBlock(pos, block, false);
             }
         }
 
@@ -120,8 +122,8 @@ namespace VoxelEngine {
                     int oppDirection = i % 2 == 0 ? i + 1 : i - 1;
                     var touching = DirOffsets[i] + posInt;
                     var faceTouching = GetBlock(touching);
-                    if (!block.data.transparent && (faceTouching == null || !faceTouching.data.transparent)) continue;
-                    //if (!block.data.transparent && faceTouching != null && !faceTouching.data.transparent) continue;
+                    //if (!block.data.transparent && (faceTouching == null || !faceTouching.data.transparent)) continue;
+                    if (!block.data.transparent && faceTouching != null && !faceTouching.data.transparent) continue;
 
                     var verts = CubeMesh(i, pos);
 
@@ -162,12 +164,7 @@ namespace VoxelEngine {
                     new Vector2(UVTileSize * tile.x, UVTileSize * tile.y)
             };
         }
-
-        Vector2Int FaceTile(Vector2Int[] tiling, int dir) {
-            if (tiling.Length == 1) return tiling[0];
-            else return tiling[dir];
-        }
-
+        
         public static Vector3Int[] DirOffsets = {
             Vector3Int.up,
             Vector3Int.down,

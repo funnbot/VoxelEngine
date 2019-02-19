@@ -12,9 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba0e9bb57a82d4ebc98580cb3c739582, type: 3}
   m_Name: grass_decal
   m_EditorClassIdentifier: 
-  id: grass_decal
   transparent: 1
   meshType: 1
   customMesh: {fileID: 0}
+  behaviourType: 
   FaceTiling:
   - {x: 0, y: 0}
+  blockType: 1
+  spawnFrequency: 0
+  spawnDensity: 0
