@@ -12,14 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba0e9bb57a82d4ebc98580cb3c739582, type: 3}
   m_Name: wood
   m_EditorClassIdentifier: 
-  id: wood
   transparent: 0
+  collision: 0
   meshType: 0
   customMesh: {fileID: 0}
-  FaceTiling:
-  - {x: 0, y: 2}
-  - {x: 0, y: 2}
-  - {x: 1, y: 2}
-  - {x: 1, y: 2}
-  - {x: 1, y: 2}
-  - {x: 1, y: 2}
+  behaviourType: 
+  texIndices: 040000000400000005000000
+  placementType: 0
+  blockType: 0
+  spawnFrequency: 0
+  spawnDensity: 0

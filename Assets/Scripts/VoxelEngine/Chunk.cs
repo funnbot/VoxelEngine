@@ -38,10 +38,11 @@ namespace VoxelEngine {
             transMesh = new MeshData();
             colliderMesh = new MeshData();
 
-            var blockMat = BlockRend.GetComponent<MeshRenderer>().sharedMaterial;
+            /*var blockMat = BlockRend.GetComponent<MeshRenderer>().sharedMaterial;
             BlockUVTileSize = 1f / ((float) blockMat.mainTexture.height / world.texturePixelResolution);
             var transMat = TransRend.GetComponent<MeshRenderer>().sharedMaterial;
             TransUVTileSize = 1f / ((float) transMat.mainTexture.height / world.texturePixelResolution);
+            */
 
             HookEvents();
         }
@@ -96,9 +97,9 @@ namespace VoxelEngine {
             }
         }
 
-        public Vector3Int BlockToWorldPos(Vector3Int block) => 
+        public Vector3Int BlockToWorldPos(Vector3Int block) =>
             Vector3Int.FloorToInt(block + position * Chunk.Size);
-        
+
         public Vector3Int WorldToBlockPos(Vector3Int block) =>
             Vector3Int.FloorToInt(block - position * Chunk.Size);
 
@@ -126,29 +127,38 @@ namespace VoxelEngine {
                     int oppDirection = i % 2 == 0 ? i + 1 : i - 1;
                     var touching = DirOffsets[i] + pos;
                     var faceTouching = GetBlock(touching);
-                    //if (!block.data.transparent && (faceTouching == null || !faceTouching.data.transparent)) continue;
-                    if (!block.data.transparent && faceTouching != null && !faceTouching.data.transparent) continue;
 
+                    // if (!block.data.transparent && (faceTouching == null || !faceTouching.data.transparent)) continue;
+                    if (!block.data.transparent && faceTouching != null && !faceTouching.data.transparent) continue;
+                    // if (!block.data.transparent && faceTouching != null) continue;
+
+                    int texIndex = TextureIndex(block.data.texIndices, i);
                     if (block.data.transparent) {
-                        transMesh.AddQuad(i, pos);
-                        var tiling = FaceUVs(block.data.FaceTiling, i, TransUVTileSize);
-                        transMesh.AddUVs(tiling);
+                        transMesh.AddQuad(i, pos, texIndex);
+                        //var tiling = FaceUVs(block.data.FaceTiling, i, TransUVTileSize);
+                        //transMesh.AddUVs(tiling);
                     } else {
-                        blockMesh.AddQuad(i, pos);
-                        var tiling = FaceUVs(block.data.FaceTiling, i, BlockUVTileSize);
-                        tst = tiling;
-                        blockMesh.AddUVs(tiling);
+                        blockMesh.AddQuad(i, pos, texIndex);
+                        // var tiling = FaceUVs(block.data.FaceTiling, i, BlockUVTileSize);
+                        //blockMesh.AddUVs(tiling);
                     }
-                    colliderMesh.AddQuad(i, pos);
+                    colliderMesh.AddQuad(i, pos, texIndex);
                 }
             } else if (block.data.meshType == BlockMeshType.Decal) {
-                transMesh.AddDecal(pos);
-                var tiling = FaceUVs(block.data.FaceTiling, 0, TransUVTileSize);
-                for (int i = 0; i < 4; i++) transMesh.AddUVs(tiling);
+                var texIndex = TextureIndex(block.data.texIndices, 0);
+                transMesh.AddDecal(pos, texIndex);
+                //var tiling = FaceUVs(block.data.FaceTiling, 0, TransUVTileSize);
+                //for (int i = 0; i < 4; i++) transMesh.AddUVs(tiling);
             }
         }
 
-        Vector2[] FaceUVs(Vector2Int[] tiling, int dir, float UVTileSize) {
+        private int TextureIndex(int[] inds, int dir) {
+            if (inds.Length == 1) return inds[0];
+            else if (inds.Length == 3) return inds[Mathf.Min(dir, 2)];
+            else return inds[dir];
+        }
+
+        /* Vector2[] FaceUVs(Vector2Int[] tiling, int dir, float UVTileSize) {
             var tile = tiling.Length == 1 ? tiling[0] : tiling[dir];
             return new Vector2[] {
                 new Vector2(UVTileSize * tile.x, UVTileSize * tile.y + UVTileSize),
@@ -156,8 +166,8 @@ namespace VoxelEngine {
                 new Vector2(UVTileSize * tile.x + UVTileSize, UVTileSize * tile.y),
                 new Vector2(UVTileSize * tile.x, UVTileSize * tile.y)
             };
-        }
-        
+        } */
+
         public static Vector3Int[] DirOffsets = {
             Vector3Int.up,
             Vector3Int.down,

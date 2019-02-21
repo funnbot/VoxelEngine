@@ -9,18 +9,19 @@ namespace VoxelEngine.ProceduralGeneration {
         int noiseHeight = 40;
         float noiseFreq = 0.009f;
 
-        bool chanceNoise = false;
+        bool chanceNoise = true;
 
         float freq = 0.1f;
-        int dens = 30;
+        int dens = 10;
 
-        bool noise3d = true;
+        bool noise3d = false;
 
-        BlockData air, dirt;
+        BlockData air, dirt, stone;
 
         public NoiseGenerator(VoxelWorld world, SimplexNoise noise) : base(world, noise) {
             air = GetBlockData("air");
-            dirt = GetBlockData("stone");
+            dirt = GetBlockData("grass_decal");
+            stone = GetBlockData("stone");
         }
 
         protected override void GenerateColumn(Chunk chunk, int x, int z) {
@@ -36,8 +37,10 @@ namespace VoxelEngine.ProceduralGeneration {
                 if (chanceNoise) {
                     if (noise3d || pos.y == 0) {
                         var chance = GetChance(pos.x, pos.y, pos.z, freq, dens);
-                        if (chance) SetBlock(chunk, localPos, dirt);
-                        else SetBlock(chunk, localPos, air);
+                        if (chance) {
+                            SetBlock(chunk, localPos, dirt);
+                            SetBlock(chunk, new Vector3Int(localPos.x, localPos.y + 1, localPos.z), stone);
+                        } else SetBlock(chunk, localPos, air);
                     }
                 } else {
                     if (pos.y <= height) SetBlock(chunk, localPos, dirt);

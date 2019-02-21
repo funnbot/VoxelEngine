@@ -13,8 +13,12 @@ MonoBehaviour:
   m_Name: dirt
   m_EditorClassIdentifier: 
   transparent: 0
+  collision: 0
   meshType: 0
   customMesh: {fileID: 0}
   behaviourType: 
-  FaceTiling:
-  - {x: 1, y: 0}
+  texIndices: 03000000
+  placementType: 0
+  blockType: 0
+  spawnFrequency: 0
+  spawnDensity: 0

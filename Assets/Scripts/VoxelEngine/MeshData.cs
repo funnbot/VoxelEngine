@@ -7,43 +7,35 @@ namespace VoxelEngine {
     public class MeshData {
         List<Vector3> verts;
         List<int> tris;
-        List<Vector2> uvs;
+        List<Vector3> uvs;
 
         public MeshData() {
             verts = new List<Vector3>();
             tris = new List<int>();
-            uvs = new List<Vector2>();
+            uvs = new List<Vector3>();
         }
 
-        public void AddQuad(int direction, Vector3Int position) {
+        public void AddQuad(int direction, Vector3Int position, int textureIndex) {
             AddQuadVerts(direction, position);
             AddQuadTris();
+            AddQuadUV(textureIndex);
         }
 
-        public void AddDecal(Vector3Int position) {
+        public void AddDecal(Vector3Int position, int textureIndex) {
             AddDecalVerts(position);
             AddDecalTris();
-        }
-
-        private void AddQuadTri() {
-            int count = verts.Count;
-            int[] t = new int[] {
-                count - 4, count - 2, count - 3,
-                count - 4, count - 1, count - 2
-            };
-            tris.AddRange(t);
-        }
-
-        public void AddUVs(Vector2[] uv) {
-            uvs.AddRange(uv);
+            for (int i = 0; i < 4; i++)
+                AddQuadUV(textureIndex);
         }
 
         public Mesh ToMesh() {
             var mesh = new Mesh();
-            mesh.vertices = verts.ToArray();
-            mesh.triangles = tris.ToArray();
-            mesh.uv = uvs.ToArray();
+            mesh.SetVertices(verts);
+            mesh.SetTriangles(tris, 0);
+            mesh.SetUVs(0, uvs);
+
             mesh.RecalculateNormals();
+            mesh.UploadMeshData(false);
             return mesh;
         }
 
@@ -57,11 +49,18 @@ namespace VoxelEngine {
         public void Clear() {
             verts = new List<Vector3>(verts.Count);
             tris = new List<int>(tris.Count);
-            uvs = new List<Vector2>(uvs.Count);
+            uvs = new List<Vector3>(uvs.Count);
         }
 
         private const float F = 0.5f,
             T = 0.3535f;
+
+        private void AddQuadUV(int ind) {
+            uvs.Add(new Vector3(0, 1, ind));
+            uvs.Add(new Vector3(1, 1, ind));
+            uvs.Add(new Vector3(1, 0, ind));
+            uvs.Add(new Vector3(0, 0, ind));
+        }
 
         private void AddQuadVerts(int dir, Vector3Int pos) {
             float x = pos.x, y = pos.y, z = pos.z;
@@ -108,16 +107,16 @@ namespace VoxelEngine {
         private void AddDecalVerts(Vector3Int pos) {
             float x = pos.x, y = pos.y, z = pos.z;
             for (int i = 0; i < 2; i++) {
-                verts.Add(new Vector3(x - T, y + F, x + T));
-                verts.Add(new Vector3(x + T, y + F, x - T));
-                verts.Add(new Vector3(x + T, y - F, x - T));
-                verts.Add(new Vector3(x - T, y - F, x + T));
+                verts.Add(new Vector3(x - T, y + F, z + T));
+                verts.Add(new Vector3(x + T, y + F, z - T));
+                verts.Add(new Vector3(x + T, y - F, z - T));
+                verts.Add(new Vector3(x - T, y - F, z + T));
             }
             for (int i = 0; i < 2; i++) {
-                verts.Add(new Vector3(x - T, y + F, x - T));
-                verts.Add(new Vector3(x + T, y + F, x + T));
-                verts.Add(new Vector3(x + T, y - F, x + T));
-                verts.Add(new Vector3(x - T, y - F, x - T));
+                verts.Add(new Vector3(x - T, y + F, z - T));
+                verts.Add(new Vector3(x + T, y + F, z + T));
+                verts.Add(new Vector3(x + T, y - F, z + T));
+                verts.Add(new Vector3(x - T, y - F, z - T));
             }
         }
 

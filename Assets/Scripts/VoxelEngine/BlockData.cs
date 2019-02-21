@@ -11,7 +11,11 @@ namespace VoxelEngine {
         public BlockMeshType meshType;
         public Mesh customMesh;
         public string behaviourType;
-        public Vector2Int[] FaceTiling = new Vector2Int[6];
+
+        // public Vector2Int[] FaceTiling = new Vector2Int[6];
+        public int[] texIndices = new int[6];
+
+
         public BlockPlacingType placementType;
         public BlockType blockType;
 

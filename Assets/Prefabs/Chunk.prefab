@@ -57,7 +57,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 3c4f588b7777a43ffa2914d80e9eb834, type: 2}
+  - {fileID: 2100000, guid: 996eb5e536f2e4eee9133ec65ca2bee8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -165,7 +165,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b0f3f88223540418a85f8222833ecac0, type: 2}
+  - {fileID: 2100000, guid: 7c30c893cb86b40229942dd4ca350bad, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -255,3 +255,4 @@ MonoBehaviour:
   BlockCollider: {fileID: 747701715384285135}
   world: {fileID: 0}
   position: {x: 0, y: 0, z: 0}
+  tst: []

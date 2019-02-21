@@ -17,8 +17,7 @@ MonoBehaviour:
   meshType: 0
   customMesh: {fileID: 0}
   behaviourType: 
-  FaceTiling:
-  - {x: 2, y: 2}
+  texIndices: 06000000
   placementType: 0
   blockType: 2
   spawnFrequency: 0.01

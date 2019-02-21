@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: grass_decal
   m_EditorClassIdentifier: 
   transparent: 1
+  collision: 0
   meshType: 1
   customMesh: {fileID: 0}
   behaviourType: 
-  FaceTiling:
-  - {x: 0, y: 0}
+  texIndices: 00000000
+  placementType: 0
   blockType: 1
   spawnFrequency: 0
   spawnDensity: 0
