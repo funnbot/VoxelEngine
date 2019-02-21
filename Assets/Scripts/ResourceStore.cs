@@ -8,7 +8,7 @@ public class ResourceStore : MonoBehaviour {
     public static Resource<BlockData> Blocks;
     public static Resource<StructureData> Structures;
 
-    void Load() {
+    private void Load() {
         Blocks = new Resource<BlockData>("Blocks", new [] { "air", "stone", "grass", "dirt" });
 
         Structures = new Resource<StructureData>("Structures");

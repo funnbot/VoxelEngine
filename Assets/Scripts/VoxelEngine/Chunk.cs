@@ -7,7 +7,7 @@ namespace VoxelEngine {
 
     public class Chunk : MonoBehaviour {
         public const int Size = 16;
-        public const int Rollover = 4;
+        public const int Rollover = 0;
 
         public bool update;
         public bool built;
@@ -15,14 +15,10 @@ namespace VoxelEngine {
         public float BlockUVTileSize;
         public float TransUVTileSize;
 
-        [SerializeField]
-        private MeshFilter BlockRend;
-        [SerializeField]
-        private MeshFilter TransRend;
-        [SerializeField]
-        private Transform StandaloneBlocks;
-        [SerializeField]
-        private MeshCollider BlockCollider;
+        public MeshFilter BlockRend;
+        public MeshFilter TransRend;
+        public Transform StandaloneBlocks;
+        public MeshCollider BlockCollider;
 
         public VoxelWorld world;
         public Vector3Int position;
@@ -81,7 +77,8 @@ namespace VoxelEngine {
 
             BlockRend.sharedMesh = blockMesh.ToMesh();
             TransRend.sharedMesh = transMesh.ToMesh();
-            BlockCollider.sharedMesh = colliderMesh.ToMesh();
+
+            BlockCollider.sharedMesh = colliderMesh.ToColMesh();
         }
 
         public Block GetBlock(Vector3Int pos) {
@@ -113,9 +110,10 @@ namespace VoxelEngine {
             world.OnTick += OnTick;
         }
 
+        public Vector2[] tst;
+
         void AddBlockToMesh(int x, int y, int z) {
-            var pos = new Vector3(x, y, z);
-            var posInt = new Vector3Int(x, y, z);
+            var pos = new Vector3Int(x, y, z);
             var block = blocks[x, y, z];
 
             if (block == null) {
@@ -126,36 +124,25 @@ namespace VoxelEngine {
             if (block.data.meshType == BlockMeshType.Cube) {
                 for (int i = 0; i < 6; i++) {
                     int oppDirection = i % 2 == 0 ? i + 1 : i - 1;
-                    var touching = DirOffsets[i] + posInt;
+                    var touching = DirOffsets[i] + pos;
                     var faceTouching = GetBlock(touching);
                     //if (!block.data.transparent && (faceTouching == null || !faceTouching.data.transparent)) continue;
                     if (!block.data.transparent && faceTouching != null && !faceTouching.data.transparent) continue;
 
-                    var verts = CubeMesh(i, pos);
-
                     if (block.data.transparent) {
-                        transMesh.AddVerts(verts);
-                        transMesh.AddQuadTri();
-
+                        transMesh.AddQuad(i, pos);
                         var tiling = FaceUVs(block.data.FaceTiling, i, TransUVTileSize);
                         transMesh.AddUVs(tiling);
                     } else {
-                        blockMesh.AddVerts(verts);
-                        blockMesh.AddQuadTri();
-
+                        blockMesh.AddQuad(i, pos);
                         var tiling = FaceUVs(block.data.FaceTiling, i, BlockUVTileSize);
+                        tst = tiling;
                         blockMesh.AddUVs(tiling);
                     }
-
-                    colliderMesh.AddVerts(verts);
-                    colliderMesh.AddQuadTri();
+                    colliderMesh.AddQuad(i, pos);
                 }
             } else if (block.data.meshType == BlockMeshType.Decal) {
-                var verts = DecalMesh(pos);
-
-                transMesh.AddVerts(verts);
-                transMesh.AddDecalTri();
-
+                transMesh.AddDecal(pos);
                 var tiling = FaceUVs(block.data.FaceTiling, 0, TransUVTileSize);
                 for (int i = 0; i < 4; i++) transMesh.AddUVs(tiling);
             }
@@ -165,9 +152,9 @@ namespace VoxelEngine {
             var tile = tiling.Length == 1 ? tiling[0] : tiling[dir];
             return new Vector2[] {
                 new Vector2(UVTileSize * tile.x, UVTileSize * tile.y + UVTileSize),
-                    new Vector2(UVTileSize * tile.x + UVTileSize, UVTileSize * tile.y + UVTileSize),
-                    new Vector2(UVTileSize * tile.x + UVTileSize, UVTileSize * tile.y),
-                    new Vector2(UVTileSize * tile.x, UVTileSize * tile.y)
+                new Vector2(UVTileSize * tile.x + UVTileSize, UVTileSize * tile.y + UVTileSize),
+                new Vector2(UVTileSize * tile.x + UVTileSize, UVTileSize * tile.y),
+                new Vector2(UVTileSize * tile.x, UVTileSize * tile.y)
             };
         }
         
@@ -187,34 +174,6 @@ namespace VoxelEngine {
             public static int Left = 3;
             public static int Forward = 4;
             public static int Backward = 5;
-        }
-
-        public static Vector3[] CubeMesh(int direction, Vector3 p) {
-            switch (direction) {
-                default:
-                    case 0:
-                    return new Vector3[] { new Vector3(-0.5f, 0.5f, -0.5f).Add(p), new Vector3(0.5f, 0.5f, -0.5f).Add(p), new Vector3(0.5f, 0.5f, 0.5f).Add(p), new Vector3(-0.5f, 0.5f, 0.5f).Add(p) };
-                case 1:
-                        return new Vector3[] { new Vector3(-0.5f, -0.5f, 0.5f).Add(p), new Vector3(0.5f, -0.5f, 0.5f).Add(p), new Vector3(0.5f, -0.5f, -0.5f).Add(p), new Vector3(-0.5f, -0.5f, -0.5f).Add(p) };
-                case 2:
-                        return new Vector3[] { new Vector3(0.5f, 0.5f, 0.5f).Add(p), new Vector3(0.5f, 0.5f, -0.5f).Add(p), new Vector3(0.5f, -0.5f, -0.5f).Add(p), new Vector3(0.5f, -0.5f, 0.5f).Add(p) };
-                case 3:
-                        return new Vector3[] { new Vector3(-0.5f, 0.5f, -0.5f).Add(p), new Vector3(-0.5f, 0.5f, 0.5f).Add(p), new Vector3(-0.5f, -0.5f, 0.5f).Add(p), new Vector3(-0.5f, -0.5f, -0.5f).Add(p) };
-                case 4:
-                        return new Vector3[] { new Vector3(-0.5f, 0.5f, 0.5f).Add(p), new Vector3(0.5f, 0.5f, 0.5f).Add(p), new Vector3(0.5f, -0.5f, 0.5f).Add(p), new Vector3(-0.5f, -0.5f, 0.5f).Add(p) };
-                case 5:
-                        return new Vector3[] { new Vector3(0.5f, 0.5f, -0.5f).Add(p), new Vector3(-0.5f, 0.5f, -0.5f).Add(p), new Vector3(-0.5f, -0.5f, -0.5f).Add(p), new Vector3(0.5f, -0.5f, -0.5f).Add(p) };
-            }
-        }
-
-        public static Vector3[] DecalMesh(Vector3 p) {
-            return new Vector3[] {
-                new Vector3(-0.3535f, 0.5f, 0.3535f).Add(p), new Vector3(0.3535f, 0.5f, -0.3535f).Add(p), new Vector3(0.3535f, -0.5f, -0.3535f).Add(p), new Vector3(-0.3535f, -0.5f, 0.3535f).Add(p),
-                    new Vector3(-0.3535f, 0.5f, 0.3535f).Add(p), new Vector3(0.3535f, 0.5f, -0.3535f).Add(p), new Vector3(0.3535f, -0.5f, -0.3535f).Add(p), new Vector3(-0.3535f, -0.5f, 0.3535f).Add(p),
-
-                    new Vector3(-0.3535f, 0.5f, -0.3535f).Add(p), new Vector3(0.3535f, 0.5f, 0.3535f).Add(p), new Vector3(0.3535f, -0.5f, 0.3535f).Add(p), new Vector3(-0.3535f, -0.5f, -0.3535f).Add(p),
-                    new Vector3(-0.3535f, 0.5f, -0.3535f).Add(p), new Vector3(0.3535f, 0.5f, 0.3535f).Add(p), new Vector3(0.3535f, -0.5f, 0.3535f).Add(p), new Vector3(-0.3535f, -0.5f, -0.3535f).Add(p)
-            };
         }
     }
 

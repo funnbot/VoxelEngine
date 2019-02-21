@@ -6,11 +6,11 @@ using VoxelEngine.ProceduralGeneration;
 namespace VoxelEngine {
 
     public class VoxelWorld : MonoBehaviour {
-        public const int Height = 48;
+        public const int Height = 80;
         public const int ChunkHeight = Height / Chunk.Size;
 
         public GameObject ChunkFab;
-        public int seed = 1337;
+        public int seed = 1347;
         public int texturePixelResolution = 128;
         public GeneratorType generatorType = GeneratorType.Classic;
         public Generator generator;
@@ -32,7 +32,7 @@ namespace VoxelEngine {
             generator = new ProceduralGenerator(this).Use(generatorType);
 
             LoadBehaviours();
-            StartCoroutine(LoadSpawn());
+            LoadSpawn();
         }
 
         void Update() {
@@ -148,7 +148,7 @@ namespace VoxelEngine {
             behaviours.Add("block", new BlockBehaviour<Block>().Awake(this));
         }
 
-        IEnumerator LoadSpawn() {
+        void LoadSpawn() {
             int size = 7;
             for (int x = -size - 1; x <= size + 1; x++) {
                 for (int z = -size - 1; z <= size + 1; z++) {
@@ -161,15 +161,14 @@ namespace VoxelEngine {
                 for (int z = -size - 1; z <= size + 1; z++) {
                     var pos = new Vector2Int(x, z);
                     BuildChunks(pos);
-                    yield return null;
                 }
             }
+
             // Render the 3x3 spawn area
             for (int x = -size; x <= size; x++) {
                 for (int z = -size; z <= size; z++) {
                     var pos = new Vector2Int(x, z);
                     RenderChunks(pos);
-                    yield return null;
                 }
             }
         }

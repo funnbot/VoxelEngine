@@ -6,8 +6,8 @@ namespace VoxelEngine.ProceduralGeneration {
 
     public class NoiseGenerator : Generator {
         int baseHeight = 10;
-        int noiseHeight = 30;
-        float noiseFreq = 0.02f;
+        int noiseHeight = 40;
+        float noiseFreq = 0.009f;
 
         bool chanceNoise = false;
 
