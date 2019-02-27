@@ -1,12 +1,7 @@
----
-title: Week 2-25
----
-
 [Back To Index](../index.md)
 
 ## Week 2/25
 - [ ] Complete
-- [ ] 
 
 ### Initial Task
 > Convert chunk dict into columns storing vector2
@@ -33,32 +28,3 @@ It has become messy dealing with the conversion of vector2 and 3
   - N
 
 #### Notes For Next Week
-
-[Back To Index](../index.md)
-
-## Week
-- [ ] Complete
-
-### Initial Task
-> 
-
-#### Sub  Tasks
-- [ ] N
-
-### Challenges
-- N
-
-### Log
-- Monday
-  - N
-- Tuesday
-  - N
-- Wednesday
-  - N
-- Thursday
-  - N
-- Friday
-  - N
-
-#### Notes For Next Week
-> How
