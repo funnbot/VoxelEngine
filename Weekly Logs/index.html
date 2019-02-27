@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Weekly Logs</title>
+</head>
+
+<body>
+
+    <?php
+    // Read directory, spit out links
+    if ($handle = opendir('.')) {
+        while (false !== ($entry = readdir($handle))) {
+            if ($entry != "." && $entry != "..") {
+                echo '<a href="/'.$entry.'">Link to file '.$entry.'</a><br>';
+            }
+        }
+        closedir($handle);
+    }
+    ?>
+
+</body>
+
+</html>
