@@ -1,5 +1,5 @@
 createdAt: "2019-02-25T22:15:51.088Z"
-updatedAt: "2019-02-27T02:28:32.368Z"
+updatedAt: "2019-02-27T05:43:09.329Z"
 type: "MARKDOWN_NOTE"
 folder: "55302be51b33611521e0"
 title: "Week 2/25"
@@ -12,7 +12,7 @@ content: '''
   > Convert chunk dict into columns storing vector2
   It has become messy dealing with the conversion of vector2 and 3
   
-  #### Sub Tasks
+  #### Sub  Tasks
   - [ ] Chunk has too many public props, isolate and hide.
   - [ ] Chunk/Chunkcolumn pooling
   
@@ -34,6 +34,8 @@ content: '''
   
   ##### Notes For Next Week
 '''
-linesHighlighted: []
+linesHighlighted: [
+  8
+]
 isStarred: false
 isTrashed: false
