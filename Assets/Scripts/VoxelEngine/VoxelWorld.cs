@@ -15,9 +15,10 @@ namespace VoxelEngine {
         public GeneratorType generatorType = GeneratorType.Classic;
         public Generator generator;
 
-        public int tickSpeed = 2;
+        public int tickSpeed = 10;
         private int tick;
 
+        public PrefabPool columnPool;
         public Dictionary<Vector3Int, Chunk> chunks;
         public Dictionary<string, BlockBehaviour<Block>> behaviours;
 
@@ -77,7 +78,7 @@ namespace VoxelEngine {
         public void BuildChunks(Vector2Int col) {
             var pos = new Vector3Int(col.x, 0, col.y);
             var chunk = GetChunk(pos);
-            generator.GenerateChunks(pos);
+            chunk.Build();
         }
 
         public void RenderChunks(Vector2Int col) {
@@ -149,7 +150,7 @@ namespace VoxelEngine {
         }
 
         void LoadSpawn() {
-            int size = 7;
+            int size = 1;
             for (int x = -size - 1; x <= size + 1; x++) {
                 for (int z = -size - 1; z <= size + 1; z++) {
                     var pos = new Vector2Int(x, z);
@@ -163,7 +164,6 @@ namespace VoxelEngine {
                     BuildChunks(pos);
                 }
             }
-
             // Render the 3x3 spawn area
             for (int x = -size; x <= size; x++) {
                 for (int z = -size; z <= size; z++) {

@@ -59,8 +59,10 @@ public class TextureAtlasGenerator : MonoBehaviour {
     }
 
     (int, int) NextCoord(int x, int y, int size) {
-        if (y == 0) return (0, x + 1);
-        if (x < y) return (x + 1, y);
+        if (y == 0) 
+            return (0, x + 1);
+        if (x < y) 
+            return (x + 1, y);
         return (x, y - 1);
     }
 

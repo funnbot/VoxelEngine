@@ -214,7 +214,7 @@ MonoBehaviour:
     type: 3}
   seed: 1337
   texturePixelResolution: 16
-  generatorType: 2
+  generatorType: 0
   tickSpeed: 2
 --- !u!4 &437277032
 Transform:
@@ -328,7 +328,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   world: {fileID: 437277031}
-  range: 0
+  range: 20
 --- !u!114 &534669907
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using VoxelEngine.ProceduralGeneration;
+﻿using UnityEngine;
 
 namespace VoxelEngine {
 
@@ -22,6 +19,7 @@ namespace VoxelEngine {
 
         public VoxelWorld world;
         public Vector3Int position;
+        public Vector3Int worldPosition;
 
         private Block[, , ] blocks;
 
@@ -29,20 +27,17 @@ namespace VoxelEngine {
         private MeshData transMesh;
         private MeshData colliderMesh;
 
+        private Chunk[] neighbors;
+
         public void Init(VoxelWorld world, Vector3Int position) {
             blocks = new Block[Chunk.Size, Chunk.Size, Chunk.Size];
             this.world = world;
             this.position = position;
+            worldPosition = position * Chunk.Size;
 
             blockMesh = new MeshData();
             transMesh = new MeshData();
             colliderMesh = new MeshData();
-
-            /*var blockMat = BlockRend.GetComponent<MeshRenderer>().sharedMaterial;
-            BlockUVTileSize = 1f / ((float) blockMat.mainTexture.height / world.texturePixelResolution);
-            var transMat = TransRend.GetComponent<MeshRenderer>().sharedMaterial;
-            TransUVTileSize = 1f / ((float) transMat.mainTexture.height / world.texturePixelResolution);
-            */
 
             HookEvents();
         }
@@ -67,6 +62,8 @@ namespace VoxelEngine {
             blockMesh.Clear();
             transMesh.Clear();
             colliderMesh.Clear();
+
+            FetchNeighbors();
 
             for (int x = 0; x < Size; x++) {
                 for (int y = 0; y < Size; y++) {
@@ -98,10 +95,11 @@ namespace VoxelEngine {
         }
 
         public Vector3Int BlockToWorldPos(Vector3Int block) =>
-            Vector3Int.FloorToInt(block + position * Chunk.Size);
-
+            block + position * Chunk.Size;
         public Vector3Int WorldToBlockPos(Vector3Int block) =>
-            Vector3Int.FloorToInt(block - position * Chunk.Size);
+            block - position * Chunk.Size;
+        public Vector3Int TransformChunkPos(Vector3Int pos, Vector3Int chunkWorldPos) =>
+            pos + worldPosition - chunkWorldPos;
 
         public bool InRange(int x, int y, int z) =>
             x >= 0 && x < Size && y >= 0 && y < Size && z >= 0 && z < Size;
@@ -111,44 +109,26 @@ namespace VoxelEngine {
             world.OnTick += OnTick;
         }
 
-        public Vector2[] tst;
-
         void AddBlockToMesh(int x, int y, int z) {
             var pos = new Vector3Int(x, y, z);
             var block = blocks[x, y, z];
 
-            if (block == null) {
-                // Debug.LogError("Attemping to render chunk with null blocks.");
-                return;
-            }
-
             if (block.data.meshType == BlockMeshType.Cube) {
                 for (int i = 0; i < 6; i++) {
-                    int oppDirection = i % 2 == 0 ? i + 1 : i - 1;
-                    var touching = DirOffsets[i] + pos;
-                    var faceTouching = GetBlock(touching);
-
-                    // if (!block.data.transparent && (faceTouching == null || !faceTouching.data.transparent)) continue;
-                    if (!block.data.transparent && faceTouching != null && !faceTouching.data.transparent) continue;
-                    // if (!block.data.transparent && faceTouching != null) continue;
+                    
+                    if (!CullFace(block, pos, i)) continue;
 
                     int texIndex = TextureIndex(block.data.texIndices, i);
                     if (block.data.transparent) {
                         transMesh.AddQuad(i, pos, texIndex);
-                        //var tiling = FaceUVs(block.data.FaceTiling, i, TransUVTileSize);
-                        //transMesh.AddUVs(tiling);
                     } else {
                         blockMesh.AddQuad(i, pos, texIndex);
-                        // var tiling = FaceUVs(block.data.FaceTiling, i, BlockUVTileSize);
-                        //blockMesh.AddUVs(tiling);
                     }
                     colliderMesh.AddQuad(i, pos, texIndex);
                 }
             } else if (block.data.meshType == BlockMeshType.Decal) {
                 var texIndex = TextureIndex(block.data.texIndices, 0);
                 transMesh.AddDecal(pos, texIndex);
-                //var tiling = FaceUVs(block.data.FaceTiling, 0, TransUVTileSize);
-                //for (int i = 0; i < 4; i++) transMesh.AddUVs(tiling);
             }
         }
 
@@ -158,15 +138,21 @@ namespace VoxelEngine {
             else return inds[dir];
         }
 
-        /* Vector2[] FaceUVs(Vector2Int[] tiling, int dir, float UVTileSize) {
-            var tile = tiling.Length == 1 ? tiling[0] : tiling[dir];
-            return new Vector2[] {
-                new Vector2(UVTileSize * tile.x, UVTileSize * tile.y + UVTileSize),
-                new Vector2(UVTileSize * tile.x + UVTileSize, UVTileSize * tile.y + UVTileSize),
-                new Vector2(UVTileSize * tile.x + UVTileSize, UVTileSize * tile.y),
-                new Vector2(UVTileSize * tile.x, UVTileSize * tile.y)
-            };
-        } */
+        private bool CullFace(Block block, Vector3Int pos, int dir) {
+            if (block.data.transparent) return true;
+            var adjPos = pos + DirOffsets[dir];
+            var adjacent = InRange(adjPos) ? GetBlock(adjPos) :
+                neighbors[dir]?.GetBlock(TransformChunkPos(adjPos, neighbors[dir].worldPosition));
+            return adjacent != null && adjacent.data.transparent;
+        }
+
+        private void FetchNeighbors() {
+            neighbors = new Chunk[6];
+            for (int i = 0; i < 6; i++) {
+                var pos = position + DirOffsets[i];
+                neighbors[i] = world.GetChunk(pos);
+            }
+        }
 
         public static Vector3Int[] DirOffsets = {
             Vector3Int.up,
