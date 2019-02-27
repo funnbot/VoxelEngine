@@ -1,4 +1,8 @@
-[Back](../index.md)
+---
+title: Week 2-25
+---
+
+[Back To Index](../index.md)
 
 ## Week 2/25
 - [ ] Complete
@@ -7,7 +11,7 @@
 > Convert chunk dict into columns storing vector2
 It has become messy dealing with the conversion of vector2 and 3
 
-#### Sub Tasks
+#### Sub  Tasks
 - [ ] Chunk has too many public props, isolate and hide.
 - [ ] Chunk/Chunkcolumn pooling
 
@@ -27,4 +31,4 @@ It has become messy dealing with the conversion of vector2 and 3
 - Friday
   - N
 
-##### Notes For Next Week
+#### Notes For Next Week
