@@ -9,7 +9,7 @@ namespace VoxelEngine {
         public Vector2Int position;
 
         public Chunk GetChunk(Vector3Int position) {
-            
+            return null;
         }
     }
 
