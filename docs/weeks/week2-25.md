@@ -15,11 +15,11 @@ It has become messy dealing with the conversion of vector2 and 3
 - Reading forums on prefabs vs scratch building in script made me realize i should be pooling chunks instead of instantiating new ones and destroying, will do this week or next. Possibly make a chunkColumn pool, would also clean up if chunk columns were monobehaviours instead of structs because could specify coordinate in name. The chunkcolumns would then instantiate a number of chunks as children which would be constant size since world size wont change, base it on the chunkHeight const val.
 
 ### Log
-
 - Tuesday
   - Created a chunk column class to handle columns since they should all be instantiated seperately, chunks cannot be combined because time it takes to regenerate mesh.
   - Move the VoxelWorld chunk handling into chunk column
   - Creating a PrefabPool behaviour
+  - Setup a github pages for weekly notes to easily keep track and share them.
 - Wednesday
   - N
 - Thursday
