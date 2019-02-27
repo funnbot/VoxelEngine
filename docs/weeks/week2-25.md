@@ -19,9 +19,8 @@ It has become messy dealing with the conversion of vector2 and 3
   - Created a chunk column class to handle columns since they should all be instantiated seperately, chunks cannot be combined because time it takes to regenerate mesh.
   - Move the VoxelWorld chunk handling into chunk column
   - Creating a PrefabPool behaviour
-  - Setup a github pages for weekly notes to easily keep track and share them.
 - Wednesday
-  - N
+  - Setup a github pages for weekly notes to easily keep track and share them.
 - Thursday
   - N
 - Friday
