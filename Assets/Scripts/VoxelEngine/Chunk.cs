@@ -3,14 +3,11 @@
 namespace VoxelEngine {
 
     public class Chunk : MonoBehaviour {
-        public const int Size = 16;
-        public const int Rollover = 0;
+        public static readonly int Size = 16;
+        public static readonly int Rollover = 0;
 
         public bool update;
         public bool built;
-
-        public float BlockUVTileSize;
-        public float TransUVTileSize;
 
         public MeshFilter BlockRend;
         public MeshFilter TransRend;
@@ -27,12 +24,19 @@ namespace VoxelEngine {
         private MeshData transMesh;
         private MeshData colliderMesh;
 
+        private ChunkColumn parent;
         private Chunk[] neighbors;
 
-        public void Init(VoxelWorld world, Vector3Int position) {
+        public void Init(ChunkColumn parent, VoxelWorld world, Vector3Int position) {
             blocks = new Block[Chunk.Size, Chunk.Size, Chunk.Size];
+
             this.world = world;
             this.position = position;
+            this.parent = parent;
+
+            transform.parent = parent.transform;
+            transform.localPosition = Vector3Int.up * position * Size;
+
             worldPosition = position * Chunk.Size;
 
             blockMesh = new MeshData();
@@ -46,14 +50,20 @@ namespace VoxelEngine {
             if (update) Render();
         }
 
-        public void Destroy() {
+        public void CleanUp() {
             world.OnTick -= OnTick;
+            blocks = null;
+            blockMesh.Clear();
+            transMesh.Clear();
+            colliderMesh.Clear();
         }
 
-        public void Build() {
-            // TODO: load from saves
-            world.generator.GenerateChunks(position);
-            built = true;
+        public void Destroy() {
+            world.OnTick -= OnTick;
+            blocks = null;
+            blockMesh.Clear();
+            transMesh.Clear();
+            colliderMesh.Clear();
         }
 
         public void Render() {
@@ -86,11 +96,25 @@ namespace VoxelEngine {
                 return world.GetBlock(pos);
             }
         }
-        public void SetBlock(Vector3Int pos, Block block) {
-            if (InRange(pos)) blocks[pos.x, pos.y, pos.z] = block;
-            else {
+        public void SetBlock(Vector3Int pos, Block block, bool update = true) {
+            if (InRange(pos)) {
+                blocks[pos.x, pos.y, pos.z] = block;
+                if (update) UpdateNeighbors(pos);
+            } else {
                 pos = BlockToWorldPos(pos);
                 world.SetBlock(pos, block, false);
+            }
+        }
+
+        public void UpdateNeighbors(in Vector3Int changed) {
+            if (!OnEdge(changed)) return;
+            for (int i = 0; i < 6; i++) {
+                var pos = changed + DirOffsets[i];
+                if (pos.MaxElem() >= Size || pos.MinElem() < 0) {
+                    Chunk n = neighbors[i];
+                    if (n == null) continue;
+                    n.update = true;
+                }
             }
         }
 
@@ -105,6 +129,9 @@ namespace VoxelEngine {
             x >= 0 && x < Size && y >= 0 && y < Size && z >= 0 && z < Size;
         public bool InRange(Vector3Int p) => InRange(p.x, p.y, p.z);
 
+        public bool OnEdge(Vector3Int p) =>
+            p.MaxElem() >= Size - 1 || p.MinElem() <= 0;
+
         void HookEvents() {
             world.OnTick += OnTick;
         }
@@ -115,7 +142,7 @@ namespace VoxelEngine {
 
             if (block.data.meshType == BlockMeshType.Cube) {
                 for (int i = 0; i < 6; i++) {
-                    
+
                     if (!CullFace(block, pos, i)) continue;
 
                     int texIndex = TextureIndex(block.data.texIndices, i);

@@ -14,10 +14,10 @@ namespace VoxelEngine.ProceduralGeneration {
             this.noise = noise;
         }
 
-        public void GenerateChunks(Vector3Int col) {
+        public void GenerateChunks(Vector2Int col) {
             for (int i = 0; i < VoxelWorld.ChunkHeight; i++) {
-                col.y = i;
-                var chunk = world.GetChunk(col);
+                var pos = new Vector3Int(col.x, i, col.y);
+                var chunk = world.GetChunk(pos);
                 GenerateChunk(chunk);
                 for (int x = -Chunk.Rollover; x < Chunk.Size + Chunk.Rollover; x++) {
                     for (int z = -Chunk.Rollover; z < Chunk.Size + Chunk.Rollover; z++) {

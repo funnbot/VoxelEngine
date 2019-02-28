@@ -21,8 +21,9 @@ It has become messy dealing with the conversion of vector2 and 3
   - Creating a PrefabPool behaviour
 - Wednesday
   - Setup a github pages for weekly notes to easily keep track and share them.
+  - Converting to ChunkColumns
 - Thursday
-  - N
+  - Creating a Coord2 and Coord3 to replace Vector3Int usage
 - Friday
   - N
 

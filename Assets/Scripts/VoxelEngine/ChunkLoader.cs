@@ -16,7 +16,7 @@ namespace VoxelEngine {
         private List<Vector2Int> loadedChunks;
 
         void Start() {
-            world.OnTick += OnTick;
+            // world.OnTick += OnTick;
             loadedChunks = new List<Vector2Int>();
         }
 
@@ -27,11 +27,11 @@ namespace VoxelEngine {
             var p = pos + spiral;
             var chunk = world.GetChunk(p);
             if (chunk == null) {
-                world.LoadChunks(new Vector2Int(p.x, p.z));
-                world.BuildChunks(new Vector2Int(p.x, p.z));
+               // world.LoadChunks(new Vector2Int(p.x, p.z));
+               // world.BuildChunks(new Vector2Int(p.x, p.z));
                 chunk = world.GetChunk(p);
             } else if (chunk.built) {
-                world.RenderChunks(new Vector2Int(p.x, p.z));
+               // world.RenderChunks(new Vector2Int(p.x, p.z));
                 loadedChunks.Add(new Vector2Int(p.x, p.z));
                 //for (int i = 2; i < 6; i++) world.RenderChunks(new Vector2Int(DirOffsets));
                 Spiral();
@@ -47,7 +47,7 @@ namespace VoxelEngine {
                 var p = loadedChunks[i];
                 var chunk = new Vector3Int(p.x, 0, p.y);
                 if (Vector3Int.Distance(pos, chunk) > range) {
-                    world.DestroyChunks(p);
+                    // world.DestroyChunks(p);
                     return;
                 }
 

@@ -2,15 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PrefabPool : MonoBehaviour {
+public abstract class PrefabPool : MonoBehaviour {
     public GameObject prefab;
     public int startingSize;
 
     private List<GameObject> available;
     private List<GameObject> used;
 
+    public abstract void CleanUp(GameObject go);
+
+    public virtual GameObject Create() =>
+        Instantiate(prefab);
+
     public GameObject GetObject() {
-        lock (available) {
+        lock(available) {
             if (available.Count != 0) {
                 var go = available[0];
                 used.Add(go);
@@ -18,7 +23,7 @@ public class PrefabPool : MonoBehaviour {
                 go.SetActive(true);
                 return go;
             } else {
-                var go = Instantiate(prefab);
+                var go = Create();
                 used.Add(go);
                 go.SetActive(true);
                 return go;
@@ -28,8 +33,9 @@ public class PrefabPool : MonoBehaviour {
 
     public void ReleaseObject(GameObject go) {
         go.SetActive(false);
+        CleanUp(go);
 
-        lock (available) {
+        lock(available) {
             available.Add(go);
             used.Remove(go);
         }
@@ -39,7 +45,7 @@ public class PrefabPool : MonoBehaviour {
         available = new List<GameObject>(startingSize);
         used = new List<GameObject>(startingSize);
         for (int i = 0; i < startingSize; i++) {
-            available[i] = Instantiate(prefab);
+            available[i] = Create();
             available[i].SetActive(false);
         }
     }

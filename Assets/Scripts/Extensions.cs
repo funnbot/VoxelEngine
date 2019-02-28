@@ -10,6 +10,11 @@ public static class Extensions {
         return v1;
     }
 
+    public static Vector3Int ToVec3(this Vector3Int v) =>
+        new Vector3Int(v.x, 0, v.y);
+    public static Vector2Int ToVec2(this Vector3Int v) =>
+        new Vector2Int(v.x, v.z);
+
     public static int MaxElem(this Vector3Int v) {
         return Mathf.Max(Mathf.Max(v.x, v.y), v.z);
     }
