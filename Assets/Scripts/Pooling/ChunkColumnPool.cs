@@ -3,9 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using VoxelEngine;
 
-public class ChunkColumnPool : PrefabPool {
-    public override void CleanUp(GameObject go) {
-        var col = go.GetComponent<ChunkColumn>();
-        col.Destroy();
+public class ChunkColumnPool : PrefabPool<ChunkColumn> {
+    [SerializeField]
+    private VoxelWorld world;
+
+    public override void CleanUp(ChunkColumn col) {
+        col.CleanUp();
+        col.transform.parent = transform;
+    }
+
+    public override ChunkColumn Create() {
+        var col = Instantiate(prefab).GetComponent<ChunkColumn>();
+        col.Create(world);
+        col.transform.parent = transform;
+        return col;
     }
 }

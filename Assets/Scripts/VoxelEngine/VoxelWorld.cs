@@ -19,7 +19,7 @@ namespace VoxelEngine {
         public int tickSpeed = 10;
         private int tick;
 
-        public PrefabPool columnPool;
+        public ChunkColumnPool columnPool;
        //  public Dictionary<Coord3, Chunk> chunks;
         public Dictionary<Coord2, ChunkColumn> columns;
         public Dictionary<string, BlockBehaviour<Block>> behaviours;
@@ -49,17 +49,16 @@ namespace VoxelEngine {
         public ChunkColumn LoadColumn(Coord2 pos) {
             if (columns.ContainsKey(pos)) return columns[pos];
 
-            var chunk = Instantiate(ColumnFab).GetComponent<ChunkColumn>();
-            chunk.Init(this, pos);
-            columns.Add(pos, chunk);
-            return chunk;
+            var col = columnPool.GetObject();
+            col.Init(pos);
+            columns.Add(pos, col);
+            return col;
         }
 
         public void DestroyColumn(Coord2 pos) {
             ChunkColumn col = columns[pos];
 
-            col.Destroy();
-            Destroy(col.gameObject);
+            columnPool.ReleaseObject(col);
             columns.Remove(pos);
         }
 

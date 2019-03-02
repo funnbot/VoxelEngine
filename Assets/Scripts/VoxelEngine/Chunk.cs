@@ -27,27 +27,27 @@ namespace VoxelEngine {
         private ChunkColumn parent;
         private Chunk[] neighbors;
 
-        public void Init(ChunkColumn parent, VoxelWorld world, Coord3 position) {
+        public void Create(ChunkColumn parent, VoxelWorld world) {
             blocks = new Block[Chunk.Size, Chunk.Size, Chunk.Size];
 
             this.world = world;
-            this.position = position;
             this.parent = parent;
 
             transform.parent = parent.transform;
-            transform.localPosition = Coord3.up * position * Size;
-
-            worldPosition = position * Chunk.Size;
 
             blockMesh = new MeshData();
             transMesh = new MeshData();
             colliderMesh = new MeshData();
-
-            HookEvents();
         }
 
-        public void OnTick() {
-            if (update) Render();
+        public void Init(Coord3 position) {
+            blocks = new Block[Size, Size, Size];
+
+            this.position = position;
+            worldPosition = position * Size;
+            transform.localPosition = Coord3.up * worldPosition;
+
+            HookEvents();
         }
 
         public void CleanUp() {
@@ -58,12 +58,8 @@ namespace VoxelEngine {
             colliderMesh.Clear();
         }
 
-        public void Destroy() {
-            world.OnTick -= OnTick;
-            blocks = null;
-            blockMesh.Clear();
-            transMesh.Clear();
-            colliderMesh.Clear();
+        void OnTick() {
+            if (update) Render();
         }
 
         public void Render() {

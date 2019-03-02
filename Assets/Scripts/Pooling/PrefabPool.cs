@@ -2,37 +2,35 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class PrefabPool : MonoBehaviour {
+public abstract class PrefabPool<T> : MonoBehaviour where T : MonoBehaviour {
     public GameObject prefab;
     public int startingSize;
 
-    private List<GameObject> available;
-    private List<GameObject> used;
+    private List<T> available;
+    private List<T> used;
 
-    public abstract void CleanUp(GameObject go);
+    public abstract void CleanUp(T go);
 
-    public virtual GameObject Create() =>
-        Instantiate(prefab);
+    public abstract T Create();
 
-    public GameObject GetObject() {
+    public T GetObject() {
         lock(available) {
-            if (available.Count != 0) {
+            if (available.Count > 0) {
                 var go = available[0];
                 used.Add(go);
                 available.RemoveAt(0);
-                go.SetActive(true);
+                go.gameObject.SetActive(true);
                 return go;
             } else {
                 var go = Create();
                 used.Add(go);
-                go.SetActive(true);
                 return go;
             }
         }
     }
 
-    public void ReleaseObject(GameObject go) {
-        go.SetActive(false);
+    public void ReleaseObject(T go) {
+        go.gameObject.SetActive(false);
         CleanUp(go);
 
         lock(available) {
@@ -42,11 +40,12 @@ public abstract class PrefabPool : MonoBehaviour {
     }
 
     void Awake() {
-        available = new List<GameObject>(startingSize);
-        used = new List<GameObject>(startingSize);
+        available = new List<T>(startingSize);
+        used = new List<T>(startingSize);
         for (int i = 0; i < startingSize; i++) {
-            available[i] = Create();
-            available[i].SetActive(false);
+            var go = Create();
+            go.gameObject.SetActive(false);
+            available.Add(go);
         }
     }
 }
