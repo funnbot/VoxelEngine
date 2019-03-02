@@ -25,7 +25,7 @@ namespace VoxelEngine.ProceduralGeneration {
         }
 
         protected override void GenerateColumn(Chunk chunk, int x, int z) {
-            var localPos = new Vector3Int(x, 0, z);
+            var localPos = new Coord3(x, 0, z);
             var pos = chunk.BlockToWorldPos(localPos);
 
             var height = baseHeight + GetNoise(pos.x, 0, pos.z, noiseFreq, noiseHeight);
@@ -39,7 +39,7 @@ namespace VoxelEngine.ProceduralGeneration {
                         var chance = GetChance(pos.x, pos.y, pos.z, freq, dens);
                         if (chance) {
                             SetBlock(chunk, localPos, dirt);
-                            SetBlock(chunk, new Vector3Int(localPos.x, localPos.y + 1, localPos.z), stone);
+                            SetBlock(chunk, new Coord3(localPos.x, localPos.y + 1, localPos.z), stone);
                         } else SetBlock(chunk, localPos, air);
                     }
                 } else {

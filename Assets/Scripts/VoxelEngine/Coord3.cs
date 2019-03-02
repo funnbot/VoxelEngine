@@ -16,6 +16,9 @@ namespace VoxelEngine {
             this.z = z;
         }
 
+        public Coord3 FloorDiv(int i) =>
+        new Coord3(Mathf.FloorToInt((float)x / i), Mathf.FloorToInt((float)y / i), Mathf.FloorToInt((float)z / i));
+
         public bool InRange(int incLower, int excUpper) =>
         x >= incLower && x < excUpper && y >= incLower &&
         y < excUpper && z >= incLower && z < excUpper;
@@ -35,8 +38,15 @@ namespace VoxelEngine {
         public int MinElem() =>
         Mathf.Min(x, Mathf.Min(y, z));
 
+        public float magnitude { get => Mathf.Sqrt((float) (x * x + y * y + z * z)); }
+
+        public int sqrMagnitude { get => x * x + y * y + z * z; }
+
         public static Coord3 FloorToInt(Vector3 v) =>
         new Coord3(Mathf.FloorToInt(v.x), Mathf.FloorToInt(v.y), Mathf.FloorToInt(v.z));
+
+        public static float Distance(Coord3 a, Coord3 b) =>
+        (a - b).magnitude;
 
         #region operators
 
@@ -70,6 +80,9 @@ namespace VoxelEngine {
         public static implicit operator Coord3(Vector3 v) =>
         new Coord3((int) v.x, (int) v.y, (int) v.z);
 
+        public static implicit operator Vector3(Coord3 v) =>
+        new Vector3(v.x, v.y, v.z);
+
         public static explicit operator Coord3(Coord2 c) =>
         new Coord3(c.x, 0, c.y);
 
@@ -87,7 +100,7 @@ namespace VoxelEngine {
         }
 
         public bool Equals(Coord3 other) =>
-        x.Equals(other.x) && y.Equals(other.y) && z.Equals(other.z);
+        this == other;
 
         public override int GetHashCode() {
             var yHash = y.GetHashCode();

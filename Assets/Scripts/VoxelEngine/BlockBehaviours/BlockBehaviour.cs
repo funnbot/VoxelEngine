@@ -5,23 +5,23 @@ using UnityEngine;
 namespace VoxelEngine {
     public class BlockBehaviour<T> where T : Block {
         protected VoxelWorld world;
-        protected Dictionary<Vector3Int, T> blocks;
+        protected Dictionary<Coord3, T> blocks;
 
         public BlockBehaviour<T> Awake(VoxelWorld world) {
             this.world = world;
-            blocks = new Dictionary<Vector3Int, T>();
+            blocks = new Dictionary<Coord3, T>();
             return this;
         }
 
-        public virtual void Add(Vector3Int pos, T block) {
+        public virtual void Add(Coord3 pos, T block) {
             blocks.Add(pos, block);
         }
 
-        public virtual void Remove(Vector3Int pos) {
+        public virtual void Remove(Coord3 pos) {
             blocks.Remove(pos);
         }
 
-        public virtual void UnloadChunk(Vector3Int chunkPos) {
+        public virtual void UnloadChunk(Coord3 chunkPos) {
             foreach (var block in blocks) {
                 var pos = world.BlockToChunkPos(block.Value.position);
                 if (chunkPos == pos) Remove(block.Value.position);

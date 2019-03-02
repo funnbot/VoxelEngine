@@ -15,8 +15,8 @@ namespace VoxelEngine {
         public MeshCollider BlockCollider;
 
         public VoxelWorld world;
-        public Vector3Int position;
-        public Vector3Int worldPosition;
+        public Coord3 position;
+        public Coord3 worldPosition;
 
         private Block[, , ] blocks;
 
@@ -27,7 +27,7 @@ namespace VoxelEngine {
         private ChunkColumn parent;
         private Chunk[] neighbors;
 
-        public void Init(ChunkColumn parent, VoxelWorld world, Vector3Int position) {
+        public void Init(ChunkColumn parent, VoxelWorld world, Coord3 position) {
             blocks = new Block[Chunk.Size, Chunk.Size, Chunk.Size];
 
             this.world = world;
@@ -35,7 +35,7 @@ namespace VoxelEngine {
             this.parent = parent;
 
             transform.parent = parent.transform;
-            transform.localPosition = Vector3Int.up * position * Size;
+            transform.localPosition = Coord3.up * position * Size;
 
             worldPosition = position * Chunk.Size;
 
@@ -89,14 +89,14 @@ namespace VoxelEngine {
             BlockCollider.sharedMesh = colliderMesh.ToColMesh();
         }
 
-        public Block GetBlock(Vector3Int pos) {
+        public Block GetBlock(Coord3 pos) {
             if (InRange(pos)) return blocks[pos.x, pos.y, pos.z];
             else {
                 pos = BlockToWorldPos(pos);
                 return world.GetBlock(pos);
             }
         }
-        public void SetBlock(Vector3Int pos, Block block, bool update = true) {
+        public void SetBlock(Coord3 pos, Block block, bool update = true) {
             if (InRange(pos)) {
                 blocks[pos.x, pos.y, pos.z] = block;
                 if (update) UpdateNeighbors(pos);
@@ -106,11 +106,11 @@ namespace VoxelEngine {
             }
         }
 
-        public void UpdateNeighbors(in Vector3Int changed) {
-            if (!OnEdge(changed)) return;
+        public void UpdateNeighbors(Coord3 changed) {
+            if (changed.InRange(0, Chunk.Size)) return;
             for (int i = 0; i < 6; i++) {
-                var pos = changed + DirOffsets[i];
-                if (pos.MaxElem() >= Size || pos.MinElem() < 0) {
+                var pos = changed + Coord3.Directions[i];
+                if (!pos.InRange(-1, Chunk.Size + 1)) {
                     Chunk n = neighbors[i];
                     if (n == null) continue;
                     n.update = true;
@@ -118,26 +118,23 @@ namespace VoxelEngine {
             }
         }
 
-        public Vector3Int BlockToWorldPos(Vector3Int block) =>
+        public Coord3 BlockToWorldPos(Coord3 block) =>
             block + position * Chunk.Size;
-        public Vector3Int WorldToBlockPos(Vector3Int block) =>
+        public Coord3 WorldToBlockPos(Coord3 block) =>
             block - position * Chunk.Size;
-        public Vector3Int TransformChunkPos(Vector3Int pos, Vector3Int chunkWorldPos) =>
+        public Coord3 TransformChunkPos(Coord3 pos, Coord3 chunkWorldPos) =>
             pos + worldPosition - chunkWorldPos;
 
         public bool InRange(int x, int y, int z) =>
             x >= 0 && x < Size && y >= 0 && y < Size && z >= 0 && z < Size;
-        public bool InRange(Vector3Int p) => InRange(p.x, p.y, p.z);
-
-        public bool OnEdge(Vector3Int p) =>
-            p.MaxElem() >= Size - 1 || p.MinElem() <= 0;
+        public bool InRange(Coord3 p) => InRange(p.x, p.y, p.z);
 
         void HookEvents() {
             world.OnTick += OnTick;
         }
 
         void AddBlockToMesh(int x, int y, int z) {
-            var pos = new Vector3Int(x, y, z);
+            var pos = new Coord3(x, y, z);
             var block = blocks[x, y, z];
 
             if (block.data.meshType == BlockMeshType.Cube) {
@@ -165,9 +162,9 @@ namespace VoxelEngine {
             else return inds[dir];
         }
 
-        private bool CullFace(Block block, Vector3Int pos, int dir) {
+        private bool CullFace(Block block, Coord3 pos, int dir) {
             if (block.data.transparent) return true;
-            var adjPos = pos + DirOffsets[dir];
+            var adjPos = pos + Coord3.Directions[dir];
             var adjacent = InRange(adjPos) ? GetBlock(adjPos) :
                 neighbors[dir]?.GetBlock(TransformChunkPos(adjPos, neighbors[dir].worldPosition));
             return adjacent != null && adjacent.data.transparent;
@@ -176,19 +173,10 @@ namespace VoxelEngine {
         private void FetchNeighbors() {
             neighbors = new Chunk[6];
             for (int i = 0; i < 6; i++) {
-                var pos = position + DirOffsets[i];
+                var pos = position + Coord3.Directions[i];
                 neighbors[i] = world.GetChunk(pos);
             }
         }
-
-        public static Vector3Int[] DirOffsets = {
-            Vector3Int.up,
-            Vector3Int.down,
-            Vector3Int.right,
-            Vector3Int.left,
-            new Vector3Int(0, 0, 1),
-            new Vector3Int(0, 0, -1)
-        };
 
         public static class Direction {
             public static int Up = 0;

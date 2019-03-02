@@ -6,10 +6,10 @@ namespace VoxelEngine {
 
     public class Block {
         public BlockData data;
-        public Vector3Int position;
-        public Vector2Int rotation;
+        public Coord3 position;
+        public Coord2 rotation;
 
-        public Block(BlockData data, Vector3Int position = new Vector3Int(), Vector2Int rotation = new Vector2Int()) {
+        public Block(BlockData data, Coord3 position = new Coord3(), Coord2 rotation = new Coord2()) {
             this.data = data;
             this.position = position;
             this.rotation = rotation;

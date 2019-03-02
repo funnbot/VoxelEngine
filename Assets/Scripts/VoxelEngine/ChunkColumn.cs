@@ -6,7 +6,7 @@ namespace VoxelEngine {
 
     public class ChunkColumn : MonoBehaviour {
         public Chunk[] chunks;
-        public Vector2Int position { get; private set; }
+        public Coord2 position { get; private set; }
 
         private VoxelWorld world;
 
@@ -38,16 +38,16 @@ namespace VoxelEngine {
                 chunk.Render();
         }
 
-        public void Init(VoxelWorld world, Vector2Int position) {
+        public void Init(VoxelWorld world, Coord2 position) {
             this.position = position;
             this.world = world;
 
             transform.parent = world.transform;
-            transform.localPosition = new Vector3Int(position.x, 0, position.y) * Chunk.Size;
+            transform.localPosition = (Coord3)position * Chunk.Size;
 
             chunks = new Chunk[VoxelWorld.ChunkHeight];
             for (int i = 0; i < chunks.Length; i++) {
-                var pos = new Vector3Int(position.x, i, position.y);
+                var pos = new Coord3(position.x, i, position.y);
 
                 chunks[i] = Instantiate(chunkFab).GetComponent<Chunk>();
                 chunks[i].Init(this, world, pos);

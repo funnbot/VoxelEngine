@@ -10,20 +10,20 @@ namespace VoxelEngine {
         public VoxelWorld world;
         public int range;
 
-        private Vector3Int pos = Vector3Int.zero;
-        private Vector3Int spiral = Vector3Int.zero;
+        private Coord3 pos = Coord3.zero;
+        private Coord3 spiral = Coord3.zero;
 
-        private List<Vector2Int> loadedChunks;
+        private List<Coord2> loadedChunks;
 
         void Start() {
             // world.OnTick += OnTick;
-            loadedChunks = new List<Vector2Int>();
+            loadedChunks = new List<Coord2>();
         }
 
         void OnTick() {
-            var chunkPos = world.BlockToChunkPos(Vector3Int.FloorToInt(transform.position));
+            var chunkPos = world.BlockToChunkPos(Coord3.FloorToInt(transform.position));
             chunkPos.y = 0;
-            if (chunkPos != pos) spiral = Vector3Int.zero;
+            if (chunkPos != pos) spiral = Coord3.zero;
             var p = pos + spiral;
             var chunk = world.GetChunk(p);
             if (chunk == null) {
@@ -32,7 +32,7 @@ namespace VoxelEngine {
                 chunk = world.GetChunk(p);
             } else if (chunk.built) {
                // world.RenderChunks(new Vector2Int(p.x, p.z));
-                loadedChunks.Add(new Vector2Int(p.x, p.z));
+                loadedChunks.Add(new Coord2(p.x, p.z));
                 //for (int i = 2; i < 6; i++) world.RenderChunks(new Vector2Int(DirOffsets));
                 Spiral();
 
@@ -45,8 +45,8 @@ namespace VoxelEngine {
         void DestroyChunks() {
             for (int i = 0; i < loadedChunks.Count; i++) {
                 var p = loadedChunks[i];
-                var chunk = new Vector3Int(p.x, 0, p.y);
-                if (Vector3Int.Distance(pos, chunk) > range) {
+                var chunk = new Coord3(p.x, 0, p.y);
+                if (Coord3.Distance(pos, chunk) > range) {
                     // world.DestroyChunks(p);
                     return;
                 }
@@ -75,7 +75,7 @@ namespace VoxelEngine {
                     else y++;
                 }
             }
-            spiral = new Vector3Int(x, 0, y);
+            spiral = new Coord3(x, 0, y);
         }
     }
 

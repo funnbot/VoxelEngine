@@ -32,7 +32,7 @@ namespace VoxelEngine.ProceduralGeneration {
         }
 
         protected override void GenerateColumn(Chunk chunk, int x, int z) {
-            var worldPos = chunk.BlockToWorldPos(new Vector3Int(x, 0, z));
+            var worldPos = chunk.BlockToWorldPos(new Coord3(x, 0, z));
 
             int stoneHeight = stoneBaseHeight;
             stoneHeight += GetNoise(worldPos.x, worldPos.z, stoneMountainFrequency, stoneMountainHeight);
@@ -42,7 +42,7 @@ namespace VoxelEngine.ProceduralGeneration {
             dirtHeight += GetNoise(worldPos.x, worldPos.z, dirtNoise, dirtNoiseHeight);
 
             for (int y = -Chunk.Rollover; y < Chunk.Size + Chunk.Rollover; y++) {
-                var localPos = new Vector3Int(x, y, z);
+                var localPos = new Coord3(x, y, z);
                 worldPos = chunk.BlockToWorldPos(localPos);
 
                 int caveChance = GetNoise(worldPos, caveFrequency, 100);
@@ -55,7 +55,7 @@ namespace VoxelEngine.ProceduralGeneration {
                     if (worldPos.y == dirtHeight && GetNoise(worldPos.x, worldPos.z, treeFrequency, 100) < treeDensity)
                         GenerateStructure(chunk, localPos.x, localPos.y + 1, localPos.z, "tree");
                     if (worldPos.y == dirtHeight && GetNoise(worldPos.x, worldPos.z, grassFrequency, 100) < grassDensity)
-                        SetBlock(chunk, new Vector3Int(localPos.x, localPos.y + 1, localPos.z), grass_decal);
+                        SetBlock(chunk, new Coord3(localPos.x, localPos.y + 1, localPos.z), grass_decal);
                 } else {
                     SetBlock(chunk, localPos, air);
                 }

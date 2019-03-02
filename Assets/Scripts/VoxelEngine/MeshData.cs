@@ -15,13 +15,13 @@ namespace VoxelEngine {
             uvs = new List<Vector3>();
         }
 
-        public void AddQuad(int direction, Vector3Int position, int textureIndex) {
+        public void AddQuad(int direction, Coord3 position, int textureIndex) {
             AddQuadVerts(direction, position);
             AddQuadTris();
             AddQuadUV(textureIndex);
         }
 
-        public void AddDecal(Vector3Int position, int textureIndex) {
+        public void AddDecal(Coord3 position, int textureIndex) {
             AddDecalVerts(position);
             AddDecalTris();
             for (int i = 0; i < 4; i++)
@@ -62,7 +62,7 @@ namespace VoxelEngine {
             uvs.Add(new Vector3(0, 0, ind));
         }
 
-        private void AddQuadVerts(int dir, Vector3Int pos) {
+        private void AddQuadVerts(int dir, Coord3 pos) {
             float x = pos.x, y = pos.y, z = pos.z;
             switch (dir) {
                 case 0:
@@ -104,7 +104,7 @@ namespace VoxelEngine {
             }
         }
 
-        private void AddDecalVerts(Vector3Int pos) {
+        private void AddDecalVerts(Coord3 pos) {
             float x = pos.x, y = pos.y, z = pos.z;
             for (int i = 0; i < 2; i++) {
                 verts.Add(new Vector3(x - T, y + F, z + T));

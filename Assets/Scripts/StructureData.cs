@@ -93,6 +93,9 @@ public class StructureData : ScriptableObject {
             this.z = z;
         }
 
+        public static explicit operator Coord3(SerialVector3Int v) =>
+        new Coord3(v.x, v.y, v.z);
+
         public static explicit operator Vector3Int(SerialVector3Int v) {
             return new Vector3Int(v.x, v.y, v.z);
         }

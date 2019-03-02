@@ -14,9 +14,9 @@ namespace VoxelEngine.ProceduralGeneration {
             this.noise = noise;
         }
 
-        public void GenerateChunks(Vector2Int col) {
+        public void GenerateChunks(Coord2 col) {
             for (int i = 0; i < VoxelWorld.ChunkHeight; i++) {
-                var pos = new Vector3Int(col.x, i, col.y);
+                var pos = new Coord3(col.x, i, col.y);
                 var chunk = world.GetChunk(pos);
                 GenerateChunk(chunk);
                 for (int x = -Chunk.Rollover; x < Chunk.Size + Chunk.Rollover; x++) {
@@ -30,26 +30,26 @@ namespace VoxelEngine.ProceduralGeneration {
         protected virtual void GenerateColumn(Chunk chunk, int x, int z) {
             var stone = ResourceStore.Blocks["stone"];
             for (int y = -Chunk.Rollover; y < Chunk.Size + Chunk.Rollover; y++) {
-                var pos = new Vector3Int(x, y, z);
+                var pos = new Coord3(x, y, z);
                 SetBlock(chunk, pos, stone);
             }
         }
 
         protected virtual void GenerateChunk(Chunk chunk) { }
 
-        protected void SetBlock(Chunk chunk, Vector3Int localPos, Block block, bool replace = false) {
+        protected void SetBlock(Chunk chunk, Coord3 localPos, Block block, bool replace = false) {
             var b = chunk.GetBlock(localPos);
             if (replace || b == null || b.data.meshType == BlockMeshType.Air) {
                 chunk.SetBlock(localPos, block);
             }
         }
-        protected void SetBlock(Chunk chunk, Vector3Int localPos, BlockData block, bool replace = false) =>
+        protected void SetBlock(Chunk chunk, Coord3 localPos, BlockData block, bool replace = false) =>
             SetBlock(chunk, localPos, new Block(block), replace);
 
         protected int GetNoise(int x, int y, int z, float scale, int max) {
             return Mathf.FloorToInt((GetNoise(x * scale, y * scale, z * scale) + 1f) * (max / 2f));
         }
-        protected int GetNoise(Vector3Int pos, float scale, int max) =>
+        protected int GetNoise(Coord3 pos, float scale, int max) =>
             GetNoise(pos.x, pos.y, pos.z, scale, max);
         protected int GetNoise(int x, int z, float scale, int max) =>
             GetNoise(x, 0, z, scale, max);
@@ -80,7 +80,7 @@ namespace VoxelEngine.ProceduralGeneration {
                     for (int zi = 0; zi < s.size.y; zi++) {
                         var val = s[l][zi * s.size.y + xi];
                         var block = s.blocks[val];
-                        var pos = new Vector3Int(x + xi, y + l, z + zi) - (Vector3Int) s.origin + Vector3Int.one;
+                        var pos = new Coord3(x + xi, y + l, z + zi) - (Coord3) s.origin + Coord3.one;
                         SetBlock(chunk, pos, block, s.cutout);
                     }
                 }
@@ -92,7 +92,7 @@ namespace VoxelEngine.ProceduralGeneration {
             for (int x = 0; x < Chunk.Size; x++) {
                 for (int y = 0; y < Chunk.Size; y++) {
                     for (int z = 0; z < Chunk.Size; z++) {
-                        var pos = new Vector3Int(x, y, z);
+                        var pos = new Coord3(x, y, z);
                         SetBlock(chunk, pos, air);
                     }
                 }

@@ -20,16 +20,16 @@ namespace VoxelEngine {
         private int tick;
 
         public PrefabPool columnPool;
-        public Dictionary<Vector3Int, Chunk> chunks;
-        public Dictionary<Vector2Int, ChunkColumn> columns;
+       //  public Dictionary<Coord3, Chunk> chunks;
+        public Dictionary<Coord2, ChunkColumn> columns;
         public Dictionary<string, BlockBehaviour<Block>> behaviours;
 
         public delegate void Tick();
         public event Tick OnTick;
 
         void Awake() {
-            chunks = new Dictionary<Vector3Int, Chunk>();
-            columns = new Dictionary<Vector2Int, ChunkColumn>();
+           // chunks = new Dictionary<Coord3, Chunk>();
+            columns = new Dictionary<Coord2, ChunkColumn>();
         }
 
         void Start() {
@@ -46,7 +46,7 @@ namespace VoxelEngine {
             }
         }
 
-        public ChunkColumn LoadColumn(Vector2Int pos) {
+        public ChunkColumn LoadColumn(Coord2 pos) {
             if (columns.ContainsKey(pos)) return columns[pos];
 
             var chunk = Instantiate(ColumnFab).GetComponent<ChunkColumn>();
@@ -55,7 +55,7 @@ namespace VoxelEngine {
             return chunk;
         }
 
-        public void DestroyColumn(Vector2Int pos) {
+        public void DestroyColumn(Coord2 pos) {
             ChunkColumn col = columns[pos];
 
             col.Destroy();
@@ -63,20 +63,20 @@ namespace VoxelEngine {
             columns.Remove(pos);
         }
 
-        public Chunk GetChunk(Vector3Int pos) {
-            var col = GetColumn(pos.ToVec2());
+        public Chunk GetChunk(Coord3 pos) {
+            var col = GetColumn((Coord2)pos);
             if (col == null) return null;
             return col.GetChunk(pos.y);
         }
 
-        public ChunkColumn GetColumn(Vector2Int pos) {
+        public ChunkColumn GetColumn(Coord2 pos) {
             ChunkColumn col;
             if (columns.TryGetValue(pos, out col)) {
                 return col;
             } else return null;
         }
 
-        public Block GetBlock(Vector3Int pos) {
+        public Block GetBlock(Coord3 pos) {
             var chunkPos = BlockToChunkPos(pos);
             var chunk = GetChunk(chunkPos);
             if (chunk == null) return null;
@@ -89,7 +89,7 @@ namespace VoxelEngine {
             return GetBlock(pos);
         }
 
-        public void SetBlock(Vector3Int pos, Block block, bool updateChunk = false) {
+        public void SetBlock(Coord3 pos, Block block, bool updateChunk = false) {
             var chunkPos = BlockToChunkPos(pos);
             var chunk = GetChunk(chunkPos);
             if (chunk == null) return;
@@ -102,11 +102,11 @@ namespace VoxelEngine {
             SetBlock(pos, block, true);
         }
 
-        public Vector3Int BlockToChunkPos(Vector3Int pos) =>
-            pos.Div(Chunk.Size);
+        public Coord3 BlockToChunkPos(Coord3 pos) =>
+            pos.FloorDiv(Chunk.Size);
 
-        public Vector3Int RaycastToBlockPos(Vector3 point, Vector3 normal, bool adjacent) =>
-            Vector3Int.FloorToInt(point + Vector3.one * 0.5f + (adjacent ? -Vector3.Max(normal, Vector3.zero) : Vector3.Min(normal, Vector3.zero)));
+        public Coord3 RaycastToBlockPos(Vector3 point, Vector3 normal, bool adjacent) =>
+            Coord3.FloorToInt(point + Vector3.one * 0.5f + (adjacent ? -Vector3.Max(normal, Vector3.zero) : Vector3.Min(normal, Vector3.zero)));
 
         void LoadBehaviours() {
             behaviours = new Dictionary<string, BlockBehaviour<Block>>();
@@ -118,7 +118,7 @@ namespace VoxelEngine {
             int size = 1;
             for (int x = -size - 1; x <= size + 1; x++) {
                 for (int z = -size - 1; z <= size + 1; z++) {
-                    var pos = new Vector2Int(x, z);
+                    var pos = new Coord2(x, z);
                     var col = LoadColumn(pos);
                     col.Build();
                 }
@@ -126,7 +126,7 @@ namespace VoxelEngine {
             // Render the 3x3 spawn area
             for (int x = -size; x <= size; x++) {
                 for (int z = -size; z <= size; z++) {
-                    var pos = new Vector2Int(x, z);
+                    var pos = new Coord2(x, z);
                     var col = GetColumn(pos);
                     col.Render();
                 }
