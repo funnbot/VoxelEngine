@@ -35,7 +35,7 @@ namespace VoxelEngine {
             mesh.SetUVs(0, uvs);
 
             mesh.RecalculateNormals();
-            mesh.UploadMeshData(false);
+            mesh.UploadMeshData(true);
             return mesh;
         }
 

@@ -99,7 +99,10 @@ namespace VoxelEngine {
         public void SetBlock(Coord3 pos, Block block, bool update = true) {
             if (InRange(pos)) {
                 blocks[pos.x, pos.y, pos.z] = block;
-                if (update) UpdateNeighbors(pos);
+                if (update) {
+                    this.update = true;
+                    UpdateNeighbors(pos);
+                }
             } else {
                 pos = BlockToWorldPos(pos);
                 world.SetBlock(pos, block, false);
@@ -107,10 +110,11 @@ namespace VoxelEngine {
         }
 
         public void UpdateNeighbors(Coord3 changed) {
-            if (changed.InRange(0, Chunk.Size)) return;
+            if (changed.InRange(1, Chunk.Size - 1)) return;
+            FetchNeighbors();
             for (int i = 0; i < 6; i++) {
                 var pos = changed + Coord3.Directions[i];
-                if (!pos.InRange(-1, Chunk.Size + 1)) {
+                if (!pos.InRange(0, Chunk.Size)) {
                     Chunk n = neighbors[i];
                     if (n == null) continue;
                     n.update = true;
@@ -140,7 +144,11 @@ namespace VoxelEngine {
             if (block.data.meshType == BlockMeshType.Cube) {
                 for (int i = 0; i < 6; i++) {
 
-                    if (!CullFace(block, pos, i)) continue;
+                    var adjPos = Coord3.Directions[i] + pos;
+                    //var adjacent = InRange(adjPos) ? GetBlock(adjPos) :
+                    //    neighbors[dir]?.GetBlock(TransformChunkPos(adjPos, neighbors[dir].worldPosition));
+                    var adjacent = GetBlock(adjPos);
+                    if (!block.data.transparent && adjacent != null && !adjacent.data.transparent) continue;
 
                     int texIndex = TextureIndex(block.data.texIndices, i);
                     if (block.data.transparent) {
@@ -162,13 +170,9 @@ namespace VoxelEngine {
             else return inds[dir];
         }
 
-        private bool CullFace(Block block, Coord3 pos, int dir) {
-            if (block.data.transparent) return true;
-            var adjPos = pos + Coord3.Directions[dir];
-            var adjacent = InRange(adjPos) ? GetBlock(adjPos) :
-                neighbors[dir]?.GetBlock(TransformChunkPos(adjPos, neighbors[dir].worldPosition));
-            return adjacent != null && adjacent.data.transparent;
-        }
+        /* private bool CullFace(Block block, Coord3 pos, int dir) {
+
+        }*/
 
         private void FetchNeighbors() {
             neighbors = new Chunk[6];

@@ -247,12 +247,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   update: 0
   built: 0
-  BlockUVTileSize: 0
-  TransUVTileSize: 0
   BlockRend: {fileID: 1084847470203443670}
   TransRend: {fileID: 3516567553371414178}
   StandaloneBlocks: {fileID: 1440310447182342392}
   BlockCollider: {fileID: 747701715384285135}
   world: {fileID: 0}
-  position: {x: 0, y: 0, z: 0}
-  tst: []

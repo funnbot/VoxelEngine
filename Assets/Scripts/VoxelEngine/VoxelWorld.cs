@@ -115,7 +115,7 @@ namespace VoxelEngine {
         }
 
         void LoadSpawn() {
-            int size = 1;
+            int size = 8;
             for (int x = -size - 1; x <= size + 1; x++) {
                 for (int z = -size - 1; z <= size + 1; z++) {
                     var pos = new Coord2(x, z);

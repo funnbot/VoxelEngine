@@ -70,8 +70,6 @@ namespace VoxelEngine {
 
         #endregion equality
 
-        public static readonly Coord2[] Directions = { up, down, right, left };
-
         public static Coord2 zero { get => s_Zero; }
         public static Coord2 one { get => s_One; }
         public static Coord2 up { get => s_Up; }
@@ -85,6 +83,8 @@ namespace VoxelEngine {
         private static readonly Coord2 s_Down = new Coord2(0, -1);
         private static readonly Coord2 s_Right = new Coord2(1, 0);
         private static readonly Coord2 s_Left = new Coord2(-1, 0);
+
+        public static readonly Coord2[] Directions = { up, down, right, left };
     }
 
 }

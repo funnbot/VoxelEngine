@@ -23,7 +23,7 @@ namespace VoxelEngine.ProceduralGeneration {
             air = ResourceStore.Blocks["air"];
             stone = ResourceStore.Blocks["stone"];
             dirt = ResourceStore.Blocks["dirt"];
-            grass = ResourceStore.Blocks["iron_ore"];
+            grass = ResourceStore.Blocks["grass"];
             grass_decal = ResourceStore.Blocks["grass_decal"];
 
             ores = GetBlocksOfType(BlockType.Ore);

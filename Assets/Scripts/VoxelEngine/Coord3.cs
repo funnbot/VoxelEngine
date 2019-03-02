@@ -17,7 +17,7 @@ namespace VoxelEngine {
         }
 
         public Coord3 FloorDiv(int i) =>
-        new Coord3(Mathf.FloorToInt((float)x / i), Mathf.FloorToInt((float)y / i), Mathf.FloorToInt((float)z / i));
+        new Coord3(Mathf.FloorToInt((float) x / i), Mathf.FloorToInt((float) y / i), Mathf.FloorToInt((float) z / i));
 
         public bool InRange(int incLower, int excUpper) =>
         x >= incLower && x < excUpper && y >= incLower &&
@@ -110,8 +110,6 @@ namespace VoxelEngine {
 
         #endregion equality
 
-        public static readonly Coord3[] Directions = { up, down, right, left, forward, backward };
-
         public static Coord3 zero { get => s_Zero; }
         public static Coord3 one { get => s_One; }
         public static Coord3 up { get => s_Up; }
@@ -129,6 +127,8 @@ namespace VoxelEngine {
         private static readonly Coord3 s_Left = new Coord3(-1, 0, 0);
         private static readonly Coord3 s_Forward = new Coord3(0, 0, 1);
         private static readonly Coord3 s_Backward = new Coord3(0, 0, -1);
+
+        public static readonly Coord3[] Directions = { up, down, right, left, forward, backward };
     }
 
 }
