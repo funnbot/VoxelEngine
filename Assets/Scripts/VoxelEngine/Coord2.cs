@@ -46,6 +46,9 @@ namespace VoxelEngine {
         public static implicit operator Coord2(Vector2 v) =>
         new Coord2((int) v.x, (int) v.y);
 
+        public static implicit operator Coord2(Vector2Int v) =>
+        new Coord2(v.x, v.y);
+
         public static explicit operator Coord2(Coord3 c) =>
         new Coord2(c.x, c.z);
 
@@ -85,6 +88,7 @@ namespace VoxelEngine {
         private static readonly Coord2 s_Left = new Coord2(-1, 0);
 
         public static readonly Coord2[] Directions = { up, down, right, left };
+        public static readonly Coord2[] Corners = { up, one, right, zero };
     }
 
 }

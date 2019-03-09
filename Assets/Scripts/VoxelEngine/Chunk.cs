@@ -141,18 +141,22 @@ namespace VoxelEngine {
                 for (int i = 0; i < 6; i++) {
 
                     var adjPos = Coord3.Directions[i] + pos;
-                    //var adjacent = InRange(adjPos) ? GetBlock(adjPos) :
-                    //    neighbors[dir]?.GetBlock(TransformChunkPos(adjPos, neighbors[dir].worldPosition));
-                    var adjacent = GetBlock(adjPos);
+                    var adjacent = InRange(adjPos) ? GetBlock(adjPos) :
+                        neighbors[i]?.GetBlock(TransformChunkPos(adjPos, neighbors[i].worldPosition));
+                    //var adjacent = GetBlock(adjPos);
                     if (!block.data.transparent && adjacent != null && !adjacent.data.transparent) continue;
 
-                    int texIndex = TextureIndex(block.data.texIndices, i);
+                    var rot = block.rotation.IndexRotation(i);
+                    var face = block.rotation.FaceRotation(rot);
+
+                    int texIndex = TextureIndex(block.data.texIndices, rot);
+
                     if (block.data.transparent) {
-                        transMesh.AddQuad(i, pos, texIndex);
+                        transMesh.AddQuad(i, pos, face, texIndex);
                     } else {
-                        blockMesh.AddQuad(i, pos, texIndex);
+                        blockMesh.AddQuad(i, pos, face, texIndex);
                     }
-                    colliderMesh.AddQuad(i, pos, texIndex);
+                    colliderMesh.AddQuad(i, pos);
                 }
             } else if (block.data.meshType == BlockMeshType.Decal) {
                 var texIndex = TextureIndex(block.data.texIndices, 0);
@@ -176,15 +180,6 @@ namespace VoxelEngine {
                 var pos = position + Coord3.Directions[i];
                 neighbors[i] = world.GetChunk(pos);
             }
-        }
-
-        public static class Direction {
-            public static int Up = 0;
-            public static int Down = 1;
-            public static int Right = 2;
-            public static int Left = 3;
-            public static int Forward = 4;
-            public static int Backward = 5;
         }
     }
 

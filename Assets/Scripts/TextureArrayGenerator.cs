@@ -30,7 +30,7 @@ public class TextureArrayGenerator : MonoBehaviour {
     }
 
     void Awake() {
-        Generate();
+        if (gameObject.activeSelf) Generate();
     }
 }
 

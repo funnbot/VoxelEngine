@@ -15,17 +15,22 @@ namespace VoxelEngine {
             uvs = new List<Vector3>();
         }
 
-        public void AddQuad(int direction, Coord3 position, int textureIndex) {
+        public void AddQuad(int direction, Coord3 position, int faceRotation, int textureIndex) {
             AddQuadVerts(direction, position);
             AddQuadTris();
-            AddQuadUV(textureIndex);
+            AddQuadUV(textureIndex, faceRotation);
+        }
+
+        public void AddQuad(int direction, Coord3 position) {
+            AddQuadVerts(direction, position);
+            AddQuadTris();
         }
 
         public void AddDecal(Coord3 position, int textureIndex) {
             AddDecalVerts(position);
             AddDecalTris();
             for (int i = 0; i < 4; i++)
-                AddQuadUV(textureIndex);
+                AddQuadUV(textureIndex, 0);
         }
 
         public Mesh ToMesh() {
@@ -55,11 +60,15 @@ namespace VoxelEngine {
         private const float F = 0.5f,
             T = 0.3535f;
 
-        private void AddQuadUV(int ind) {
-            uvs.Add(new Vector3(0, 1, ind));
-            uvs.Add(new Vector3(1, 1, ind));
-            uvs.Add(new Vector3(1, 0, ind));
-            uvs.Add(new Vector3(0, 0, ind));
+        private void AddQuadUV(int ind, int rot) {
+            Coord2 a = Coord2.Corners[(rot + 4) % 4],
+                b = Coord2.Corners[(rot + 5) % 4],
+                c = Coord2.Corners[(rot + 6) % 4],
+                d = Coord2.Corners[(rot + 7) % 4];
+            uvs.Add(new Vector3(a.x, a.y, ind));
+            uvs.Add(new Vector3(b.x, b.y, ind));
+            uvs.Add(new Vector3(c.x, c.y, ind));
+            uvs.Add(new Vector3(d.x, d.y, ind));
         }
 
         private void AddQuadVerts(int dir, Coord3 pos) {

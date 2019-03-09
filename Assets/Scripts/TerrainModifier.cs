@@ -6,6 +6,8 @@ using VoxelEngine;
 public class TerrainModifier : MonoBehaviour {
     public VoxelWorld world;
 
+    public Vector3Int rotation;
+
     BlockData air;
     string[] blocks = {
         "stone",
@@ -36,9 +38,9 @@ public class TerrainModifier : MonoBehaviour {
             if (Physics.Raycast(ray, out hit, 10f)) {
                 if (!Input.GetKey(KeyCode.LeftAlt)) {
                     var block = ResourceStore.Blocks[blocks[selected]];
-                    world.SetBlock(hit, new Block(block), false);
+                    world.SetBlock(hit, new Block(block, Coord3.zero, (Coord3)rotation), false);
                 } else {
-                    world.SetBlock(hit, new Block(air));
+                    world.SetBlock(hit, new Block(air, Coord3.zero, (Coord3)rotation));
                 }
             }
         }
