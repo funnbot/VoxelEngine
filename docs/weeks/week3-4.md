@@ -9,6 +9,7 @@
 ### Challenges
 - How should rotations be stored and handled
 > A Coord3 thats 0-3 for each, x y z just like eulerAngles
+
 ```csharp
 private int RotateInt(int dir, int rot, int i) {
     int[] xRot = { FaceDir.up, FaceDir.forward, FaceDir.down, FaceDir.backward }; // Every possible rotation of the X axis. 
@@ -34,6 +35,7 @@ private int RotateInt(int dir, int rot, int i) {
     return dir;
 }
 ```
+
 > So far it still is not functioning, but it is closer to the goal.
 > This current implementation defines 3 rotations arrays, which are basically the 4 possible directions of an axis, based on which axis im rotating around I then find the index of the current rotation in that array, and shift it along the array based on the rotation amount, this is a conversion between my Vector3 rotation value, and the 0 - 5 directional values for a cube. The returned value is a index of the texture array. So, when generating the 0-upwards face, it runs that through this rotation to find the texture that should be drawn there. 
 > Along with index rotation there is also face rotation, which is the clockwise rotation of the UVs to rotate the texture on a face, this is definied by the 2 faces that are not rotated when rotating around an axis, for the x axis this would be the left and right faces, they rotate forward, but do not move texture indices. This is fairly simply as I simply return the rotation value if the in direction is one of the non moving sides.
