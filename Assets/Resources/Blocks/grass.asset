@@ -17,8 +17,15 @@ MonoBehaviour:
   meshType: 0
   customMesh: {fileID: 0}
   behaviourType: grass
-  texIndices: 010000000300000002000000
   placementType: 0
   blockType: 0
   spawnFrequency: 0
   spawnDensity: 0
+  textureIndices: 030000000300000002000000010000000300000003000000
+  textures:
+  - {fileID: 11400000, guid: 60541f8cfbc69418a812ce2570a73233, type: 2}
+  - {fileID: 11400000, guid: 60541f8cfbc69418a812ce2570a73233, type: 2}
+  - {fileID: 11400000, guid: 90a43f86e10af4b869c1b8029b047c05, type: 2}
+  - {fileID: 11400000, guid: 513763eea79d24f2aadf1cde70404320, type: 2}
+  - {fileID: 11400000, guid: 60541f8cfbc69418a812ce2570a73233, type: 2}
+  - {fileID: 11400000, guid: 60541f8cfbc69418a812ce2570a73233, type: 2}

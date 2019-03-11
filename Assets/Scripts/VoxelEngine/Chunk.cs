@@ -146,33 +146,57 @@ namespace VoxelEngine {
                     //var adjacent = GetBlock(adjPos);
                     if (!block.data.transparent && adjacent != null && !adjacent.data.transparent) continue;
 
-                    var rot = block.rotation.IndexRotation(i);
-                    var face = block.rotation.FaceRotation(rot);
+                    var rot = Rotate(i, block.rotation);
 
-                    int texIndex = TextureIndex(block.data.texIndices, rot);
+                    int texIndex = block.data.textureIndices[rot.index];
 
                     if (block.data.transparent) {
-                        transMesh.AddQuad(i, pos, face, texIndex);
+                        transMesh.AddQuad(i, pos, rot.face, texIndex);
                     } else {
-                        blockMesh.AddQuad(i, pos, face, texIndex);
+                        blockMesh.AddQuad(i, pos, rot.face, texIndex);
                     }
                     colliderMesh.AddQuad(i, pos);
                 }
             } else if (block.data.meshType == BlockMeshType.Decal) {
-                var texIndex = TextureIndex(block.data.texIndices, 0);
+                var texIndex = block.data.textureIndices[0];
                 transMesh.AddDecal(pos, texIndex);
             }
         }
 
-        private int TextureIndex(int[] inds, int dir) {
-            if (inds.Length == 1) return inds[0];
-            else if (inds.Length == 3) return inds[Mathf.Min(dir, 2)];
-            else return inds[dir];
+        private static readonly int[] zRot = { Block.Face.top, Block.Face.left, Block.Face.bottom, Block.Face.right },
+            yRot = { Block.Face.front, Block.Face.right, Block.Face.back, Block.Face.left },
+            xRot = { Block.Face.front, Block.Face.top, Block.Face.back, Block.Face.bottom };
+
+        private static readonly int[][] zFace = { new [] { 3, 1, 3, 3, 3, 3 }, new [] { 2, 2, 2, 2, 2, 2, }, new [] { 1, 3, 1, 1, 1, 1 } },
+            yFace = { new [] { 0, 0, 3, 1, 0, 0 }, new [] { 0, 0, 2, 2, 0, 0 }, new [] { 0, 0, 1, 3, 0, 0, } },
+            xFace = { new [] { 0, 2, 0, 2, 1, 3 }, new [] { 2, 2, 0, 2, 2, 2 }, new [] { 0, 2, 2, 0, 3, 1 } };
+
+        public static(int index, int face) Rotate(int dir, Coord3 rot) {
+            rot = rot % 4;
+            int frot = 0;
+            if (rot.z != 0) {
+                if (dir != Block.Face.front && dir != Block.Face.back) {
+                    var ind = zRot.IndexOf(dir);
+                    dir = zRot[(rot.z + ind + 4) % 4];
+                }
+                frot += zFace[rot.z < 0 ? 3 + rot.z : rot.z - 1][dir];
+            }
+            if (rot.y != 0) {
+                if (dir != Block.Face.top && dir != Block.Face.bottom) {
+                    var ind = yRot.IndexOf(dir);
+                    dir = yRot[(rot.y + ind + 4) % 4];
+                }
+                frot += yFace[rot.y < 0 ? 3 + rot.y : rot.y - 1][dir];
+            }
+            if (rot.x != 0) {
+                if (dir != Block.Face.right && dir != Block.Face.left) {
+                    var ind = xRot.IndexOf(dir);
+                    dir = xRot[(rot.x + ind + 4) % 4];
+                }
+                frot += xFace[rot.x < 0 ? 3 + rot.x : rot.x - 1][dir];
+            }
+            return (index: dir, face: frot);
         }
-
-        /* private bool CullFace(Block block, Coord3 pos, int dir) {
-
-        }*/
 
         private void FetchNeighbors() {
             neighbors = new Chunk[6];
@@ -181,6 +205,7 @@ namespace VoxelEngine {
                 neighbors[i] = world.GetChunk(pos);
             }
         }
+
     }
 
 }

@@ -3,6 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public static class Extensions {
+    public static int IndexOf(this int[] arr, int value) {
+        int len = arr.Length;
+        for (int i = 0; i < len; i++) {
+            if (arr[i] == value) return i;
+        }
+        return -1;
+    }
+
     public static Vector3 Add(this Vector3 v1, Vector3 v2) {
         v1.x += v2.x;
         v1.y += v2.y;

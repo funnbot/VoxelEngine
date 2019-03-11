@@ -74,42 +74,43 @@ namespace VoxelEngine {
         private void AddQuadVerts(int dir, Coord3 pos) {
             float x = pos.x, y = pos.y, z = pos.z;
             switch (dir) {
-                case 0:
-                    verts.Add(new Vector3(x - F, y + F, z - F));
-                    verts.Add(new Vector3(x + F, y + F, z - F));
-                    verts.Add(new Vector3(x + F, y + F, z + F));
-                    verts.Add(new Vector3(x - F, y + F, z + F));
-                    break;
-                case 1:
-                    verts.Add(new Vector3(x - F, y - F, z + F));
-                    verts.Add(new Vector3(x + F, y - F, z + F));
-                    verts.Add(new Vector3(x + F, y - F, z - F));
-                    verts.Add(new Vector3(x - F, y - F, z - F));
-                    break;
-                case 2:
-                    verts.Add(new Vector3(x + F, y + F, z + F));
-                    verts.Add(new Vector3(x + F, y + F, z - F));
-                    verts.Add(new Vector3(x + F, y - F, z - F));
-                    verts.Add(new Vector3(x + F, y - F, z + F));
-                    break;
-                case 3:
-                    verts.Add(new Vector3(x - F, y + F, z - F));
-                    verts.Add(new Vector3(x - F, y + F, z + F));
-                    verts.Add(new Vector3(x - F, y - F, z + F));
-                    verts.Add(new Vector3(x - F, y - F, z - F));
-                    break;
-                case 4:
+                case Block.Face.front:
                     verts.Add(new Vector3(x - F, y + F, z + F));
                     verts.Add(new Vector3(x + F, y + F, z + F));
                     verts.Add(new Vector3(x + F, y - F, z + F));
                     verts.Add(new Vector3(x - F, y - F, z + F));
                     break;
-                case 5:
+                case Block.Face.back:
                     verts.Add(new Vector3(x + F, y + F, z - F));
                     verts.Add(new Vector3(x - F, y + F, z - F));
                     verts.Add(new Vector3(x - F, y - F, z - F));
                     verts.Add(new Vector3(x + F, y - F, z - F));
                     break;
+                case Block.Face.top:
+                    verts.Add(new Vector3(x - F, y + F, z - F));
+                    verts.Add(new Vector3(x + F, y + F, z - F));
+                    verts.Add(new Vector3(x + F, y + F, z + F));
+                    verts.Add(new Vector3(x - F, y + F, z + F));
+                    break;
+                case Block.Face.bottom:
+                    verts.Add(new Vector3(x - F, y - F, z + F));
+                    verts.Add(new Vector3(x + F, y - F, z + F));
+                    verts.Add(new Vector3(x + F, y - F, z - F));
+                    verts.Add(new Vector3(x - F, y - F, z - F));
+                    break;
+                case Block.Face.right:
+                    verts.Add(new Vector3(x + F, y + F, z + F));
+                    verts.Add(new Vector3(x + F, y + F, z - F));
+                    verts.Add(new Vector3(x + F, y - F, z - F));
+                    verts.Add(new Vector3(x + F, y - F, z + F));
+                    break;
+                case Block.Face.left:
+                    verts.Add(new Vector3(x - F, y + F, z - F));
+                    verts.Add(new Vector3(x - F, y + F, z + F));
+                    verts.Add(new Vector3(x - F, y - F, z + F));
+                    verts.Add(new Vector3(x - F, y - F, z - F));
+                    break;
+
             }
         }
 

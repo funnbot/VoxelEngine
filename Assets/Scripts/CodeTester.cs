@@ -14,7 +14,7 @@ public class CodeTester : MonoBehaviour {
         Coord3 rot = new Coord3(1, 1, 0);
 
         for (int i = 0; i < 6; i++) {
-            o += rot.IndexRotation(i) + " ";
+            o += Chunk.Rotate(i, rot) + " ";
         }
         return o;
     }

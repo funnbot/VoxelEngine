@@ -36,11 +36,16 @@ public class TerrainModifier : MonoBehaviour {
             RaycastHit hit;
             Ray ray = new Ray(transform.position, transform.forward);
             if (Physics.Raycast(ray, out hit, 10f)) {
+                int y = -Mathf.RoundToInt(transform.localEulerAngles.y / 90f);
+                var rot = new Coord3(1, y, 0);
+                // rot = (Coord3)rotation;
+                Debug.Log(rot);
                 if (!Input.GetKey(KeyCode.LeftAlt)) {
                     var block = ResourceStore.Blocks[blocks[selected]];
-                    world.SetBlock(hit, new Block(block, Coord3.zero, (Coord3)rotation), false);
+
+                    world.SetBlock(hit, new Block(block, Coord3.zero, rot), false);
                 } else {
-                    world.SetBlock(hit, new Block(air, Coord3.zero, (Coord3)rotation));
+                    world.SetBlock(hit, new Block(air, Coord3.zero, rot));
                 }
             }
         }

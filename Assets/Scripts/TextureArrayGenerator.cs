@@ -10,6 +10,8 @@ public class TextureArrayGenerator : MonoBehaviour {
     public Texture2D[] textures;
     public bool alpha;
 
+    public TextureIndex texture;
+
     public void Generate() {
         if (textures.Length <= 0) return;
 

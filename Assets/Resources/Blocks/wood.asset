@@ -17,8 +17,15 @@ MonoBehaviour:
   meshType: 0
   customMesh: {fileID: 0}
   behaviourType: 
-  texIndices: 040000000400000005000000
   placementType: 0
   blockType: 0
   spawnFrequency: 0
   spawnDensity: 0
+  textureIndices: 040000000400000005000000050000000400000004000000
+  textures:
+  - {fileID: 11400000, guid: 790e51ce2bc33487f82ecd1d825e6a0f, type: 2}
+  - {fileID: 11400000, guid: 790e51ce2bc33487f82ecd1d825e6a0f, type: 2}
+  - {fileID: 11400000, guid: bbe18dae12430463c9abebc5deea87b8, type: 2}
+  - {fileID: 11400000, guid: bbe18dae12430463c9abebc5deea87b8, type: 2}
+  - {fileID: 11400000, guid: 790e51ce2bc33487f82ecd1d825e6a0f, type: 2}
+  - {fileID: 11400000, guid: 790e51ce2bc33487f82ecd1d825e6a0f, type: 2}
