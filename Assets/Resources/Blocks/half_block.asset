@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba0e9bb57a82d4ebc98580cb3c739582, type: 3}
   m_Name: half_block
   m_EditorClassIdentifier: 
-  transparent: 0
+  transparent: 1
   collision: 0
   meshType: 3
   prefab: {fileID: 5385458201332875525, guid: 76e53cf8ccae04d5a8a3b37001cde073, type: 3}
-  behaviour: 
+  behaviour: moving
+  dataType: 
   placementType: 0
   blockType: 1
   spawnFrequency: 0

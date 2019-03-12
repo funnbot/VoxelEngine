@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace VoxelEngine {
-    public class BlockBehaviour<T> : IBlockBehaviour where T : Block {
+    public class BlockBehaviour {
         protected VoxelWorld world;
-        protected Dictionary<Coord3, T> blocks;
+        protected Dictionary<Coord3, Block> blocks;
 
-        public BlockBehaviour<T> Awake(VoxelWorld world) {
+        public BlockBehaviour Awake(VoxelWorld world) {
             this.world = world;
-            blocks = new Dictionary<Coord3, T>();
+            blocks = new Dictionary<Coord3, Block>();
+            AttachEvents();
             return this;
         }
 
-        public virtual void Add(Coord3 pos, T block) {
+        public virtual void Add(Coord3 pos, Block block) {
             blocks.Add(pos, block);
         }
 
@@ -34,16 +35,12 @@ namespace VoxelEngine {
             }
         }
 
-        protected virtual void UpdateBlock(T block) {
+        protected virtual void UpdateBlock(Block block) {
 
         }
 
         public virtual void AttachEvents() {
             world.OnTick += OnTick;
         }
-    }
-
-    public class IBlockBehaviour { 
-
     }
 }

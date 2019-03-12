@@ -20,15 +20,13 @@ namespace VoxelEngine {
         private int tick;
 
         public ChunkColumnPool columnPool;
-        //  public Dictionary<Coord3, Chunk> chunks;
         public Dictionary<Coord2, ChunkColumn> columns;
-        public Dictionary<string, IBlockBehaviour> behaviours;
+        public Dictionary<string, BlockBehaviour> behaviours;
 
         public delegate void Tick();
         public event Tick OnTick;
 
         void Awake() {
-            // chunks = new Dictionary<Coord3, Chunk>();
             columns = new Dictionary<Coord2, ChunkColumn>();
         }
 
@@ -49,32 +47,35 @@ namespace VoxelEngine {
         public Block RegisterBlock(Block block, Coord3 position, Chunk chunk) {
             block.position = position;
 
-            if (block.data.behaviour != "") {
-                BlockBehaviour<Block> bb;
-                if (GetBehaviour(block.data.behaviour, out bb)) {
-                    bb.Add(position, block);
-                }
-            }
-
+            Block outBlock = block;
             if (block.data.meshType == BlockMeshType.Custom) {
                 var go = Instantiate(block.data.prefab, position, Quaternion.Euler(block.rotation * 90), chunk.StandaloneBlocks);
+                go.name = block.data.name + " " + block.position;
                 var sb = new StandaloneBlock(block);
                 sb.gameObject = go;
-                return sb;
+                outBlock = sb;
             }
             if (block.data.dataType != "") {
                 var t = System.Type.GetType(block.data.dataType, false, true);
-                if (t != null) return (Block) System.Convert.ChangeType(block, t);
+                if (t != null) outBlock = (Block) System.Convert.ChangeType(block, t);
             }
-            return block;
+
+            if (block.data.behaviour != "") {
+                BlockBehaviour bb;
+                if (behaviours.TryGetValue(block.data.behaviour, out bb)) {
+                    bb.Add(position, outBlock);
+                }
+            }
+
+            return outBlock;
         }
 
         public void UnregisterBlock(Block block) {
             if (block == null) return;
 
             if (block.data.behaviour != "") {
-                BlockBehaviour<Block> bb;
-                if (GetBehaviour(block.data.behaviour, out bb)) {
+                BlockBehaviour bb;
+                if (behaviours.TryGetValue(block.data.behaviour, out bb)) {
                     bb.Remove(block.position);
                 }
             }
@@ -99,8 +100,7 @@ namespace VoxelEngine {
 
             foreach (var bb in behaviours) {
                 foreach (var c in col.chunks) {
-                    var behaviour = (BlockBehaviour<Block>) bb.Value;
-                    behaviour.UnloadChunk(c.position);
+                    bb.Value.UnloadChunk(c.position);
                 }
             }
 
@@ -154,21 +154,9 @@ namespace VoxelEngine {
             Coord3.FloorToInt(point + Vector3.one * 0.5f + (adjacent ? -Vector3.Max(normal, Vector3.zero) : Vector3.Min(normal, Vector3.zero)));
 
         void LoadBehaviours() {
-            behaviours = new Dictionary<string, IBlockBehaviour>();
+            behaviours = new Dictionary<string, BlockBehaviour>();
 
             behaviours.Add(MovingBehaviour.name, new MovingBehaviour().Awake(this));
-        }
-
-        bool GetBehaviour(string name, out BlockBehaviour<Block> bb) {
-            IBlockBehaviour genB;
-            if (behaviours.TryGetValue(name, out genB)) {
-                Debug.Log(genB.GetType().IsSubclassOf(typeof(BlockBehaviour<StandaloneBlock>)));
-                var b = (BlockBehaviour<Block>)genB;
-                bb = b;
-                return true;
-            }
-            bb = null;
-            return false;
         }
 
         void LoadSpawn() {
