@@ -20,7 +20,11 @@ namespace VoxelEngine {
             rotation = copy.rotation;
         }
 
-        public Block() { }
+        public Block ConvertTo(System.Type type) {
+            if (type == typeof(HelloBlock)) return new HelloBlock(this);
+
+            throw new System.InvalidCastException($"Converting type \"{typeof(Block)}\" to type \"{type.Name}\" is not supported.");
+        }
     }
 
     public static class BlockFace {

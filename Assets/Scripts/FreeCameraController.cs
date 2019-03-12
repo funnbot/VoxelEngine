@@ -16,9 +16,9 @@ public class FreeCameraController : MonoBehaviour {
 
     void Update() {
         var speed = Input.GetKey(KeyCode.LeftShift) ? fastMoveSpeed : moveSpeed;
-        var inputY = (Input.GetKey(KeyCode.E) ? 1 : 0) - (Input.GetKey(KeyCode.Q) ? 1 : 0);
+        // var inputY = (Input.GetKey(KeyCode.E) ? 1 : 0) - (Input.GetKey(KeyCode.Q) ? 1 : 0);
         mouse += new Vector2(-Input.GetAxisRaw("Mouse Y"), Input.GetAxisRaw("Mouse X")) * lookSpeed;
-        input = new Vector3(Input.GetAxisRaw("Horizontal"), inputY, Input.GetAxisRaw("Vertical")) * speed;
+        input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")) * speed;
     }
 
     void LateUpdate() {

@@ -57,7 +57,7 @@ namespace VoxelEngine {
             }
             if (block.data.dataType != "") {
                 var t = System.Type.GetType(block.data.dataType, false, true);
-                if (t != null) outBlock = (Block) System.Convert.ChangeType(block, t);
+                if (t != null) outBlock = block.ConvertTo(t);
             }
 
             if (block.data.behaviour != "") {

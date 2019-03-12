@@ -1,14 +1,18 @@
 ﻿#if UNITY_EDITOR
 
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
 public class TextureArrayWizard : ScriptableWizard {
-    public TextureIndex[] textures;
+    public string folder;
 
     void OnWizardCreate() {
+        var textures = Resources.LoadAll<TextureIndex>("Textures/" + folder);
+        Debug.Log(textures.Length);
+
         if (textures.Length == 0) return;
-        string path = EditorUtility.SaveFilePanelInProject("Save Texture Array", "Texture Array", "asset", "Save Texture Array");
+        string path = EditorUtility.SaveFilePanelInProject("Save Texture Array", "Texture Array", "asset", "Save Texture Array", "Resources/Textures/TextureArrays");
         if (path.Length == 0) return;
         var t = textures[0].texture;
         var texArray = new Texture2DArray(t.width, t.height, textures.Length, t.format, t.mipmapCount > 1);

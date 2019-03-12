@@ -14,7 +14,7 @@ public class TerrainModifier : MonoBehaviour {
         "grass",
         "leaf",
         "wood",
-        "half_block"
+        "hello"
     };
 
     int selected;
@@ -49,6 +49,23 @@ public class TerrainModifier : MonoBehaviour {
                     world.SetBlock(hit, new Block(air, rot));
                 }
             }
+        } else if (Input.GetMouseButtonDown(1)) {
+            RaycastHit hit;
+            Ray ray = new Ray(transform.position, transform.forward);
+            if (Physics.Raycast(ray, out hit, 10f)) {
+                var block = world.GetBlock(hit, true);
+                if (block is IInterfaceable)
+                    activeGUI = (IInterfaceable) block;
+            }
+        }
+    }
+
+    IInterfaceable activeGUI;
+
+    void OnGUI() {
+        if (activeGUI != null) {
+            if (!activeGUI.DrawGUI())
+                activeGUI = null;
         }
     }
 }
