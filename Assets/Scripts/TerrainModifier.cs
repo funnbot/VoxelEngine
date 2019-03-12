@@ -13,7 +13,8 @@ public class TerrainModifier : MonoBehaviour {
         "stone",
         "grass",
         "leaf",
-        "wood"
+        "wood",
+        "half_block"
     };
 
     int selected;
@@ -43,9 +44,9 @@ public class TerrainModifier : MonoBehaviour {
                 if (!Input.GetKey(KeyCode.LeftAlt)) {
                     var block = ResourceStore.Blocks[blocks[selected]];
 
-                    world.SetBlock(hit, new Block(block, Coord3.zero, rot), false);
+                    world.SetBlock(hit, new Block(block, rot), false);
                 } else {
-                    world.SetBlock(hit, new Block(air, Coord3.zero, rot));
+                    world.SetBlock(hit, new Block(air, rot));
                 }
             }
         }

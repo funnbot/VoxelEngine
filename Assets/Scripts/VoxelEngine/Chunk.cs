@@ -94,7 +94,10 @@ namespace VoxelEngine {
         }
         public void SetBlock(Coord3 pos, Block block, bool update = true) {
             if (InRange(pos)) {
-                blocks[pos.x, pos.y, pos.z] = block;
+                world.UnregisterBlock(blocks[pos.x, pos.y, pos.z]);
+                blocks[pos.x, pos.y, pos.z] =
+                    world.RegisterBlock(block, pos.ToWorldPos(worldPosition), this);
+
                 if (update) {
                     this.update = true;
                     UpdateNeighbors(pos);
@@ -163,9 +166,9 @@ namespace VoxelEngine {
             }
         }
 
-        private static readonly int[] zRot = { Block.Face.top, Block.Face.left, Block.Face.bottom, Block.Face.right },
-            yRot = { Block.Face.front, Block.Face.right, Block.Face.back, Block.Face.left },
-            xRot = { Block.Face.front, Block.Face.top, Block.Face.back, Block.Face.bottom };
+        private static readonly int[] zRot = { BlockFace.top, BlockFace.left, BlockFace.bottom, BlockFace.right },
+            yRot = { BlockFace.front, BlockFace.right, BlockFace.back, BlockFace.left },
+            xRot = { BlockFace.front, BlockFace.top, BlockFace.back, BlockFace.bottom };
 
         private static readonly int[][] zFace = { new [] { 3, 1, 3, 3, 3, 3 }, new [] { 2, 2, 2, 2, 2, 2, }, new [] { 1, 3, 1, 1, 1, 1 } },
             yFace = { new [] { 0, 0, 3, 1, 0, 0 }, new [] { 0, 0, 2, 2, 0, 0 }, new [] { 0, 0, 1, 3, 0, 0, } },
@@ -175,21 +178,21 @@ namespace VoxelEngine {
             rot = rot % 4;
             int frot = 0;
             if (rot.z != 0) {
-                if (dir != Block.Face.front && dir != Block.Face.back) {
+                if (dir != BlockFace.front && dir != BlockFace.back) {
                     var ind = zRot.IndexOf(dir);
                     dir = zRot[(rot.z + ind + 4) % 4];
                 }
                 frot += zFace[rot.z < 0 ? 3 + rot.z : rot.z - 1][dir];
             }
             if (rot.y != 0) {
-                if (dir != Block.Face.top && dir != Block.Face.bottom) {
+                if (dir != BlockFace.top && dir != BlockFace.bottom) {
                     var ind = yRot.IndexOf(dir);
                     dir = yRot[(rot.y + ind + 4) % 4];
                 }
                 frot += yFace[rot.y < 0 ? 3 + rot.y : rot.y - 1][dir];
             }
             if (rot.x != 0) {
-                if (dir != Block.Face.right && dir != Block.Face.left) {
+                if (dir != BlockFace.right && dir != BlockFace.left) {
                     var ind = xRot.IndexOf(dir);
                     dir = xRot[(rot.x + ind + 4) % 4];
                 }

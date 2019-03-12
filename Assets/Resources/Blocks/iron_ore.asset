@@ -15,10 +15,17 @@ MonoBehaviour:
   transparent: 0
   collision: 1
   meshType: 0
-  customMesh: {fileID: 0}
-  behaviourType: 
-  texIndices: 06000000
+  prefab: {fileID: 0}
+  behaviour: 
   placementType: 0
   blockType: 2
   spawnFrequency: 0.01
   spawnDensity: 10
+  textureIndices: 
+  textures:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}

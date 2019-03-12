@@ -15,8 +15,8 @@ MonoBehaviour:
   transparent: 0
   collision: 0
   meshType: 0
-  customMesh: {fileID: 0}
-  behaviourType: grass
+  prefab: {fileID: 0}
+  behaviour: 
   placementType: 0
   blockType: 0
   spawnFrequency: 0

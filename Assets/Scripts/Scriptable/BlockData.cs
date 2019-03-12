@@ -12,10 +12,12 @@ namespace VoxelEngine {
         public bool transparent;
         public bool collision;
         public BlockMeshType meshType;
-        public Mesh customMesh;
-        public string behaviourType;
+        [DrawIf("meshType", BlockMeshType.Custom)]
+        public GameObject prefab;
+        public string behaviour;
+        public string dataType;
 
-        public BlockPlacingType placementType;
+        public BlockPlacingMode placementType;
         public BlockType blockType;
 
         [DrawIf("blockType", BlockType.Ore)]
@@ -42,7 +44,7 @@ namespace VoxelEngine {
         Ore
     }
 
-    public enum BlockPlacingType {
+    public enum BlockPlacingMode {
         Zero,
         RotationalDirectional,
         RotationalInvertDirectional,

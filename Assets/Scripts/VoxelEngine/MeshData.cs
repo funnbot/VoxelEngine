@@ -74,37 +74,37 @@ namespace VoxelEngine {
         private void AddQuadVerts(int dir, Coord3 pos) {
             float x = pos.x, y = pos.y, z = pos.z;
             switch (dir) {
-                case Block.Face.front:
+                case BlockFace.front:
                     verts.Add(new Vector3(x - F, y + F, z + F));
                     verts.Add(new Vector3(x + F, y + F, z + F));
                     verts.Add(new Vector3(x + F, y - F, z + F));
                     verts.Add(new Vector3(x - F, y - F, z + F));
                     break;
-                case Block.Face.back:
+                case BlockFace.back:
                     verts.Add(new Vector3(x + F, y + F, z - F));
                     verts.Add(new Vector3(x - F, y + F, z - F));
                     verts.Add(new Vector3(x - F, y - F, z - F));
                     verts.Add(new Vector3(x + F, y - F, z - F));
                     break;
-                case Block.Face.top:
+                case BlockFace.top:
                     verts.Add(new Vector3(x - F, y + F, z - F));
                     verts.Add(new Vector3(x + F, y + F, z - F));
                     verts.Add(new Vector3(x + F, y + F, z + F));
                     verts.Add(new Vector3(x - F, y + F, z + F));
                     break;
-                case Block.Face.bottom:
+                case BlockFace.bottom:
                     verts.Add(new Vector3(x - F, y - F, z + F));
                     verts.Add(new Vector3(x + F, y - F, z + F));
                     verts.Add(new Vector3(x + F, y - F, z - F));
                     verts.Add(new Vector3(x - F, y - F, z - F));
                     break;
-                case Block.Face.right:
+                case BlockFace.right:
                     verts.Add(new Vector3(x + F, y + F, z + F));
                     verts.Add(new Vector3(x + F, y + F, z - F));
                     verts.Add(new Vector3(x + F, y - F, z - F));
                     verts.Add(new Vector3(x + F, y - F, z + F));
                     break;
-                case Block.Face.left:
+                case BlockFace.left:
                     verts.Add(new Vector3(x - F, y + F, z - F));
                     verts.Add(new Vector3(x - F, y + F, z + F));
                     verts.Add(new Vector3(x - F, y - F, z + F));

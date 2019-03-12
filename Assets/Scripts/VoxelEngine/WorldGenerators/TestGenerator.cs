@@ -22,12 +22,6 @@ namespace VoxelEngine.ProceduralGeneration {
                 pos = chunk.BlockToWorldPos(localPos);
 
                 SetBlock(chunk, localPos, air);
-
-                if (localPos == new Coord3(0, 0, 0)) {
-                    Coord3 rot = new Coord3(y % 5, 0, 0);
-                    var block = new Block(wood, pos, rot);
-                    SetBlock(chunk, localPos, block);
-                }
             }
         }
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace VoxelEngine {
-    public class BlockBehaviour<T> where T : Block {
+    public class BlockBehaviour<T> : IBlockBehaviour where T : Block {
         protected VoxelWorld world;
         protected Dictionary<Coord3, T> blocks;
 
@@ -21,23 +21,29 @@ namespace VoxelEngine {
             blocks.Remove(pos);
         }
 
-        public virtual void UnloadChunk(Coord3 chunkPos) {
+        public void UnloadChunk(Coord3 chunkPos) {
             foreach (var block in blocks) {
                 var pos = world.BlockToChunkPos(block.Value.position);
                 if (chunkPos == pos) Remove(block.Value.position);
             }
         }
 
-        public virtual void OnTick() {
+        protected virtual void OnTick() {
+            foreach (var block in blocks) {
+                UpdateBlock(block.Value);
+            }
+        }
+
+        protected virtual void UpdateBlock(T block) {
 
         }
 
-        public virtual void AttachToEvents() {
+        public virtual void AttachEvents() {
             world.OnTick += OnTick;
         }
     }
 
-    public class FenceBlockBehaviour<T> {
+    public class IBlockBehaviour { 
 
     }
 }
