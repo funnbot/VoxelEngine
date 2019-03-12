@@ -17,6 +17,7 @@ MonoBehaviour:
   meshType: 0
   prefab: {fileID: 0}
   behaviour: 
+  dataType: 
   placementType: 0
   blockType: 0
   spawnFrequency: 0

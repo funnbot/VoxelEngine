@@ -17,13 +17,14 @@ MonoBehaviour:
   meshType: 1
   prefab: {fileID: 0}
   behaviour: 
+  dataType: 
   placementType: 0
   blockType: 1
   spawnFrequency: 0
   spawnDensity: 0
-  textureIndices: 
+  textureIndices: 000000000000000000000000000000000000000000000000
   textures:
-  - {fileID: 0}
+  - {fileID: 11400000, guid: de21e8628ba3a427aae56bceb1f3eae2, type: 2}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}

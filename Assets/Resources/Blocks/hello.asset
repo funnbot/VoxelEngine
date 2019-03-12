@@ -22,11 +22,11 @@ MonoBehaviour:
   blockType: 0
   spawnFrequency: 0
   spawnDensity: 0
-  textureIndices: 
+  textureIndices: 070000000700000007000000070000000700000007000000
   textures:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 1ce187e62549e4ca580f14e396a4f780, type: 2}
+  - {fileID: 11400000, guid: 1ce187e62549e4ca580f14e396a4f780, type: 2}
+  - {fileID: 11400000, guid: 1ce187e62549e4ca580f14e396a4f780, type: 2}
+  - {fileID: 11400000, guid: 1ce187e62549e4ca580f14e396a4f780, type: 2}
+  - {fileID: 11400000, guid: 1ce187e62549e4ca580f14e396a4f780, type: 2}
+  - {fileID: 11400000, guid: 1ce187e62549e4ca580f14e396a4f780, type: 2}

@@ -17,15 +17,16 @@ MonoBehaviour:
   meshType: 0
   prefab: {fileID: 0}
   behaviour: 
+  dataType: 
   placementType: 0
   blockType: 2
   spawnFrequency: 0.01
   spawnDensity: 10
-  textureIndices: 
+  textureIndices: 060000000600000006000000060000000600000006000000
   textures:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 3f00fe4a3662c40eebf9363fa5dc6ab5, type: 2}
+  - {fileID: 11400000, guid: 3f00fe4a3662c40eebf9363fa5dc6ab5, type: 2}
+  - {fileID: 11400000, guid: 3f00fe4a3662c40eebf9363fa5dc6ab5, type: 2}
+  - {fileID: 11400000, guid: 3f00fe4a3662c40eebf9363fa5dc6ab5, type: 2}
+  - {fileID: 11400000, guid: 3f00fe4a3662c40eebf9363fa5dc6ab5, type: 2}
+  - {fileID: 11400000, guid: 3f00fe4a3662c40eebf9363fa5dc6ab5, type: 2}

@@ -61,9 +61,6 @@ namespace VoxelEngine {
 
         public override void OnInspectorGUI() {
             base.OnInspectorGUI();
-
-            serializedObject.Update();
-
             EditorGUI.BeginChangeCheck();
 
             EditorGUILayout.Space();
@@ -100,11 +97,14 @@ namespace VoxelEngine {
             EditorGUILayout.EndHorizontal();
 
             if (EditorGUI.EndChangeCheck()) {
-                serializedObject.ApplyModifiedProperties();
                 bd.textureIndices = new int[6];
                 for (int i = 0; i < bd.textures.Length; i++) {
                     bd.textureIndices[i] = bd.textures[i]?.index ?? 0;
                 }
+
+                EditorUtility.SetDirty(bd);
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
             }
         }
 

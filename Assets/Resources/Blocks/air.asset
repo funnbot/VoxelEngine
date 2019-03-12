@@ -17,11 +17,12 @@ MonoBehaviour:
   meshType: 2
   prefab: {fileID: 0}
   behaviour: 
+  dataType: 
   placementType: 0
   blockType: 0
   spawnFrequency: 0
   spawnDensity: 0
-  textureIndices: 
+  textureIndices: 000000000000000000000000000000000000000000000000
   textures:
   - {fileID: 0}
   - {fileID: 0}
