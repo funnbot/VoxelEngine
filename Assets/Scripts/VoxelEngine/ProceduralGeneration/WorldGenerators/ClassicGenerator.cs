@@ -32,7 +32,7 @@ namespace VoxelEngine.ProceduralGeneration {
         }
 
         protected override void GenerateColumn(Chunk chunk, int x, int z) {
-            var worldPos = chunk.BlockToWorldPos(new Coord3(x, 0, z));
+            var worldPos = new Coord3(x, 0, z).BlockToWorld(chunk.worldPosition);
 
             int stoneHeight = stoneBaseHeight;
             stoneHeight += GetNoise(worldPos.x, worldPos.z, stoneMountainFrequency, stoneMountainHeight);
@@ -43,7 +43,7 @@ namespace VoxelEngine.ProceduralGeneration {
 
             for (int y = -Chunk.Rollover; y < Chunk.Size + Chunk.Rollover; y++) {
                 var localPos = new Coord3(x, y, z);
-                worldPos = chunk.BlockToWorldPos(localPos);
+                worldPos = localPos.BlockToWorld(chunk.worldPosition);
 
                 int caveChance = GetNoise(worldPos, caveFrequency, 100);
                 if (worldPos.y <= stoneHeight && caveSize < caveChance) {

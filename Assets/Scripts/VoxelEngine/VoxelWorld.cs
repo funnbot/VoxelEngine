@@ -33,26 +33,17 @@ namespace VoxelEngine {
         public delegate void SpawnLoaded();
         public event SpawnLoaded OnSpawnLoad;
 
-        public delegate void ColumnLoaded(Coord2 pos);
-        public event ColumnLoaded OnColumnLoad;
-
-        public delegate void ColumnUnloaded(Coord2 pos);
-        public event ColumnUnloaded OnColumnUnload;
-
         void Awake() {
             Active = this;
             columns = new Dictionary<Coord2, ChunkColumn>();
-            seed = (int)(Random.value * 10000);
+            seed = (int) (Random.value * 10000);
         }
 
         void Start() {
             generator = new ProceduralGenerator(this).Use(generatorType);
 
             LoadBehaviours();
-            var sw = Watch.StartNew();
             LoadSpawn();
-            sw.Stop();
-            Debug.Log("Spawn load time: " + sw.ElapsedMilliseconds);
         }
 
         void Update() {
@@ -110,12 +101,10 @@ namespace VoxelEngine {
             var col = columnPool.GetObject();
             col.Init(pos);
             columns.Add(pos, col);
-            OnColumnLoad?.Invoke(pos);
             return col;
         }
 
         public void DestroyColumn(Coord2 pos) {
-            OnColumnUnload?.Invoke(pos);
             ChunkColumn col = columns[pos];
 
             foreach (var bb in behaviours) {
@@ -142,36 +131,29 @@ namespace VoxelEngine {
         }
 
         public Block GetBlock(Coord3 pos) {
-            var chunkPos = BlockToChunkPos(pos);
+            var chunkPos = pos.WorldToChunk();
             var chunk = GetChunk(chunkPos);
             if (chunk == null) return null;
 
-            var blockPos = chunk.WorldToBlockPos(pos);
+            var blockPos = pos.WorldToBlock(chunk.worldPosition);
             return chunk.GetBlock(blockPos);
         }
         public Block GetBlock(RaycastHit hit, bool adjacent = false) {
-            var pos = RaycastToBlockPos(hit.point, hit.normal, adjacent);
+            var pos = Coord3.RaycastToBlock(hit, adjacent);
             return GetBlock(pos);
         }
 
-        public void SetBlock(Coord3 pos, Block block, bool updateChunk = false) {
-            var chunkPos = BlockToChunkPos(pos);
+        public void SetBlock(Coord3 pos, Block block, bool update = false) {
+            var chunkPos = pos.WorldToChunk();
             var chunk = GetChunk(chunkPos);
             if (chunk == null) return;
 
-            pos = chunk.WorldToBlockPos(pos);
-            chunk.SetBlock(pos, block, updateChunk);
+            chunk.SetBlock(pos.WorldToBlock(chunk.worldPosition), block, update);
         }
         public void SetBlock(RaycastHit hit, Block block, bool adjacent = true) {
-            var pos = RaycastToBlockPos(hit.point, hit.normal, adjacent);
+            var pos = Coord3.RaycastToBlock(hit, adjacent);
             SetBlock(pos, block, true);
         }
-
-        public Coord3 BlockToChunkPos(Coord3 pos) =>
-            pos.FloorDiv(Chunk.Size);
-
-        public Coord3 RaycastToBlockPos(Vector3 point, Vector3 normal, bool adjacent) =>
-            Coord3.FloorToInt(point + Vector3.one * 0.5f + (adjacent ? -Vector3.Max(normal, Vector3.zero) : Vector3.Min(normal, Vector3.zero)));
 
         void LoadBehaviours() {
             behaviours = new Dictionary<string, BlockBehaviour>();
@@ -180,7 +162,7 @@ namespace VoxelEngine {
         }
 
         void LoadSpawn() {
-            int size = 1;
+            int size = spawnSize;
             for (int x = -size - 1; x <= size + 1; x++) {
                 for (int z = -size - 1; z <= size + 1; z++) {
                     var pos = new Coord2(x, z);
@@ -201,29 +183,29 @@ namespace VoxelEngine {
             OnSpawnLoad?.Invoke();
         }
 
-        IEnumerator LoadSpawnThreaded() {
+        void LoadSpawnThreaded() {
             int loadSize = spawnSize + 1;
-            var tasks = new List<Task>(loadSize * loadSize);
-            var cols = new ChunkColumn[loadSize, loadSize];
+            var cols = new ChunkColumn[loadSize * 2 + 1, loadSize * 2 + 1];
 
             for (int x = -loadSize; x <= loadSize; x++) {
                 for (int z = -loadSize; z <= loadSize; z++) {
-                    var pos = new Coord2(x, z);
-                    var col = LoadColumn(pos);
-                    var task = Task.Run(() => col.Build());
-                    cols[x, z] = col;
-                    tasks.Add(task);
+                    cols[x + loadSize, z + loadSize] = LoadColumn(new Coord2(x, z));
                 }
             }
 
-            while (!tasks.TrueForAll(t => t.IsCompleted)) 
-                yield return null;
+            Parallel.For(-loadSize, loadSize + 1, x => {
+                for (int z = -loadSize; z <= loadSize; z++) {
+                    cols[x + loadSize, z + loadSize].Build();
+                }
+            });
 
             for (int x = -spawnSize; x <= spawnSize; x++) {
-                for (int z = -spawnSize; z < spawnSize; z++) {
-                    cols[x, z].Render();
+                for (int z = -spawnSize; z <= spawnSize; z++) {
+                    cols[x + loadSize + 1, z + loadSize + 1].Render();
                 }
             }
+
+            OnSpawnLoad?.Invoke();
         }
     }
 }

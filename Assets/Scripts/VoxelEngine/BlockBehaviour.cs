@@ -24,7 +24,7 @@ namespace VoxelEngine {
 
         public void UnloadChunk(Coord3 chunkPos) {
             foreach (var block in blocks) {
-                var pos = world.BlockToChunkPos(block.Value.position);
+                var pos = block.Value.position.WorldToChunk();
                 if (chunkPos == pos) Remove(block.Value.position);
             }
         }

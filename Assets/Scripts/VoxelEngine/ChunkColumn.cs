@@ -8,6 +8,9 @@ namespace VoxelEngine {
         public Chunk[] chunks;
         public Coord2 position { get; private set; }
 
+        public bool built { get; private set; }
+        public bool rendered { get; private set; }
+
         private VoxelWorld world;
 
         [SerializeField]
@@ -20,6 +23,8 @@ namespace VoxelEngine {
 
         public void Create(VoxelWorld world) {
             this.world = world;
+            built = false;
+            rendered = false;
 
             chunks = new Chunk[VoxelWorld.ChunkHeight];
             for (int i = 0; i < chunks.Length; i++) {
@@ -46,10 +51,12 @@ namespace VoxelEngine {
         }
 
         public void Build() {
+            built = true;
             world.generator.GenerateChunks(position);
         }
 
         public void Render() {
+            rendered = true;
             foreach (var chunk in chunks)
                 chunk.Render();
         }

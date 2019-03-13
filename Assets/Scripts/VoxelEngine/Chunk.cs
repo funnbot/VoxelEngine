@@ -47,7 +47,7 @@ namespace VoxelEngine {
             worldPosition = position * Size;
             transform.localPosition = Coord3.up * worldPosition;
 
-            HookEvents();
+            world.OnTick += OnTick;
         }
 
         public void CleanUp() {
@@ -81,31 +81,24 @@ namespace VoxelEngine {
 
             BlockRend.sharedMesh = blockMesh.ToMesh();
             TransRend.sharedMesh = transMesh.ToMesh();
-
             BlockCollider.sharedMesh = colliderMesh.ToColMesh();
         }
 
         public Block GetBlock(Coord3 pos) {
-            if (InRange(pos)) return blocks[pos.x, pos.y, pos.z];
-            else {
-                pos = BlockToWorldPos(pos);
-                return world.GetBlock(pos);
-            }
+            if (pos.InRange(0, Chunk.Size)) return blocks[pos.x, pos.y, pos.z];
+            else return world.GetBlock(pos.WorldToBlock(worldPosition));
         }
         public void SetBlock(Coord3 pos, Block block, bool update = true) {
-            if (InRange(pos)) {
+            if (pos.InRange(0, Chunk.Size)) {
                 world.UnregisterBlock(blocks[pos.x, pos.y, pos.z]);
                 blocks[pos.x, pos.y, pos.z] =
-                    world.RegisterBlock(block, pos.ToWorldPos(worldPosition), this);
+                    world.RegisterBlock(block, pos.BlockToWorld(worldPosition), this);
 
                 if (update) {
                     this.update = true;
                     UpdateNeighbors(pos);
                 }
-            } else {
-                pos = BlockToWorldPos(pos);
-                world.SetBlock(pos, block, false);
-            }
+            } else world.SetBlock(pos.BlockToWorld(worldPosition), block, update);
         }
 
         public void UpdateNeighbors(Coord3 changed) {
@@ -121,43 +114,24 @@ namespace VoxelEngine {
             }
         }
 
-        public Coord3 BlockToWorldPos(Coord3 block) =>
-            block + position * Chunk.Size;
-        public Coord3 WorldToBlockPos(Coord3 block) =>
-            block - position * Chunk.Size;
-        public Coord3 TransformChunkPos(Coord3 pos, Coord3 chunkWorldPos) =>
-            pos + worldPosition - chunkWorldPos;
-
-        public bool InRange(int x, int y, int z) =>
-            x >= 0 && x < Size && y >= 0 && y < Size && z >= 0 && z < Size;
-        public bool InRange(Coord3 p) => InRange(p.x, p.y, p.z);
-
-        void HookEvents() {
-            world.OnTick += OnTick;
-        }
-
         void AddBlockToMesh(int x, int y, int z) {
             var pos = new Coord3(x, y, z);
             var block = blocks[x, y, z];
 
             if (block.data.meshType == BlockMeshType.Cube) {
                 for (int i = 0; i < 6; i++) {
-
+                    // if (block.data.transparent) return false;
                     var adjPos = Coord3.Directions[i] + pos;
-                    var adjacent = InRange(adjPos) ? GetBlock(adjPos) :
-                        neighbors[i]?.GetBlock(TransformChunkPos(adjPos, neighbors[i].worldPosition));
-                    //var adjacent = GetBlock(adjPos);
+                    //var adjacent = adjPos.InRange(0, Chunk.Size) ? GetBlock(adjPos) :
+                    //    neighbors[dir]?.GetBlock(adjPos.TransformChunk(worldPosition, neighbors[dir].worldPosition));
+                    var adjacent = GetBlock(adjPos);
                     if (!block.data.transparent && adjacent != null && !adjacent.data.transparent) continue;
 
                     var rot = Rotate(i, block.rotation);
-
                     int texIndex = block.data.textureIndices[rot.index];
-
-                    if (block.data.transparent) {
+                    if (block.data.transparent)
                         transMesh.AddQuad(i, pos, rot.face, texIndex);
-                    } else {
-                        blockMesh.AddQuad(i, pos, rot.face, texIndex);
-                    }
+                    else blockMesh.AddQuad(i, pos, rot.face, texIndex);
                     colliderMesh.AddQuad(i, pos);
                 }
             } else if (block.data.meshType == BlockMeshType.Decal) {

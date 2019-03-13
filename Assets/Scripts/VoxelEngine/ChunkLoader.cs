@@ -10,52 +10,92 @@ namespace VoxelEngine {
         public VoxelWorld world;
         public int range;
 
-        private Coord3 pos = Coord3.zero;
-        private Coord3 spiral = Coord3.zero;
+        private Coord2 pos = Coord2.zero;
+        private Coord2 spiral = Coord2.zero;
 
         private List<Coord2> loadedChunks;
 
         void Start() {
-            // world.OnTick += OnTick;
+            world.OnTick += OnTick;
             loadedChunks = new List<Coord2>();
+
+            var s = Coord2.zero;
+            for (int i = 0; i < 10; i++) {
+                Debug.Log(s);
+                SpiralOut(ref s);
+            }
         }
 
         void OnTick() {
-            var chunkPos = world.BlockToChunkPos(Coord3.FloorToInt(transform.position));
-            chunkPos.y = 0;
-            if (chunkPos != pos) spiral = Coord3.zero;
-            var p = pos + spiral;
-            var chunk = world.GetChunk(p);
-            if (chunk == null) {
-               // world.LoadChunks(new Vector2Int(p.x, p.z));
-               // world.BuildChunks(new Vector2Int(p.x, p.z));
-                chunk = world.GetChunk(p);
-            } else if (chunk.built) {
-               // world.RenderChunks(new Vector2Int(p.x, p.z));
-                loadedChunks.Add(new Coord2(p.x, p.z));
-                //for (int i = 2; i < 6; i++) world.RenderChunks(new Vector2Int(DirOffsets));
-                Spiral();
+            var cpos = (Coord2) Coord3.FloorToInt(transform.position).WorldToChunk();
+            if (pos != cpos) pos = spiral = Coord2.zero;
+            pos = cpos;
 
-                DestroyChunks();
+            if (DestroyChunks()) return;
+
+            if (!world.columns.ContainsKey(pos)) {
+                LoadChunks(pos);
+                return;
             }
 
-            pos = chunkPos;
+            var c = world.GetColumn(pos);
+            if (!c.rendered) {
+                c.Render();
+                return;
+            }
+
+            SpiralOut(ref spiral);
         }
 
-        void DestroyChunks() {
-            for (int i = 0; i < loadedChunks.Count; i++) {
+        bool DestroyChunks() {
+            int len = loadedChunks.Count();
+            for (int i = len - 1; i >= 0; i--) {
                 var p = loadedChunks[i];
-                var chunk = new Coord3(p.x, 0, p.y);
-                if (Coord3.Distance(pos, chunk) > range) {
-                    // world.DestroyChunks(p);
-                    return;
+                if (Coord2.Distance(pos, p) > range) {
+                    world.DestroyColumn(p);
+                    loadedChunks.RemoveAt(i);
+                    return true;
                 }
-
             }
+            return false;
+        }
+
+        void LoadChunks(Coord2 pos) {
+            LoadChunk(pos);
+            for (int i = 0; i < 4; i++)
+                LoadChunk(pos + Coord2.Directions[i]);
+        }
+        void LoadChunk(Coord2 p) {
+            if (world.columns.ContainsKey(p)) {
+                world.LoadColumn(p).Build();
+                loadedChunks.Add(p);
+            }
+        }
+
+        void SpiralOut(ref Coord2 c) {
+            int x = c.x, y = c.y;
+            if (x >= 0 && y == 0) y++;
+
+            else if (x > 0 && y >= 0) {
+                x--;
+                y++;
+            } else if (x <= 0 && y > 0) {
+                x--;
+                y--;
+            } else if (x < 0 && y <= 0) {
+                x++;
+                y--;
+            } else if (x >= 0 && y < 0) {
+                x++;
+                y++;
+            }
+
+            c.x = x;
+            c.y = y;
         }
 
         void Spiral() {
-            int x = spiral.x, y = spiral.z;
+            int x = spiral.x, y = spiral.y;
             if (x == y) {
                 if (x >= 0) x++;
                 else y++;
@@ -75,8 +115,22 @@ namespace VoxelEngine {
                     else y++;
                 }
             }
-            spiral = new Coord3(x, 0, y);
+            spiral = new Coord2(x, y);
         }
     }
 
 }
+
+//  Coord  |  X>Y  | Sign
+//  0,0        
+//  1,0
+//  0,1
+//  -1,0
+//  0,-1
+//  
+//
+//
+//
+//
+//
+//

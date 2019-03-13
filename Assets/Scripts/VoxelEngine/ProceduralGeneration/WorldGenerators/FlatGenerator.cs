@@ -35,7 +35,7 @@ namespace VoxelEngine.ProceduralGeneration {
                 SetBlock(chunk, localPos, block);
             }
             for (localPos.y = -Chunk.Rollover; localPos.y < Chunk.Size + Chunk.Rollover; localPos.y++) {
-                var pos = chunk.BlockToWorldPos(localPos);
+                var pos = localPos.BlockToWorld(chunk.worldPosition);
                 bool isCave = GetChance(pos.x, pos.y, pos.z, caveFrequency, caveDensity) ||
                     GetChance(pos.y, pos.z, pos.x, caveFrequency + 0.02f, caveDensity + 4) ||
                     GetChance(-pos.x, -pos.y, -pos.z, caveFrequency - 0.02f, caveDensity - 4);

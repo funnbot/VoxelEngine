@@ -17,6 +17,11 @@ namespace VoxelEngine {
         public static Coord2 FloorToInt(Vector2 v) =>
         new Coord2(Mathf.FloorToInt(v.x), Mathf.FloorToInt(v.y));
 
+        public float magnitude { get => Mathf.Sqrt((float) (x * x + y * y)); }
+        public int sqrMagnitude { get => x * x + y * y; }
+
+        public static float Distance(Coord2 a, Coord2 b) => (a - b).magnitude;
+
         #region operators
 
         public static Coord2 operator +(Coord2 a, Coord2 b) =>

@@ -27,6 +27,11 @@ namespace VoxelEngine {
             this.z = 0;
         }
 
+        public Coord3 BlockToWorld(Coord3 chunkWorldPos) => this + chunkWorldPos;
+        public Coord3 WorldToBlock(Coord3 chunkWorldPos) => this - chunkWorldPos;
+        public Coord3 TransformChunk(Coord3 chunkWorldPos, Coord3 otherWorldPos) => this - chunkWorldPos + otherWorldPos;
+        public Coord3 WorldToChunk() => this.FloorDiv(Chunk.Size);
+
         public Coord3 FloorDiv(int i) =>
         new Coord3(Mathf.FloorToInt((float) x / i), Mathf.FloorToInt((float) y / i), Mathf.FloorToInt((float) z / i));
 
@@ -34,30 +39,17 @@ namespace VoxelEngine {
         x >= incLower && x < excUpper && y >= incLower &&
         y < excUpper && z >= incLower && z < excUpper;
 
-        public Coord3 ToChunkPos() =>
-        this / Chunk.Size;
-
-        public Coord3 ToWorldPos(Coord3 chunkWorldPos) =>
-        this + chunkWorldPos;
-
-        public Coord3 ToBlockPos(Coord3 chunkWorldPos) =>
-        this - chunkWorldPos;
-
-        public int MaxElem() =>
-        Mathf.Max(x, Mathf.Max(y, z));
-
-        public int MinElem() =>
-        Mathf.Min(x, Mathf.Min(y, z));
-
         public float magnitude { get => Mathf.Sqrt((float) (x * x + y * y + z * z)); }
-
         public int sqrMagnitude { get => x * x + y * y + z * z; }
 
         public static Coord3 FloorToInt(Vector3 v) =>
         new Coord3(Mathf.FloorToInt(v.x), Mathf.FloorToInt(v.y), Mathf.FloorToInt(v.z));
 
-        public static float Distance(Coord3 a, Coord3 b) =>
-        (a - b).magnitude;
+        public static float Distance(Coord3 a, Coord3 b) => (a - b).magnitude;
+
+        public static Coord3 RaycastToBlock(in RaycastHit hit, bool adjacent) =>
+        hit.point + Vector3.one * 0.5f +
+        (adjacent ? -Vector3.Max(hit.normal, Vector3.zero) : Vector3.Min(hit.normal, Vector3.zero));
 
         #region operators
 

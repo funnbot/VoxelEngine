@@ -26,13 +26,13 @@ namespace VoxelEngine.ProceduralGeneration {
 
         protected override void GenerateColumn(Chunk chunk, int x, int z) {
             var localPos = new Coord3(x, 0, z);
-            var pos = chunk.BlockToWorldPos(localPos);
+            var pos = localPos.BlockToWorld(chunk.worldPosition);
 
             var height = baseHeight + GetNoise(pos.x, 0, pos.z, noiseFreq, noiseHeight);
 
             for (int y = 0; y < Chunk.Size; y++) {
                 localPos.y = y;
-                pos = chunk.BlockToWorldPos(localPos);
+                pos = localPos.BlockToWorld(chunk.worldPosition);
 
                 if (chanceNoise) {
                     if (noise3d || pos.y == 0) {
