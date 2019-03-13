@@ -6,8 +6,8 @@ namespace VoxelEngine {
 
     [System.Serializable]
     public struct Coord2 : System.IEquatable<Coord2> {
-        public int x { get; set; }
-        public int y { get; set; }
+        public int x;
+        public int y;
 
         public Coord2(int x, int y) {
             this.x = x;

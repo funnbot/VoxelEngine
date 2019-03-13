@@ -5,9 +5,9 @@ namespace VoxelEngine {
 
     [System.Serializable]
     public struct Coord3 : System.IEquatable<Coord3> {
-        public int x { get; set; }
-        public int y { get; set; }
-        public int z { get; set; }
+        public int x;
+        public int y;
+        public int z;
 
         public Coord3(int x, int y, int z) {
             this.x = x;

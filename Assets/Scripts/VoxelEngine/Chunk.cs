@@ -43,6 +43,9 @@ namespace VoxelEngine {
 
         public void Init(Coord3 position) {
             blocks = new Block[Size, Size, Size];
+            
+            built = false;
+            update = false;
 
             this.position = position;
             worldPosition = position * Size;

@@ -9,10 +9,13 @@ using UnityEditor;
 using System.Linq;
 
 public class CodeTester : MonoBehaviour {
+    public Coord3 test3;
+    public Coord2 test2;
+
     object TestCode() {
         string o = "";
         Coord3 pos = new Coord3(1, 1, 0);
-        
+
         
         return o;
     }
