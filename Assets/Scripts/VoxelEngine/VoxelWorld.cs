@@ -143,7 +143,7 @@ namespace VoxelEngine {
             return GetBlock(pos);
         }
 
-        public void SetBlock(Coord3 pos, Block block, bool update = false) {
+        public void SetBlock(Coord3 pos, Block block, bool update = true) {
             var chunkPos = pos.WorldToChunk();
             var chunk = GetChunk(chunkPos);
             if (chunk == null) return;

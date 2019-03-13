@@ -110,7 +110,6 @@ namespace VoxelEngine {
                     verts.Add(new Vector3(x - F, y - F, z + F));
                     verts.Add(new Vector3(x - F, y - F, z - F));
                     break;
-
             }
         }
 

@@ -215,8 +215,8 @@ MonoBehaviour:
   seed: 1212
   texturePixelResolution: 16
   generatorType: 0
-  spawnSize: 1
-  tickSpeed: 4
+  spawnSize: 2
+  tickSpeed: 10
   columnPool: {fileID: 613015191}
 --- !u!4 &437277032
 Transform:
@@ -464,7 +464,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 6536367198004749814, guid: e4d6563326cbd4d838d259c7d02691e2, type: 3}
-  startingSize: 362
+  startingSize: 50
   world: {fileID: 437277031}
 --- !u!4 &613015192
 Transform:

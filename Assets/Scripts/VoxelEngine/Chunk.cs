@@ -63,6 +63,8 @@ namespace VoxelEngine {
         }
 
         public void Render() {
+            Debug.Log("Rendered Chunk: " + position);
+
             update = false;
 
             blockMesh.Clear();
@@ -95,7 +97,7 @@ namespace VoxelEngine {
                     world.RegisterBlock(block, pos.BlockToWorld(worldPosition), this);
 
                 if (update) {
-                    this.update = true;
+                    Render();
                     UpdateNeighbors(pos);
                 }
             } else world.SetBlock(pos.BlockToWorld(worldPosition), block, update);
@@ -122,9 +124,13 @@ namespace VoxelEngine {
                 for (int i = 0; i < 6; i++) {
                     // if (block.data.transparent) return false;
                     var adjPos = Coord3.Directions[i] + pos;
-                    //var adjacent = adjPos.InRange(0, Chunk.Size) ? GetBlock(adjPos) :
-                    //    neighbors[dir]?.GetBlock(adjPos.TransformChunk(worldPosition, neighbors[dir].worldPosition));
-                    var adjacent = GetBlock(adjPos);
+                    var adjacent = adjPos.InRange(0, Chunk.Size) ? GetBlock(adjPos) :
+                        neighbors[i]?.GetBlock(adjPos.TransformChunk(worldPosition, neighbors[i].worldPosition));
+
+                    if (pos == Coord3.zero) {
+                        Debug.Log("Adjacent: " + adjPos + " " + (adjacent == null));
+                    }
+                    
                     if (!block.data.transparent && adjacent != null && !adjacent.data.transparent) continue;
 
                     var rot = Rotate(i, block.rotation);

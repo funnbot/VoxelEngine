@@ -48,8 +48,8 @@ namespace VoxelEngine {
         public static float Distance(Coord3 a, Coord3 b) => (a - b).magnitude;
 
         public static Coord3 RaycastToBlock(in RaycastHit hit, bool adjacent) =>
-        hit.point + Vector3.one * 0.5f +
-        (adjacent ? -Vector3.Max(hit.normal, Vector3.zero) : Vector3.Min(hit.normal, Vector3.zero));
+        Coord3.FloorToInt(hit.point + Vector3.one * 0.5f +
+        (adjacent ? -Vector3.Max(hit.normal, Vector3.zero) : Vector3.Min(hit.normal, Vector3.zero)));
 
         #region operators
 

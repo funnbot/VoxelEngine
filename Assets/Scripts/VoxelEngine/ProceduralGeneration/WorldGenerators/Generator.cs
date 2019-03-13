@@ -14,13 +14,12 @@ namespace VoxelEngine.ProceduralGeneration {
             this.noise = noise;
         }
 
-        public void GenerateChunks(Coord2 col) {
+        public void GenerateColumn(ChunkColumn col) {
             for (int i = 0; i < VoxelWorld.ChunkHeight; i++) {
-                var pos = new Coord3(col.x, i, col.y);
-                var chunk = world.GetChunk(pos);
+                var chunk = col.GetChunk(i);
                 GenerateChunk(chunk);
-                for (int x = -Chunk.Rollover; x < Chunk.Size + Chunk.Rollover; x++) {
-                    for (int z = -Chunk.Rollover; z < Chunk.Size + Chunk.Rollover; z++) {
+                for (int x = 0; x < Chunk.Size; x++) {
+                    for (int z = 0; z < Chunk.Size; z++) {
                         GenerateColumn(chunk, x, z);
                     }
                 }
@@ -29,7 +28,7 @@ namespace VoxelEngine.ProceduralGeneration {
 
         protected virtual void GenerateColumn(Chunk chunk, int x, int z) {
             var stone = ResourceStore.Blocks["stone"];
-            for (int y = -Chunk.Rollover; y < Chunk.Size + Chunk.Rollover; y++) {
+            for (int y = 0; y < Chunk.Size; y++) {
                 var pos = new Coord3(x, y, z);
                 SetBlock(chunk, pos, stone);
             }
@@ -40,7 +39,7 @@ namespace VoxelEngine.ProceduralGeneration {
         protected void SetBlock(Chunk chunk, Coord3 localPos, Block block, bool replace = false) {
             var b = chunk.GetBlock(localPos);
             if (replace || b == null || b.data.meshType == BlockMeshType.Air) {
-                chunk.SetBlock(localPos, block);
+                chunk.SetBlock(localPos, block, false);
             }
         }
         protected void SetBlock(Chunk chunk, Coord3 localPos, BlockData block, bool replace = false) =>

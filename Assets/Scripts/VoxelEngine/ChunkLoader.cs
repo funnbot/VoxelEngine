@@ -16,14 +16,8 @@ namespace VoxelEngine {
         private List<Coord2> loadedChunks;
 
         void Start() {
-            world.OnTick += OnTick;
+            //world.OnTick += OnTick;
             loadedChunks = new List<Coord2>();
-
-            var s = Coord2.zero;
-            for (int i = 0; i < 10; i++) {
-                Debug.Log(s);
-                SpiralOut(ref s);
-            }
         }
 
         void OnTick() {
