@@ -51,7 +51,6 @@ namespace VoxelEngine {
         }
 
         public void Build() {
-            Debug.Log("Built Column: " + position);
             built = true;
             world.generator.GenerateColumn(this);
         }

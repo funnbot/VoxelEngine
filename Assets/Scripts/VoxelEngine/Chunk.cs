@@ -2,6 +2,7 @@
 
 namespace VoxelEngine {
 
+    [System.Serializable]
     public class Chunk : MonoBehaviour {
         public static readonly int Size = 16;
         public static readonly int Rollover = 0;
@@ -25,7 +26,7 @@ namespace VoxelEngine {
         private MeshData colliderMesh;
 
         private ChunkColumn parent;
-        private Chunk[] neighbors;
+        public Chunk[] neighbors;
 
         public void Create(ChunkColumn parent, VoxelWorld world) {
             blocks = new Block[Chunk.Size, Chunk.Size, Chunk.Size];
@@ -63,8 +64,6 @@ namespace VoxelEngine {
         }
 
         public void Render() {
-            Debug.Log("Rendered Chunk: " + position);
-
             update = false;
 
             blockMesh.Clear();
@@ -88,7 +87,7 @@ namespace VoxelEngine {
 
         public Block GetBlock(Coord3 pos) {
             if (pos.InRange(0, Chunk.Size)) return blocks[pos.x, pos.y, pos.z];
-            else return world.GetBlock(pos.WorldToBlock(worldPosition));
+            else return world.GetBlock(pos.BlockToWorld(worldPosition));
         }
         public void SetBlock(Coord3 pos, Block block, bool update = true) {
             if (pos.InRange(0, Chunk.Size)) {
@@ -105,7 +104,6 @@ namespace VoxelEngine {
 
         public void UpdateNeighbors(Coord3 changed) {
             if (changed.InRange(1, Chunk.Size - 1)) return;
-            FetchNeighbors();
             for (int i = 0; i < 6; i++) {
                 var pos = changed + Coord3.Directions[i];
                 if (!pos.InRange(0, Chunk.Size)) {
@@ -122,16 +120,7 @@ namespace VoxelEngine {
 
             if (block.data.meshType == BlockMeshType.Cube) {
                 for (int i = 0; i < 6; i++) {
-                    // if (block.data.transparent) return false;
-                    var adjPos = Coord3.Directions[i] + pos;
-                    var adjacent = adjPos.InRange(0, Chunk.Size) ? GetBlock(adjPos) :
-                        neighbors[i]?.GetBlock(adjPos.TransformChunk(worldPosition, neighbors[i].worldPosition));
-
-                    if (pos == Coord3.zero) {
-                        Debug.Log("Adjacent: " + adjPos + " " + (adjacent == null));
-                    }
-                    
-                    if (!block.data.transparent && adjacent != null && !adjacent.data.transparent) continue;
+                    if (CullFace(block, pos, i)) continue;
 
                     var rot = Rotate(i, block.rotation);
                     int texIndex = block.data.textureIndices[rot.index];
@@ -144,6 +133,14 @@ namespace VoxelEngine {
                 var texIndex = block.data.textureIndices[0];
                 transMesh.AddDecal(pos, texIndex);
             }
+        }
+
+        private bool CullFace(Block block, Coord3 pos, int dir) {
+            if (block.data.transparent) return false;
+            var adjPos = Coord3.Directions[dir] + pos;
+            var adjacent = adjPos.InRange(0, Chunk.Size) ? GetBlock(adjPos) :
+                neighbors[dir]?.GetBlock(adjPos + worldPosition - neighbors[dir].worldPosition);
+            return adjacent != null && !adjacent.data.transparent;
         }
 
         private static readonly int[] zRot = { BlockFace.top, BlockFace.left, BlockFace.bottom, BlockFace.right },

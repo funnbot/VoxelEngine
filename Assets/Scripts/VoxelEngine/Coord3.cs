@@ -29,7 +29,6 @@ namespace VoxelEngine {
 
         public Coord3 BlockToWorld(Coord3 chunkWorldPos) => this + chunkWorldPos;
         public Coord3 WorldToBlock(Coord3 chunkWorldPos) => this - chunkWorldPos;
-        public Coord3 TransformChunk(Coord3 chunkWorldPos, Coord3 otherWorldPos) => this - chunkWorldPos + otherWorldPos;
         public Coord3 WorldToChunk() => this.FloorDiv(Chunk.Size);
 
         public Coord3 FloorDiv(int i) =>

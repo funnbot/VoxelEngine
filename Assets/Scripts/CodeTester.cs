@@ -11,11 +11,9 @@ using System.Linq;
 public class CodeTester : MonoBehaviour {
     object TestCode() {
         string o = "";
-        Coord3 rot = new Coord3(1, 1, 0);
-
-        for (int i = 0; i < 6; i++) {
-            o += Chunk.Rotate(i, rot) + " ";
-        }
+        Coord3 pos = new Coord3(1, 1, 0);
+        
+        
         return o;
     }
 
