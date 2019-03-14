@@ -4,8 +4,7 @@ using UnityEngine;
 using VoxelEngine;
 
 public class ChunkColumnPool : PrefabPool<ChunkColumn> {
-    [SerializeField]
-    private VoxelWorld world;
+    public VoxelWorld world;
 
     public override void CleanUp(ChunkColumn col) {
         col.CleanUp();

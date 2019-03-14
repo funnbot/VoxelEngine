@@ -216,7 +216,7 @@ MonoBehaviour:
   texturePixelResolution: 16
   generatorType: 0
   spawnSize: 2
-  tickSpeed: 10
+  tickSpeed: 2
   columnPool: {fileID: 613015191}
 --- !u!4 &437277032
 Transform:
@@ -330,7 +330,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   world: {fileID: 437277031}
-  range: 20
+  range: 100
 --- !u!114 &534669907
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -608,6 +608,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97519a8336b644fa1b6fdcb9e151e38c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  test3:
+    x: 0
+    y: 0
+    z: 0
+  test2:
+    x: 0
+    y: 0
 --- !u!4 &1797029178
 Transform:
   m_ObjectHideFlags: 0

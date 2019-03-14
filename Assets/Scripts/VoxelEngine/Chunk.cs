@@ -57,9 +57,18 @@ namespace VoxelEngine {
         public void CleanUp() {
             world.OnTick -= OnTick;
             blocks = null;
+
             blockMesh.Clear();
             transMesh.Clear();
             colliderMesh.Clear();
+
+            BlockRend.sharedMesh = null;
+            TransRend.sharedMesh = null;
+            BlockCollider.sharedMesh = null;
+
+            foreach (GameObject child in StandaloneBlocks) {
+                Destroy(child);
+            }
         }
 
         void OnTick() {

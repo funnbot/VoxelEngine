@@ -5,6 +5,8 @@ using UnityEngine;
 namespace VoxelEngine {
 
     public class ChunkColumn : MonoBehaviour {
+        public GameObject chunkFab;
+        
         public Chunk[] chunks;
         public Coord2 position { get; private set; }
 
@@ -12,9 +14,6 @@ namespace VoxelEngine {
         public bool rendered { get; private set; }
 
         private VoxelWorld world;
-
-        [SerializeField]
-        private GameObject chunkFab;
 
         public Chunk GetChunk(int y) {
             if (InRange(y)) return chunks[y];

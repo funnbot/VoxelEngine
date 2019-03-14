@@ -15,37 +15,42 @@ namespace VoxelEngine {
 
         private List<Coord2> loadedChunks;
 
-        void Start() {
-            //world.OnTick += OnTick;
+        void Awake() {
             loadedChunks = new List<Coord2>();
+            world.OnSpawnLoad += OnSpawnLoad;
         }
 
-        void OnTick() {
-            var cpos = (Coord2) Coord3.FloorToInt(transform.position).WorldToChunk();
-            if (pos != cpos) pos = spiral = Coord2.zero;
-            pos = cpos;
+        void OnSpawnLoad() {
+            StartCoroutine(LoadChunks());
+        }
 
-            if (DestroyChunks()) return;
+        IEnumerator LoadChunks() {
+            while (true) {
+                yield return null;
 
-            if (!world.columns.ContainsKey(pos)) {
-                LoadChunks(pos);
-                return;
+                var cpos = (Coord2) Coord3.FloorToInt(transform.position).WorldToChunk();
+                if (pos != cpos) pos = spiral = Coord2.zero;
+                pos = cpos;
+
+                if (DestroyChunks()) continue;
+                var load = pos + spiral;
+                if (Coord2.Distance(pos * Chunk.Size, load * Chunk.Size) > range) continue;
+
+                yield return BuildChunks(load);
+
+                world.GetColumn(load).Render();
+
+                SpiralOut(ref spiral);
+
+                yield return null;
             }
-
-            var c = world.GetColumn(pos);
-            if (!c.rendered) {
-                c.Render();
-                return;
-            }
-
-            SpiralOut(ref spiral);
         }
 
         bool DestroyChunks() {
             int len = loadedChunks.Count();
             for (int i = len - 1; i >= 0; i--) {
                 var p = loadedChunks[i];
-                if (Coord2.Distance(pos, p) > range) {
+                if (Coord2.Distance(pos * Chunk.Size, p * Chunk.Size) > range) {
                     world.DestroyColumn(p);
                     loadedChunks.RemoveAt(i);
                     return true;
@@ -54,16 +59,20 @@ namespace VoxelEngine {
             return false;
         }
 
-        void LoadChunks(Coord2 pos) {
-            LoadChunk(pos);
-            for (int i = 0; i < 4; i++)
-                LoadChunk(pos + Coord2.Directions[i]);
-        }
-        void LoadChunk(Coord2 p) {
-            if (world.columns.ContainsKey(p)) {
-                world.LoadColumn(p).Build();
-                loadedChunks.Add(p);
+        IEnumerator BuildChunks(Coord2 pos) {
+            BuildChunk(pos);
+            for (int i = 0; i < 4; i++) {
+                BuildChunk(pos + Coord2.Directions[i]);
+                yield return null;
             }
+        }
+        void BuildChunk(Coord2 p) {
+            ChunkColumn column;
+            if (!world.columns.ContainsKey(p)) {
+                column = world.LoadColumn(p);
+                loadedChunks.Add(p);
+            } else column = world.GetColumn(p);
+            column.Build();
         }
 
         void SpiralOut(ref Coord2 c) {
