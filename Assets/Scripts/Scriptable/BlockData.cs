@@ -9,10 +9,11 @@ namespace VoxelEngine {
 
     [CreateAssetMenu(fileName = "Block Data")]
     public class BlockData : ScriptableObject {
-        public bool transparent;
+        public SubMesh subMesh;
         public bool collision;
         public BlockMeshType meshType;
         [DrawIf("meshType", BlockMeshType.Custom)]
+        public float boundingSize = 1;
         public GameObject prefab;
         public string behaviour;
         public string dataType;
@@ -33,7 +34,9 @@ namespace VoxelEngine {
 
     public enum BlockMeshType {
         Cube,
-        Decal,
+        DecalCross,
+        DecalHash,
+        DecalFlat,
         Air,
         Custom
     }
@@ -51,6 +54,11 @@ namespace VoxelEngine {
         RotationalOnly,
         DirectionalOnly,
         InvertDirectionalOnly,
+    }
+
+    public enum SubMesh {
+        Opaque = 0,
+        Transparent = 1
     }
 
 #if UNITY_EDITOR

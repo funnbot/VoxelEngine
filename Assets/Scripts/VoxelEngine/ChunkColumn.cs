@@ -60,6 +60,17 @@ namespace VoxelEngine {
                 chunk.Render();
         }
 
+        public void GenerateMesh() {
+            foreach (var chunk in chunks)
+                chunk.GenerateMesh();
+        }
+
+        public void ApplyMesh() {
+            rendered = true;
+            foreach (var chunk in chunks)
+                chunk.ApplyMesh();
+        }
+
         private bool InRange(int y) => y >= 0 && y < chunks.Length;
     }
 

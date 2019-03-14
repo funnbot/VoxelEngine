@@ -58,7 +58,7 @@ namespace VoxelEngine {
 
             Block outBlock = block;
             if (block.data.meshType == BlockMeshType.Custom) {
-                var go = Instantiate(block.data.prefab, position, Quaternion.Euler(block.rotation * 90), chunk.StandaloneBlocks);
+                var go = Instantiate(block.data.prefab, position, Quaternion.Euler(block.rotation * 90), chunk.Blocks);
                 go.name = block.data.name + " " + block.position;
                 var sb = new StandaloneBlock(block);
                 sb.gameObject = go;
@@ -196,12 +196,13 @@ namespace VoxelEngine {
             Parallel.For(-loadSize, loadSize + 1, x => {
                 for (int z = -loadSize; z <= loadSize; z++) {
                     cols[x + loadSize, z + loadSize].Build();
+                    cols[x + loadSize, z + loadSize].GenerateMesh();
                 }
             });
 
             for (int x = -spawnSize; x <= spawnSize; x++) {
                 for (int z = -spawnSize; z <= spawnSize; z++) {
-                    cols[x + loadSize + 1, z + loadSize + 1].Render();
+                    cols[x + loadSize + 1, z + loadSize + 1].ApplyMesh();
                 }
             }
 

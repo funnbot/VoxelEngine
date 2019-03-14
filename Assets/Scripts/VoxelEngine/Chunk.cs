@@ -7,13 +7,12 @@ namespace VoxelEngine {
         public static readonly int Size = 16;
         public static readonly int Rollover = 0;
 
-        public bool update;
-        public bool built;
+        public bool built { get; private set; }
 
+        public Transform Blocks;
         public MeshFilter BlockRend;
-        public MeshFilter TransRend;
-        public Transform StandaloneBlocks;
         public MeshCollider BlockCollider;
+        public MeshCollider BlockTrigger;
 
         public VoxelWorld world;
         public Coord3 position;
@@ -22,11 +21,13 @@ namespace VoxelEngine {
         private Block[, , ] blocks;
 
         private MeshData blockMesh;
-        private MeshData transMesh;
         private MeshData colliderMesh;
+        private MeshData triggerMesh;
 
         private ChunkColumn parent;
-        public Chunk[] neighbors;
+        private Chunk[] neighbors;
+
+        private bool update;
 
         public void Create(ChunkColumn parent, VoxelWorld world) {
             blocks = new Block[Chunk.Size, Chunk.Size, Chunk.Size];
@@ -37,13 +38,13 @@ namespace VoxelEngine {
             transform.parent = parent.transform;
 
             blockMesh = new MeshData();
-            transMesh = new MeshData();
             colliderMesh = new MeshData();
+            triggerMesh = new MeshData();
         }
 
         public void Init(Coord3 position) {
             blocks = new Block[Size, Size, Size];
-            
+
             built = false;
             update = false;
 
@@ -59,14 +60,14 @@ namespace VoxelEngine {
             blocks = null;
 
             blockMesh.Clear();
-            transMesh.Clear();
             colliderMesh.Clear();
+            triggerMesh.Clear();
 
             BlockRend.sharedMesh = null;
-            TransRend.sharedMesh = null;
             BlockCollider.sharedMesh = null;
+            BlockTrigger.sharedMesh = null;
 
-            foreach (GameObject child in StandaloneBlocks) {
+            foreach (GameObject child in Blocks) {
                 Destroy(child);
             }
         }
@@ -76,14 +77,13 @@ namespace VoxelEngine {
         }
 
         public void Render() {
-            update = false;
+            GenerateMesh();
+            ApplyMesh();
+        }
 
+        public void GenerateMesh() {
             blockMesh.Clear();
-            transMesh.Clear();
-            colliderMesh.Clear();
-
             FetchNeighbors();
-
             for (int x = 0; x < Size; x++) {
                 for (int y = 0; y < Size; y++) {
                     for (int z = 0; z < Size; z++) {
@@ -91,10 +91,13 @@ namespace VoxelEngine {
                     }
                 }
             }
+        }
 
+        public void ApplyMesh() {
+            update = false;
             BlockRend.sharedMesh = blockMesh.ToMesh();
-            TransRend.sharedMesh = transMesh.ToMesh();
             BlockCollider.sharedMesh = colliderMesh.ToColMesh();
+            BlockTrigger.sharedMesh = triggerMesh.ToColMesh();
         }
 
         public Block GetBlock(Coord3 pos) {
@@ -126,7 +129,7 @@ namespace VoxelEngine {
             }
         }
 
-        void AddBlockToMesh(int x, int y, int z) {
+        private void AddBlockToMesh(int x, int y, int z) {
             var pos = new Coord3(x, y, z);
             var block = blocks[x, y, z];
 
@@ -136,23 +139,32 @@ namespace VoxelEngine {
 
                     var rot = Rotate(i, block.rotation);
                     int texIndex = block.data.textureIndices[rot.index];
-                    if (block.data.transparent)
-                        transMesh.AddQuad(i, pos, rot.face, texIndex);
-                    else blockMesh.AddQuad(i, pos, rot.face, texIndex);
-                    colliderMesh.AddQuad(i, pos);
+
+                    blockMesh.AddQuad(i, pos, rot.face, texIndex, block.data.subMesh);
+
+                    if (block.data.collision) {
+                        colliderMesh.AddQuad(i, pos);
+                    } else {
+                        triggerMesh.AddQuad(i, pos);
+                    }
                 }
-            } else if (block.data.meshType == BlockMeshType.Decal) {
+            } else if (block.data.meshType == BlockMeshType.DecalCross) {
                 var texIndex = block.data.textureIndices[0];
-                transMesh.AddDecal(pos, texIndex);
+                blockMesh.AddDecalCross(pos, texIndex, block.data.subMesh);
+                if (block.data.collision) {
+                    colliderMesh.AddBoundingBox(pos, block.data.boundingSize);
+                } else {
+                    triggerMesh.AddBoundingBox(pos, block.data.boundingSize);
+                }
             }
         }
 
         private bool CullFace(Block block, Coord3 pos, int dir) {
-            if (block.data.transparent) return false;
+            if (block.data.subMesh == SubMesh.Transparent) return false;
             var adjPos = Coord3.Directions[dir] + pos;
             var adjacent = adjPos.InRange(0, Chunk.Size) ? GetBlock(adjPos) :
                 neighbors[dir]?.GetBlock(adjPos + worldPosition - neighbors[dir].worldPosition);
-            return adjacent != null && !adjacent.data.transparent;
+            return adjacent != null && adjacent.data.subMesh != SubMesh.Transparent;
         }
 
         private static readonly int[] zRot = { BlockFace.top, BlockFace.left, BlockFace.bottom, BlockFace.right },

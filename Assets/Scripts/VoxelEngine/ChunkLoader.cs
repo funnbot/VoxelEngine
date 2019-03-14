@@ -26,8 +26,6 @@ namespace VoxelEngine {
 
         IEnumerator LoadChunks() {
             while (true) {
-                yield return null;
-
                 var cpos = (Coord2) Coord3.FloorToInt(transform.position).WorldToChunk();
                 if (pos != cpos) pos = spiral = Coord2.zero;
                 pos = cpos;
@@ -35,14 +33,13 @@ namespace VoxelEngine {
                 if (DestroyChunks()) continue;
                 var load = pos + spiral;
                 if (Coord2.Distance(pos * Chunk.Size, load * Chunk.Size) > range) continue;
-
+                
                 yield return BuildChunks(load);
 
-                world.GetColumn(load).Render();
+                var column = world.GetColumn(load);
+                if (!column.rendered) column.Render();
 
                 SpiralOut(ref spiral);
-
-                yield return null;
             }
         }
 
@@ -60,19 +57,29 @@ namespace VoxelEngine {
         }
 
         IEnumerator BuildChunks(Coord2 pos) {
-            BuildChunk(pos);
+            for (int i = 0; i < 4; i++) 
+                LoadChunks(pos + Coord2.Directions[i]);
+
+            world.GetColumn(pos).Build();
             for (int i = 0; i < 4; i++) {
-                BuildChunk(pos + Coord2.Directions[i]);
+                world.GetColumn(pos + Coord2.Directions[i]).Build();
                 yield return null;
             }
         }
-        void BuildChunk(Coord2 p) {
+
+        void LoadChunks(Coord2 pos) {
+            LoadChunk(pos);
+            for (int i = 0; i < 4; i++) {
+                LoadChunk(pos + Coord2.Directions[i]);
+            }
+        }
+
+        void LoadChunk(Coord2 pos) {
             ChunkColumn column;
-            if (!world.columns.ContainsKey(p)) {
-                column = world.LoadColumn(p);
-                loadedChunks.Add(p);
-            } else column = world.GetColumn(p);
-            column.Build();
+            if (!world.columns.ContainsKey(pos)) {
+                column = world.LoadColumn(pos);
+                loadedChunks.Add(pos);
+            }
         }
 
         void SpiralOut(ref Coord2 c) {
