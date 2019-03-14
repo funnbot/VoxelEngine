@@ -39,7 +39,7 @@ namespace VoxelEngine {
 
         }
 
-        public virtual void AttachEvents() {
+        protected virtual void AttachEvents() {
             world.OnTick += OnTick;
         }
     }

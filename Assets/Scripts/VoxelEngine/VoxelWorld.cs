@@ -5,13 +5,18 @@ using UnityEngine;
 using VoxelEngine.ProceduralGeneration;
 
 namespace VoxelEngine {
-    using Watch = System.Diagnostics.Stopwatch;
 
     public class VoxelWorld : MonoBehaviour {
         public static readonly int Height = 80;
         public static readonly int ChunkHeight = Height / Chunk.Size;
 
         public static VoxelWorld Active { get; private set; }
+
+        public int renderAverage = 0;
+        [HideInInspector]
+        public int renderTime = 0;
+        [HideInInspector]
+        public int renderCount = 0;
 
         public GameObject ColumnFab;
         public int seed = 1347;
@@ -51,10 +56,12 @@ namespace VoxelEngine {
                 tick = 0;
                 OnTick?.Invoke();
             }
+            renderAverage = renderTime / renderCount;
         }
 
         public Block RegisterBlock(Block block, Coord3 position, Chunk chunk) {
             block.position = position;
+            block.chunk = chunk;
 
             Block outBlock = block;
             if (block.data.meshType == BlockMeshType.Custom) {
@@ -143,16 +150,23 @@ namespace VoxelEngine {
             return GetBlock(pos);
         }
 
-        public void SetBlock(Coord3 pos, Block block, bool update = true) {
+        public void SetBlock(Block block, Coord3 pos, bool update = true) {
             var chunkPos = pos.WorldToChunk();
             var chunk = GetChunk(chunkPos);
             if (chunk == null) return;
 
-            chunk.SetBlock(pos.WorldToBlock(chunk.worldPosition), block, update);
+            chunk.SetBlock(block, pos.WorldToBlock(chunk.worldPosition), update);
         }
-        public void SetBlock(RaycastHit hit, Block block, bool adjacent = true) {
+        public void SetBlock(BlockData block, Coord3 pos, Coord3 rot, bool update = true) {
+            var chunkPos = pos.WorldToChunk();
+            var chunk = GetChunk(chunkPos);
+            if (chunk == null) return;
+
+            chunk.SetBlock(block, pos.WorldToBlock(chunk.worldPosition), rot, update);
+        }
+        public void SetBlock(BlockData block, RaycastHit hit, Coord3 rotation, bool adjacent = true) {
             var pos = Coord3.RaycastToBlock(hit, adjacent);
-            SetBlock(pos, block, true);
+            SetBlock(block, pos, rotation, true);
         }
 
         void LoadBehaviours() {

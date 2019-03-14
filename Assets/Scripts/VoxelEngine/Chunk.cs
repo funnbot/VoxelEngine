@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 
 namespace VoxelEngine {
+    using Watch = System.Diagnostics.Stopwatch;
 
     [System.Serializable]
     public class Chunk : MonoBehaviour {
@@ -81,9 +82,16 @@ namespace VoxelEngine {
             ApplyMesh();
         }
 
+        Watch v = new Watch();
+
         public void GenerateMesh() {
             blockMesh.Clear();
+            colliderMesh.Clear();
+            triggerMesh.Clear();
             FetchNeighbors();
+
+            v.Restart();
+
             for (int x = 0; x < Size; x++) {
                 for (int y = 0; y < Size; y++) {
                     for (int z = 0; z < Size; z++) {
@@ -91,6 +99,10 @@ namespace VoxelEngine {
                     }
                 }
             }
+
+            v.Stop();
+            world.renderCount++;
+            world.renderTime += (int) v.ElapsedTicks;
         }
 
         public void ApplyMesh() {
@@ -104,7 +116,8 @@ namespace VoxelEngine {
             if (pos.InRange(0, Chunk.Size)) return blocks[pos.x, pos.y, pos.z];
             else return world.GetBlock(pos.BlockToWorld(worldPosition));
         }
-        public void SetBlock(Coord3 pos, Block block, bool update = true) {
+
+        public void SetBlock(Block block, Coord3 pos, bool update = true) {
             if (pos.InRange(0, Chunk.Size)) {
                 world.UnregisterBlock(blocks[pos.x, pos.y, pos.z]);
                 blocks[pos.x, pos.y, pos.z] =
@@ -114,7 +127,11 @@ namespace VoxelEngine {
                     Render();
                     UpdateNeighbors(pos);
                 }
-            } else world.SetBlock(pos.BlockToWorld(worldPosition), block, update);
+            } else world.SetBlock(block, pos.BlockToWorld(worldPosition), update);
+        }
+        public void SetBlock(BlockData blockData, Coord3 pos, Coord3 rot, bool update = true) {
+            var block = new Block(blockData, rot);
+            SetBlock(block, pos, update);
         }
 
         public void UpdateNeighbors(Coord3 changed) {
@@ -140,12 +157,12 @@ namespace VoxelEngine {
                     var rot = Rotate(i, block.rotation);
                     int texIndex = block.data.textureIndices[rot.index];
 
-                    blockMesh.AddQuad(i, pos, rot.face, texIndex, block.data.subMesh);
+                    blockMesh.AddCubeFace(i, pos, rot.face, texIndex, block.data.subMesh);
 
                     if (block.data.collision) {
-                        colliderMesh.AddQuad(i, pos);
+                        colliderMesh.AddCubeFace(i, pos);
                     } else {
-                        triggerMesh.AddQuad(i, pos);
+                        triggerMesh.AddCubeFace(i, pos);
                     }
                 }
             } else if (block.data.meshType == BlockMeshType.DecalCross) {

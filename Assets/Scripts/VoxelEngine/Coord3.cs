@@ -45,6 +45,7 @@ namespace VoxelEngine {
         new Coord3(Mathf.FloorToInt(v.x), Mathf.FloorToInt(v.y), Mathf.FloorToInt(v.z));
 
         public static float Distance(Coord3 a, Coord3 b) => (a - b).magnitude;
+        public static float SqrDistance(Coord3 a, Coord3 b) => (a - b).sqrMagnitude;
 
         public static Coord3 RaycastToBlock(in RaycastHit hit, bool adjacent) =>
         Coord3.FloorToInt(hit.point + Vector3.one * 0.5f +

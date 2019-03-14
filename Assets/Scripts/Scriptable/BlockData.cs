@@ -68,8 +68,8 @@ namespace VoxelEngine {
         BlockData bd;
 
         public override void OnInspectorGUI() {
-            base.OnInspectorGUI();
             EditorGUI.BeginChangeCheck();
+            base.OnInspectorGUI();
 
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Textures");

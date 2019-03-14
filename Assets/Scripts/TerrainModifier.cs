@@ -44,9 +44,9 @@ public class TerrainModifier : MonoBehaviour {
                 if (!Input.GetKey(KeyCode.LeftAlt)) {
                     var block = ResourceStore.Blocks[blocks[selected]];
 
-                    world.SetBlock(hit, new Block(block, rot), false);
+                    world.SetBlock(block, hit, rot, false);
                 } else {
-                    world.SetBlock(hit, new Block(air, rot));
+                    world.SetBlock(air, hit, rot);
                 }
             }
         } else if (Input.GetMouseButtonDown(1)) {

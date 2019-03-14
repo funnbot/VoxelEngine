@@ -39,11 +39,15 @@ namespace VoxelEngine.ProceduralGeneration {
         protected void SetBlock(Chunk chunk, Coord3 localPos, Block block, bool replace = false) {
             var b = chunk.GetBlock(localPos);
             if (replace || b == null || b.data.meshType == BlockMeshType.Air) {
-                chunk.SetBlock(localPos, block, false);
+                chunk.SetBlock(block, localPos, false);
             }
         }
-        protected void SetBlock(Chunk chunk, Coord3 localPos, BlockData block, bool replace = false) =>
-            SetBlock(chunk, localPos, new Block(block), replace);
+        protected void SetBlock(Chunk chunk, Coord3 localPos, BlockData blockData, Coord3 rotation = new Coord3(), bool replace = false) {
+            var b = chunk.GetBlock(localPos);
+            if (replace || b == null || b.data.meshType == BlockMeshType.Air) {
+                chunk.SetBlock(blockData, localPos, rotation, false);
+            }
+        }
 
         protected int GetNoise(int x, int y, int z, float scale, int max) {
             return Mathf.FloorToInt((GetNoise(x * scale, y * scale, z * scale) + 1f) * (max / 2f));
@@ -80,7 +84,7 @@ namespace VoxelEngine.ProceduralGeneration {
                         var val = s[l][zi * s.size.y + xi];
                         var block = s.blocks[val];
                         var pos = new Coord3(x + xi, y + l, z + zi) - (Coord3) s.origin + Coord3.one;
-                        SetBlock(chunk, pos, block, s.cutout);
+                        SetBlock(chunk, pos, block, Coord3.zero, s.cutout);
                     }
                 }
             }

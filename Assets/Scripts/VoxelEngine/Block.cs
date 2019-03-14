@@ -6,8 +6,10 @@ namespace VoxelEngine {
 
     public class Block {
         public BlockData data;
-        public Coord3 position;
         public Coord3 rotation;
+
+        public Coord3 position;
+        public Chunk chunk;
 
         public Block(BlockData data, Coord3 rotation = new Coord3()) {
             this.data = data;
@@ -16,8 +18,9 @@ namespace VoxelEngine {
 
         public Block(Block copy) {
             data = copy.data;
-            position = copy.position;
             rotation = copy.rotation;
+            position = copy.position;
+            chunk = copy.chunk;
         }
 
         public Block ConvertTo(System.Type type) {

@@ -26,14 +26,16 @@ namespace VoxelEngine {
 
         IEnumerator LoadChunks() {
             while (true) {
+                yield return null;
+
                 var cpos = (Coord2) Coord3.FloorToInt(transform.position).WorldToChunk();
                 if (pos != cpos) pos = spiral = Coord2.zero;
                 pos = cpos;
 
                 if (DestroyChunks()) continue;
                 var load = pos + spiral;
-                if (Coord2.Distance(pos * Chunk.Size, load * Chunk.Size) > range) continue;
-                
+                if (Coord2.SqrDistance(pos * Chunk.Size, load * Chunk.Size) > range * range) continue;
+
                 yield return BuildChunks(load);
 
                 var column = world.GetColumn(load);
@@ -47,7 +49,7 @@ namespace VoxelEngine {
             int len = loadedChunks.Count();
             for (int i = len - 1; i >= 0; i--) {
                 var p = loadedChunks[i];
-                if (Coord2.Distance(pos * Chunk.Size, p * Chunk.Size) > range) {
+                if (Coord2.SqrDistance(pos * Chunk.Size, p * Chunk.Size) > range * range) {
                     world.DestroyColumn(p);
                     loadedChunks.RemoveAt(i);
                     return true;
@@ -57,7 +59,7 @@ namespace VoxelEngine {
         }
 
         IEnumerator BuildChunks(Coord2 pos) {
-            for (int i = 0; i < 4; i++) 
+            for (int i = 0; i < 4; i++)
                 LoadChunks(pos + Coord2.Directions[i]);
 
             world.GetColumn(pos).Build();

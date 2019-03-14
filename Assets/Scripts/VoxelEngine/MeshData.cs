@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace VoxelEngine {
@@ -23,14 +24,14 @@ namespace VoxelEngine {
                 tris[i] = new List<int>();
         }
 
-        public void AddQuad(int direction, Coord3 position, int faceRotation, int textureIndex, SubMesh subMesh) {
-            AddQuadVerts(direction, position);
+        public void AddCubeFace(int direction, Coord3 position, int faceRotation, int textureIndex, SubMesh subMesh) {
+            AddCubeFaceVerts(direction, position);
             AddQuadTris((int) subMesh);
             AddQuadUV(textureIndex, faceRotation);
         }
 
-        public void AddQuad(int direction, Coord3 position) {
-            AddQuadVerts(direction, position);
+        public void AddCubeFace(int direction, Coord3 position) {
+            AddCubeFaceVerts(direction, position);
             AddQuadTris(0);
         }
 
@@ -44,7 +45,8 @@ namespace VoxelEngine {
         public void AddBoundingBox(Coord3 position, float size, int down = 3, bool cullDown = false) {
             for (int i = 0; i < 6; i++) {
                 if (cullDown && i == down) continue;
-                AddQuadVerts(i, position, size, down);
+                AddCubeFaceVerts(i, position, size, down);
+                AddQuadTris(0);
             }
         }
 
@@ -80,20 +82,22 @@ namespace VoxelEngine {
 
         private const float F = 0.5f,
             T = 0.3535f,
-            O = 0.1f;
+            O = 0.01f;
 
         private void AddQuadUV(int ind, int rot) {
-            Coord2 a = Coord2.Corners[(rot + 4) % 4],
-                b = Coord2.Corners[(rot + 5) % 4],
-                c = Coord2.Corners[(rot + 6) % 4],
-                d = Coord2.Corners[(rot + 7) % 4];
+            Coord2 a = Coord2.TileCorners[(rot + 4) % 4],
+                b = Coord2.TileCorners[(rot + 5) % 4],
+                c = Coord2.TileCorners[(rot + 6) % 4],
+                d = Coord2.TileCorners[(rot + 7) % 4];
             uvs.Add(new Vector3(a.x, a.y, ind));
             uvs.Add(new Vector3(b.x, b.y, ind));
             uvs.Add(new Vector3(c.x, c.y, ind));
             uvs.Add(new Vector3(d.x, d.y, ind));
         }
 
-        private void AddQuadVerts(int dir, Coord3 pos) {
+        #region verts
+
+        private void AddCubeFaceVerts(int dir, Coord3 pos) {
             float x = pos.x, y = pos.y, z = pos.z;
             switch (dir) {
                 case BlockFace.front:
@@ -135,7 +139,7 @@ namespace VoxelEngine {
             }
         }
 
-        private void AddQuadVerts(int dir, Coord3 pos, float s, int down) {
+        private void AddCubeFaceVerts(int dir, Coord3 pos, float s, int down) {
             float x = pos.x, y = pos.y, z = pos.z;
             if (down != 3) Debug.LogError("Directional Bounding Boxes Not Implemented");
             switch (dir) {
@@ -222,6 +226,49 @@ namespace VoxelEngine {
             }
         }
 
+        private void AddDecalFlatVerts(Coord3 pos) {
+            float x = pos.x, y = pos.y, z = pos.z;
+            verts.Add(new Vector3(x - F, y + O, z - F));
+            verts.Add(new Vector3(x + F, y + O, z - F));
+            verts.Add(new Vector3(x + F, y + O, z + F));
+            verts.Add(new Vector3(x - F, y + O, z + F));
+        }
+
+        private void AddDecalRampVerts(Coord3 pos, int rot) {
+            float x = pos.x, y = pos.y, z = pos.z;
+            var dir = Coord2.TileCorners[rot]; // (1, 0);
+            switch (rot) {
+                case 0:
+                    verts.Add(new Vector3(x - F, y + F + O, z - F));
+                    verts.Add(new Vector3(x + F, y + F + O, z - F));
+                    verts.Add(new Vector3(x + F, y + O, z + F));
+                    verts.Add(new Vector3(x - F, y + O, z + F));
+                    break;
+                case 1:
+                    verts.Add(new Vector3(x + F, y + F + O, z - F));
+                    verts.Add(new Vector3(x + F, y + F + O, z + F));
+                    verts.Add(new Vector3(x - F, y + O, z + F));
+                    verts.Add(new Vector3(x - F, y + O, z - F));
+                    break;
+                case 2:
+                    verts.Add(new Vector3(x + F, y + F + O, z + F));
+                    verts.Add(new Vector3(x - F, y + F + O, z + F));
+                    verts.Add(new Vector3(x - F, y + O, z - F));
+                    verts.Add(new Vector3(x + F, y + O, z - F));
+                    break;
+                case 3:
+                    verts.Add(new Vector3(x - F, y + F + O, z + F));
+                    verts.Add(new Vector3(x - F, y + F + O, z - F));
+                    verts.Add(new Vector3(x + F, y + O, z - F));
+                    verts.Add(new Vector3(x + F, y + O, z + F));
+                    break;
+            }
+        }
+
+        #endregion verts
+
+        #region tris
+
         private void AddDecalCrossTris(int sub) {
             int c = verts.Count;
             AddQuadTris(c - 12, sub);
@@ -261,6 +308,8 @@ namespace VoxelEngine {
             tris[s].Add(c - 2);
             tris[s].Add(c - 1);
         }
+
+        #endregion tris
     }
 
 }

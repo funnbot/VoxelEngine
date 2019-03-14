@@ -21,6 +21,7 @@ namespace VoxelEngine {
         public int sqrMagnitude { get => x * x + y * y; }
 
         public static float Distance(Coord2 a, Coord2 b) => (a - b).magnitude;
+        public static float SqrDistance(Coord2 a, Coord2 b) => (a - b).sqrMagnitude;
 
         #region operators
 
@@ -85,6 +86,11 @@ namespace VoxelEngine {
         public static Coord2 right { get => s_Right; }
         public static Coord2 left { get => s_Left; }
 
+        public static Coord2 topLeft { get => s_TopLeft; }
+        public static Coord2 topRight { get => s_TopRight; }
+        public static Coord2 bottomRight { get => s_BottomRight; }
+        public static Coord2 bottomLeft { get => s_BottomLeft; }
+
         private static readonly Coord2 s_Zero = new Coord2(0, 0);
         private static readonly Coord2 s_One = new Coord2(1, 1);
         private static readonly Coord2 s_Up = new Coord2(0, 1);
@@ -92,8 +98,14 @@ namespace VoxelEngine {
         private static readonly Coord2 s_Right = new Coord2(1, 0);
         private static readonly Coord2 s_Left = new Coord2(-1, 0);
 
+        private static readonly Coord2 s_TopLeft = new Coord2(-1, 1);
+        private static readonly Coord2 s_TopRight = new Coord2(1, 1);
+        private static readonly Coord2 s_BottomRight = new Coord2(1, -1);
+        private static readonly Coord2 s_BottomLeft = new Coord2(-1, -1);
+
         public static readonly Coord2[] Directions = { up, down, right, left };
-        public static readonly Coord2[] Corners = { up, one, right, zero };
+        public static readonly Coord2[] TileCorners = { up, one, right, zero };
+
     }
 
 }
