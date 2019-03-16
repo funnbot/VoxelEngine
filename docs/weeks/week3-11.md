@@ -77,5 +77,12 @@ void SpiralOut(ref Coord2 c) {
 ##### Threading
 > The initial tries with threading have shown that doing the procedural generation in a seperate thread because it takes the longest from all the simplexnoise speeds up spawn generation and should minimize the lag between frames when loading new chunks. The procedural mesh generation or render that is done each time a block is placed can also be placed in a seperate thread, although currently there is almost no visible lag.
 
+
+### Log
+- Block behaviours are functioning allowing for an ECS approach to the tick updates to each chunk. Instead of each block having its own update method, the ie. grass block will all be assigned to one block behaviour which will run through the list of all of them, and turn them to dirt or other actions.
+- The interface for each block data type allows for the implementation of a GUI, when clicking on a block, that method is called in the OnGUI event which allows for unities basic GUI functions, instead of making my own.
+- Coord3's now have their own property drawers similar to Vector3s
+
+
 #### Next week
 > Serializing chunks and saving them instead of re generating them each time they are loaded.
