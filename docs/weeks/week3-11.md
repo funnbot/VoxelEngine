@@ -44,6 +44,7 @@ public static(int index, int face) Rotate(int dir, Coord3 rot) {
 ##### Sub meshing and blocks without collision
 > Previously I had a game object for each mesh that was being generated, this meant that there was two objects with mesh renderers for opaque and transparent blocks, and a object for the block collider. Now, both opaque and transparent blocks share a mesh renderer using submeshing. Two shaders are assigned to the material, and two triangles arrays are stored. The same vertices are used for both, but they are used by different triangle indicies. The other issue was that objects without collision would have no ability to be interacted with by raycasts. Now, a new trigger collider is generated for these blocks, which will not collide with the player, but still get hit by a raycast.
 
+
 ##### Chunk loading
 > Chunk loading around the player needs to be able to predict where they will be, while not loading too many chunks to drop framerate. 
 
