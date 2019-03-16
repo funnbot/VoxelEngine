@@ -2,6 +2,9 @@
 
 ## Week 3/11
 
+> A proposed name for the game is Factor3 Cubed (Factory^3) and a logo was made
+![Factor3Cubed](../images/factor3logo.png)
+
 ### Challenges
 ##### Block rotation
 > Block rotation now works as intented, it takes in a Coord3 rotation value, similar to eulerAngles in the inspector, except divided by 90 since blocks can only be rotated by 90 degress to maintain symmetry. Given that rotation, and the current face of the cube that is being draw, it outputs the texture that should be placed on that face, and the rotation of the UVs for that face. The end result turned out a bit more hardcoded than as an agorithm, but it still functions.
