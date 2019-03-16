@@ -52,3 +52,6 @@
 *.meta linguist-generated
 *.prefab linguist-generated
 *.unity linguist-generated
+
+#Untrack the docs images
+docs/images/*.png -filter=lfs -diff=lfs -merge=lfs -text
