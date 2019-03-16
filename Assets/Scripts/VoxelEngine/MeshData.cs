@@ -236,7 +236,7 @@ namespace VoxelEngine {
 
         private void AddDecalRampVerts(Coord3 pos, int rot) {
             float x = pos.x, y = pos.y, z = pos.z;
-            var dir = Coord2.TileCorners[rot]; // (1, 0);
+            var dir = Coord2.TileCorners[rot]; // (-1, 1), (1, 1), (1, -1), (-1, -1)
             switch (rot) {
                 case 0:
                     verts.Add(new Vector3(x - F, y + F + O, z - F));
