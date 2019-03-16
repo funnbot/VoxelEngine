@@ -2,8 +2,8 @@
 
 ## Week 3/11
 
-> A proposed name for the game is Factor3 Cubed (Factory^3) and a logo was made
-![Factor3Cubed](../images/factor3logo.png)
+> A proposed name for the game is Factor3 Cubed (Factory³ / Factory^3 / Factor³) and a logo was made
+![Factor3Cubed](../images/factor3logo.png)³
 
 ### Challenges
 ##### Block rotation
