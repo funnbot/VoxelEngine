@@ -19,7 +19,7 @@ namespace VoxelEngine {
         public Coord3 position;
         public Coord3 worldPosition;
 
-        private Block[, , ] blocks;
+        private Block[][][] blocks;
 
         private MeshData blockMesh;
         private MeshData colliderMesh;
@@ -31,8 +31,6 @@ namespace VoxelEngine {
         private bool update;
 
         public void Create(ChunkColumn parent, VoxelWorld world) {
-            blocks = new Block[Chunk.Size, Chunk.Size, Chunk.Size];
-
             this.world = world;
             this.parent = parent;
 
@@ -44,7 +42,13 @@ namespace VoxelEngine {
         }
 
         public void Init(Coord3 position) {
-            blocks = new Block[Size, Size, Size];
+            blocks = new Block[Size][][];
+            for (int x = 0; x < Size; x++) {
+                blocks[x] = new Block[Size][]; 
+                for (int y = 0; y < Size; y++) {
+                    blocks[x][y] = new Block[Size];
+                }
+            }
 
             built = false;
             update = false;
@@ -71,6 +75,14 @@ namespace VoxelEngine {
             foreach (GameObject child in Blocks) {
                 Destroy(child);
             }
+        }
+
+        public void Serialize(ref SerialChunkColumn serial, int w) {
+            serial.blocks[w] = blocks;
+        }
+
+        public void Deserialize(ref SerialChunkColumn serial, int w) {
+            blocks = serial.blocks[w];
         }
 
         void OnTick() {
@@ -113,14 +125,14 @@ namespace VoxelEngine {
         }
 
         public Block GetBlock(Coord3 pos) {
-            if (pos.InRange(0, Chunk.Size)) return blocks[pos.x, pos.y, pos.z];
+            if (pos.InRange(0, Chunk.Size)) return blocks[pos.x][pos.y][pos.z];
             else return world.GetBlock(pos.BlockToWorld(worldPosition));
         }
 
         public void SetBlock(Block block, Coord3 pos, bool update = true) {
             if (pos.InRange(0, Chunk.Size)) {
-                world.UnregisterBlock(blocks[pos.x, pos.y, pos.z]);
-                blocks[pos.x, pos.y, pos.z] =
+                world.UnregisterBlock(blocks[pos.x][pos.y][pos.z]);
+                blocks[pos.x][pos.y][pos.z] =
                     world.RegisterBlock(block, pos.BlockToWorld(worldPosition), this);
 
                 if (update) {
@@ -148,7 +160,7 @@ namespace VoxelEngine {
 
         private void AddBlockToMesh(int x, int y, int z) {
             var pos = new Coord3(x, y, z);
-            var block = blocks[x, y, z];
+            var block = blocks[x][y][z];
 
             if (block.data.meshType == BlockMeshType.Cube) {
                 for (int i = 0; i < 6; i++) {

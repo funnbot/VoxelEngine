@@ -18,6 +18,7 @@ namespace VoxelEngine {
         [HideInInspector]
         public int renderCount = 0;
 
+        public string saveName;
         public GameObject ColumnFab;
         public int seed = 1347;
         public int texturePixelResolution = 128;

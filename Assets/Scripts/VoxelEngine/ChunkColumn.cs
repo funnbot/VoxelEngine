@@ -6,7 +6,7 @@ namespace VoxelEngine {
 
     public class ChunkColumn : MonoBehaviour {
         public GameObject chunkFab;
-        
+
         public Chunk[] chunks;
         public Coord2 position { get; private set; }
 
@@ -44,14 +44,34 @@ namespace VoxelEngine {
             }
         }
 
+        public SerialChunkColumn Serialize() {
+            var serial = new SerialChunkColumn();
+            serial.position = position;
+            serial.blocks = new Block[VoxelWorld.ChunkHeight][][][];
+            for (int i = 0; i < VoxelWorld.ChunkHeight; i++)
+                chunks[i].Serialize(ref serial, i);
+            return serial;
+        }
+
+        public void Deserialize(SerialChunkColumn serial) {
+            for (int i = 0; i < VoxelWorld.ChunkHeight; i++) 
+                chunks[i].Deserialize(ref serial, i);
+        }
+
         public void CleanUp() {
+            Serializer.SaveColumn(world.saveName, this.Serialize());
+
             foreach (var chunk in chunks)
                 chunk.CleanUp();
         }
 
         public void Build() {
             built = true;
-            world.generator.GenerateColumn(this);
+
+            SerialChunkColumn serial = null;
+            if (Serializer.LoadColumn(world.saveName, position, ref serial)) 
+                this.Deserialize(serial);
+            else world.generator.GenerateColumn(this);
         }
 
         public void Render() {
