@@ -84,6 +84,8 @@ namespace VoxelEngine {
             }
         }
 
+        
+
         void SpiralOut(ref Coord2 c) {
             int x = c.x, y = c.y;
             if (x >= 0 && y == 0) y++;
