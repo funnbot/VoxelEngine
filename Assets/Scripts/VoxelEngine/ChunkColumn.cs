@@ -7,18 +7,14 @@ namespace VoxelEngine {
     public class ChunkColumn : MonoBehaviour {
         public GameObject chunkFab;
 
-        public Chunk[] chunks;
         public Coord2 position { get; private set; }
 
         public bool built { get; private set; }
+        public bool generated { get; private set; }
         public bool rendered { get; private set; }
 
         private VoxelWorld world;
-
-        public Chunk GetChunk(int y) {
-            if (InRange(y)) return chunks[y];
-            else return null;
-        }
+        private Chunk[] chunks;
 
         public void Create(VoxelWorld world) {
             this.world = world;
@@ -34,6 +30,7 @@ namespace VoxelEngine {
             this.position = position;
 
             built = false;
+            generated = false;
             rendered = false;
 
             transform.parent = world.transform;
@@ -43,6 +40,11 @@ namespace VoxelEngine {
                 var pos = new Coord3(position.x, i, position.y);
                 chunks[i].Init(pos);
             }
+        }
+
+        public void CleanUp() {
+            foreach (var chunk in chunks)
+                chunk.CleanUp();
         }
 
         public SerialChunkColumn Serialize() {
@@ -60,11 +62,9 @@ namespace VoxelEngine {
                 chunks[i].Deserialize(serial, i);
         }
 
-        public void CleanUp() {
-            if (built) Serializer.SaveColumn(world.saveName, position, this.Serialize());
-
-            foreach (var chunk in chunks)
-                chunk.CleanUp();
+        public Chunk GetChunk(int y) {
+            if (InRange(y)) return chunks[y];
+            else return null;
         }
 
         public void Build() {
@@ -76,13 +76,8 @@ namespace VoxelEngine {
             else world.generator.GenerateColumn(this);
         }
 
-        public void Render() {
-            rendered = true;
-            foreach (var chunk in chunks)
-                chunk.Render();
-        }
-
         public void GenerateMesh() {
+            generated = true;
             foreach (var chunk in chunks)
                 chunk.GenerateMesh();
         }
@@ -91,6 +86,17 @@ namespace VoxelEngine {
             rendered = true;
             foreach (var chunk in chunks)
                 chunk.ApplyMesh();
+        }
+
+        public void Render() {
+            generated = true;
+            rendered = true;
+            foreach (var chunk in chunks)
+                chunk.Render();
+        }
+
+        public void Save() {
+            if (built) Serializer.SaveColumn(world.saveName, position, this.Serialize());
         }
 
         private bool InRange(int y) => y >= 0 && y < chunks.Length;

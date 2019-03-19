@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -15,64 +16,103 @@ namespace VoxelEngine {
         private Coord2 spiral = Coord2.zero;
 
         private List<Coord2> loaded;
-        private List<Coord2> built;
-        private List<Coord2> rendered;
 
         void Start() {
             loaded = new List<Coord2>();
-            built = new List<Coord2>();
-            rendered = new List<Coord2>();
 
-            world = WorldManager.ActiveWorld;
+            WorldManager.OnWorldSpawn += OnWorldSpawn;
+        }
+
+        void OnWorldSpawn(VoxelWorld world) {
+            this.world = world;
             world.OnSpawnLoad += OnSpawnLoad;
         }
 
         void OnSpawnLoad() {
-           // StartCoroutine(LoadChunks());
+            StartCoroutine(LoadChunksRoutine());
         }
 
-        IEnumerator LoadChunks() {
+        IEnumerator LoadChunksRoutine() {
             while (true) {
-                yield return null;
-
-                var cpos = (Coord2) Coord3.FloorToInt(transform.position).WorldToChunk();
-                if (pos != cpos) spiral = Coord2.zero;
-                pos = cpos;
-
-                if (DestroyChunks()) continue;
-
-                var load = pos + spiral;
-                if (Coord2.SqrDistance(pos * Chunk.Size, load * Chunk.Size) > range * range) continue;
-
-                //yield return BuildChunks(load);
-
-                var column = world.GetColumn(load);
-                if (!column.rendered) column.Render();
-
-                SpiralOut(ref spiral);
+                var t = LoadChunk();
+                do yield return null;
+                while (t.Status != TaskStatus.RanToCompletion);
             }
         }
 
-        void CreateChunks() {
-            foreach (Coord2 a in Coord2.Directions) {
-                foreach (Coord2 b in Coord2.Directions) {
-                    
+        async Task LoadChunk() {
+            var cpos = (Coord2) Coord3.FloorToInt(transform.position).WorldToChunk();
+            if (pos != cpos) spiral = Coord2.zero;
+            pos = cpos;
+            var load = pos + spiral;
+
+            if (await DestroyChunks()) return;
+
+            if (!ColumnInRange(load, range - 32)) return;
+
+            Debug.Log("Load: " + load);
+
+            LoadColumns(load);
+            var column = world.GetColumn(load);
+
+            if (!column.built) {
+                await Task.Run(column.Build);
+            }
+            if (!column.generated) {
+                await Task.Run(column.GenerateMesh);
+                foreach (var dir in Coord2.Directions) {
+                    var col = world.GetColumn(load + dir);
+                    if (col != null && col.generated) {
+                        await Task.Run(col.GenerateMesh);
+                    }
                 }
             }
+            if (!column.rendered) {
+                column.ApplyMesh();
+                foreach (var dir in Coord2.Directions) {
+                    var col = world.GetColumn(load + dir);
+                    if (col != null && col.generated && col.rendered) {
+                        col.ApplyMesh();
+                    }
+                }
+            }
+
+            SpiralOut(ref spiral);
+            return;
         }
 
-        bool DestroyChunks() {
+        void LoadColumns(Coord2 pos) {
+            LoadColumn(pos);
+            foreach (var dir in Coord2.Directions) {
+                LoadColumn(pos + dir);
+            }
+        }
+
+        void LoadColumn(Coord2 pos) {
+            if (world.columns.ContainsKey(pos)) return;
+            world.LoadColumn(pos);
+            loaded.Add(pos);
+        }
+
+        async Task<bool> DestroyChunks() {
             int len = loaded.Count();
             for (int i = len - 1; i >= 0; i--) {
                 var p = loaded[i];
-                if (Coord2.SqrDistance(pos * Chunk.Size, p * Chunk.Size) > range * range) {
-                    world.DestroyColumn(p);
+                if (!ColumnInRange(p, range)) {
+                    var col = world.GetColumn(p);
+                    if (col != null) {
+                        await Task.Run(col.Save);
+                        world.DestroyColumn(p);
+                    }
                     loaded.RemoveAt(i);
                     return true;
                 }
             }
             return false;
         }
+
+        bool ColumnInRange(Coord2 col, int range) =>
+            Coord2.SqrDistance(pos * Chunk.Size, col * Chunk.Size) < range * range;
 
         void SpiralOut(ref Coord2 c) {
             int x = c.x, y = c.y;
@@ -118,19 +158,4 @@ namespace VoxelEngine {
             spiral = new Coord2(x, y);
         }
     }
-
 }
-
-//  Coord  |  X>Y  | Sign
-//  0,0        
-//  1,0
-//  0,1
-//  -1,0
-//  0,-1
-//  
-//
-//
-//
-//
-//
-//

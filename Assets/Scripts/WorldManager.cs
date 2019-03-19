@@ -11,8 +11,11 @@ public class WorldManager : MonoBehaviour {
     private VoxelWorld _active;
     public static VoxelWorld ActiveWorld { get => instance?._active; }
 
+    public delegate void WorldSpawn(VoxelWorld world);
+    public static event WorldSpawn OnWorldSpawn;
+
     void Start() {
-        SpawnWorld("Sample", GeneratorType.Classic, 1337);
+        SpawnWorld("Sample", GeneratorType.Classic, 1338);
     }
 
     public static VoxelWorld SpawnWorld(string saveName, GeneratorType generator, int seed) {
@@ -27,6 +30,10 @@ public class WorldManager : MonoBehaviour {
         world.name = saveName;
         world.generatorType = generator;
         world.seed = seed;
+
+        OnWorldSpawn?.Invoke(world);
+
+        // System.IO.Directory.Delete($"Worlds/{world.saveName}", true);
 
         return world;
     }

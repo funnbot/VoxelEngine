@@ -25,9 +25,15 @@ namespace VoxelEngine {
         public int spawnDensity;
 
         [HideInInspector]
+        public string blockName;
+        [HideInInspector]
         public int[] textureIndices;
         [HideInInspector]
         public TextureIndex[] textures = new TextureIndex[6];
+
+        void Awake() {
+            blockName = name;
+        }
     }
 
     public enum BlockMeshType {
