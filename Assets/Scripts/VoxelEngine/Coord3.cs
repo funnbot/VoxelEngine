@@ -1,12 +1,17 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using MessagePack;
 
 namespace VoxelEngine {
 
+    [MessagePackObject]
     [System.Serializable]
     public struct Coord3 : System.IEquatable<Coord3> {
+        [Key(0)]
         public int x;
+        [Key(1)]
         public int y;
+        [Key(2)]
         public int z;
 
         public Coord3(int x, int y, int z) {
@@ -38,7 +43,9 @@ namespace VoxelEngine {
         x >= incLower && x < excUpper && y >= incLower &&
         y < excUpper && z >= incLower && z < excUpper;
 
+        [IgnoreMember]
         public float magnitude { get => Mathf.Sqrt((float) (x * x + y * y + z * z)); }
+        [IgnoreMember]
         public int sqrMagnitude { get => x * x + y * y + z * z; }
 
         public static Coord3 FloorToInt(Vector3 v) =>

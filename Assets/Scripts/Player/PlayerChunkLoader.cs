@@ -50,8 +50,6 @@ namespace VoxelEngine {
 
             if (!ColumnInRange(load, range - 32)) return;
 
-            Debug.Log("Load: " + load);
-
             LoadColumns(load);
             var column = world.GetColumn(load);
 

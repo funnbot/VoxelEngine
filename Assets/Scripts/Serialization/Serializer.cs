@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using MessagePack;
 using UnityEngine;
 using VoxelEngine;
 
@@ -12,11 +13,9 @@ public static class Serializer {
     public static void SaveColumn(string worldSave, Coord2 pos, SerialChunkColumn column) {
         string saveFile = FolderName(worldSave) + FileName(pos);
 
-        BinaryFormatter formatter = new BinaryFormatter();
-        Stream stream = new FileStream(saveFile, FileMode.Create, FileAccess.Write, FileShare.None);
-
-        formatter.Serialize(stream, column);
-        stream.Close();
+        using (FileStream stream = new FileStream(saveFile, FileMode.Create, FileAccess.Write, FileShare.None)) {
+            MessagePackSerializer.Serialize<SerialChunkColumn>(stream, column);
+        }
     }
 
     public static bool LoadColumn(string worldSave, Coord2 pos, out SerialChunkColumn column) {
@@ -27,14 +26,9 @@ public static class Serializer {
             return false;
         }
 
-        BinaryFormatter formatter = new BinaryFormatter();
-        FileStream stream = new FileStream(saveFile, FileMode.Open);
-
-        Debug.Log("Loaded: " + pos);
-
-        column = (SerialChunkColumn)formatter.Deserialize(stream);
-        Debug.Log(column.blocks[0][0][0][0]);
-        stream.Close();
+        using (FileStream stream = new FileStream(saveFile, FileMode.Open)) {
+            column = MessagePackSerializer.Deserialize<SerialChunkColumn>(stream);
+        }
         return true;
     }
 

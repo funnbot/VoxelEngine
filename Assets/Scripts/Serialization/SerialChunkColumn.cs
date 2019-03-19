@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using VoxelEngine;
+using MessagePack;
 
-[System.Serializable]
+[System.Serializable, MessagePackObject]
 public class SerialChunkColumn {
-    [SerializeField]
+    [Key(0)]
     public Block[][][][] blocks;
 }

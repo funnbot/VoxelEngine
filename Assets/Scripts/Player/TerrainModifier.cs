@@ -20,12 +20,12 @@ public class TerrainModifier : MonoBehaviour {
     int selected;
 
     void Start() {
-        world = WorldManager.ActiveWorld;
         air = ResourceStore.Blocks["air"];
         Cursor.lockState = CursorLockMode.Locked;
     }
 
     void Update() {
+        world = WorldManager.ActiveWorld;
         if (Input.GetKeyDown(KeyCode.E)) {
             if (++selected >= blocks.Length) selected = 0;
             Debug.Log("Selected: " + blocks[selected]);

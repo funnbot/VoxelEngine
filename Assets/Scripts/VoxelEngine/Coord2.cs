@@ -1,12 +1,16 @@
 ﻿using System.Globalization;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using MessagePack;
 
 namespace VoxelEngine {
 
+    [MessagePackObject]
     [System.Serializable]
     public struct Coord2 : System.IEquatable<Coord2> {
+        [Key(0)]
         public int x;
+        [Key(1)]
         public int y;
 
         public Coord2(int x, int y) {
@@ -17,7 +21,9 @@ namespace VoxelEngine {
         public static Coord2 FloorToInt(Vector2 v) =>
         new Coord2(Mathf.FloorToInt(v.x), Mathf.FloorToInt(v.y));
 
+        [IgnoreMember]
         public float magnitude { get => Mathf.Sqrt((float) (x * x + y * y)); }
+        [IgnoreMember]
         public int sqrMagnitude { get => x * x + y * y; }
 
         public static float Distance(Coord2 a, Coord2 b) => (a - b).magnitude;

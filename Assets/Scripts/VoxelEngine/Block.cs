@@ -1,24 +1,28 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using MessagePack;
 using UnityEngine;
 
 namespace VoxelEngine {
 
-    [System.Serializable]
+    [System.Serializable, MessagePackObject]
     public class Block {
+        [Key(0)]
         public string dataName;
+        [Key(1)]
         public Coord3 rotation;
+        [Key(2)]
         public Coord3 position;
 
-        [System.NonSerialized]
+        [System.NonSerialized, IgnoreMember]
         public BlockData data;
-        [System.NonSerialized]
+        [System.NonSerialized, IgnoreMember]
         public Chunk chunk;
 
         public Block(BlockData data, Coord3 rotation = new Coord3()) {
             this.data = data;
             this.rotation = rotation;
-            dataName = data.name;
+            dataName = data.blockName;
         }
 
         public Block(Block copy) {
@@ -27,6 +31,13 @@ namespace VoxelEngine {
             rotation = copy.rotation;
             position = copy.position;
             chunk = copy.chunk;
+        }
+
+        [SerializationConstructor]
+        public Block(string dataName, Coord3 rotation, Coord3 position) {
+            this.dataName = dataName;
+            this.rotation = rotation;
+            this.position = position;
         }
 
         public Block ConvertTo(System.Type type) {
