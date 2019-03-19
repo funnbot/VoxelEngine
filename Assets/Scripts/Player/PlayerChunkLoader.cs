@@ -89,7 +89,7 @@ namespace VoxelEngine {
         void LoadColumn(Coord2 pos) {
             if (world.columns.ContainsKey(pos)) return;
             world.LoadColumn(pos);
-            loaded.Add(pos);
+            loaded.Add(pos); 
         }
 
         async Task<bool> DestroyChunks() {
