@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿namespace VoxelEngine.Interfaces {
 
-public interface IInterfaceable {
-    bool DrawGUI();
+    public interface IInterfaceable {
+        bool DrawGUI();
+    }
+
 }

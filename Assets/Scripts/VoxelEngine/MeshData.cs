@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using VoxelEngine.Blocks;
 
 namespace VoxelEngine {
 
@@ -24,7 +23,7 @@ namespace VoxelEngine {
                 tris[i] = new List<int>();
         }
 
-        public void AddCubeFace(int direction, Coord3 position, int faceRotation, int textureIndex, SubMesh subMesh) {
+        public void AddCubeFace(int direction, Coord3 position, int faceRotation, int textureIndex, int subMesh) {
             AddCubeFaceVerts(direction, position);
             AddQuadTris((int) subMesh);
             AddQuadUV(textureIndex, faceRotation);
@@ -35,7 +34,7 @@ namespace VoxelEngine {
             AddQuadTris(0);
         }
 
-        public void AddDecalCross(Coord3 position, int textureIndex, SubMesh subMesh) {
+        public void AddDecalCross(Coord3 position, int textureIndex, int subMesh) {
             AddDecalCrossVerts(position);
             AddDecalCrossTris((int) subMesh);
             for (int i = 0; i < 4; i++)

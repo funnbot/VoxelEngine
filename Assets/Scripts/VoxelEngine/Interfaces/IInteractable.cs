@@ -1,9 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿namespace VoxelEngine.Interfaces {
 
-public interface IInteractable {
-    void Break();
-    void Place();
-    void OnTick();
+    public interface IInteractable {
+        void Break();
+        void Place();
+        void OnTick();
+    }
+
 }

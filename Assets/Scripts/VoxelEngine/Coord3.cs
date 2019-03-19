@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using MessagePack;
 using UnityEngine;
-using MessagePack;
 
 namespace VoxelEngine {
 
     [MessagePackObject]
-    [System.Serializable]
     public struct Coord3 : System.IEquatable<Coord3> {
         [Key(0)]
         public int x;
@@ -45,6 +43,7 @@ namespace VoxelEngine {
 
         [IgnoreMember]
         public float magnitude { get => Mathf.Sqrt((float) (x * x + y * y + z * z)); }
+
         [IgnoreMember]
         public int sqrMagnitude { get => x * x + y * y + z * z; }
 
@@ -56,7 +55,7 @@ namespace VoxelEngine {
 
         public static Coord3 RaycastToBlock(in RaycastHit hit, bool adjacent) =>
         Coord3.FloorToInt(hit.point + Vector3.one * 0.5f +
-        (adjacent ? -Vector3.Max(hit.normal, Vector3.zero) : Vector3.Min(hit.normal, Vector3.zero)));
+            (adjacent ? -Vector3.Max(hit.normal, Vector3.zero) : Vector3.Min(hit.normal, Vector3.zero)));
 
         #region operators
 

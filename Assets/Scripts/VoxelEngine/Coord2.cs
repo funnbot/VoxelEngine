@@ -1,12 +1,9 @@
-﻿using System.Globalization;
-using System.Runtime.CompilerServices;
+﻿using MessagePack;
 using UnityEngine;
-using MessagePack;
 
 namespace VoxelEngine {
 
     [MessagePackObject]
-    [System.Serializable]
     public struct Coord2 : System.IEquatable<Coord2> {
         [Key(0)]
         public int x;
@@ -23,6 +20,7 @@ namespace VoxelEngine {
 
         [IgnoreMember]
         public float magnitude { get => Mathf.Sqrt((float) (x * x + y * y)); }
+
         [IgnoreMember]
         public int sqrMagnitude { get => x * x + y * y; }
 

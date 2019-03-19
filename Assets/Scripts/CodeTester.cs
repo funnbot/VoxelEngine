@@ -1,12 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using VoxelEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-
-using System.Linq;
 
 public class CodeTester : MonoBehaviour {
     public Coord3 test3;
@@ -16,12 +12,8 @@ public class CodeTester : MonoBehaviour {
         string o = "";
         Coord3 pos = new Coord3(1, 1, 0);
 
-        
         return o;
     }
-
-
-
 
     bool runOnAwake = false;
     public void Run() {
@@ -43,7 +35,7 @@ public class CodeTesterEditor : Editor {
     }
 
     void OnEnable() {
-        c = (CodeTester)target;
+        c = (CodeTester) target;
     }
 }
 #endif

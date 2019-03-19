@@ -1,6 +1,7 @@
 ﻿using MessagePack;
+using VoxelEngine.Data;
 
-namespace VoxelEngine {
+namespace VoxelEngine.Blocks {
 
     [System.Serializable, MessagePackObject]
     public class Block {
@@ -52,4 +53,5 @@ namespace VoxelEngine {
         public const int right = 4;
         public const int left = 5;
     }
+
 }

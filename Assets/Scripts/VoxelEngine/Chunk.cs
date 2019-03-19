@@ -1,4 +1,7 @@
 ﻿using UnityEngine;
+using VoxelEngine.Blocks;
+using VoxelEngine.Data;
+using VoxelEngine.Serialization;
 
 namespace VoxelEngine {
     using Watch = System.Diagnostics.Stopwatch;
@@ -179,7 +182,7 @@ namespace VoxelEngine {
                     var rot = Rotate(i, block.rotation);
                     int texIndex = block.data.textureIndices[rot.index];
 
-                    blockMesh.AddCubeFace(i, pos, rot.face, texIndex, block.data.subMesh);
+                    blockMesh.AddCubeFace(i, pos, rot.face, texIndex, (int)block.data.subMesh);
 
                     if (block.data.collision) {
                         colliderMesh.AddCubeFace(i, pos);
@@ -189,7 +192,7 @@ namespace VoxelEngine {
                 }
             } else if (block.data.meshType == BlockMeshType.DecalCross) {
                 var texIndex = block.data.textureIndices[0];
-                blockMesh.AddDecalCross(pos, texIndex, block.data.subMesh);
+                blockMesh.AddDecalCross(pos, texIndex, (int)block.data.subMesh);
                 if (block.data.collision) {
                     colliderMesh.AddBoundingBox(pos, block.data.boundingSize);
                 } else {

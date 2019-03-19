@@ -1,7 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using OpenSimplexNoise;
 using UnityEngine;
+using VoxelEngine.Blocks;
+using VoxelEngine.Data;
 
 namespace VoxelEngine.ProceduralGeneration {
 
