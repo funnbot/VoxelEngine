@@ -28,7 +28,7 @@ public class TextureArrayGenerator : MonoBehaviour {
         }
 
         texArray.Apply();
-        material.SetTexture("_MainTex", texArray);
+        // material.SetTexture("_MainTex", texArray);
     }
 
     void Awake() {

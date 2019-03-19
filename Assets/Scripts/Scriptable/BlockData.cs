@@ -14,7 +14,6 @@ namespace VoxelEngine {
         public BlockMeshType meshType;
         public float boundingSize = 1;
         public GameObject prefab;
-        public string behaviour;
         public string dataType;
 
         public BlockPlacingMode placementType;

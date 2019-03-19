@@ -9,7 +9,7 @@ namespace VoxelEngine {
     public class VoxelWorld : MonoBehaviour {
         public static readonly int Height = 80;
         public static readonly int ChunkHeight = Height / Chunk.Size;
-        
+
         public int renderAverage = 0;
         [HideInInspector]
         public int renderTime = 0;
@@ -29,7 +29,6 @@ namespace VoxelEngine {
 
         public ChunkColumnPool columnPool;
         public Dictionary<Coord2, ChunkColumn> columns;
-        public Dictionary<string, BlockBehaviour> behaviours;
 
         public delegate void Tick();
         public event Tick OnTick;
@@ -41,7 +40,6 @@ namespace VoxelEngine {
             columns = new Dictionary<Coord2, ChunkColumn>();
             generator = new ProceduralGenerator(this).Use(generatorType);
 
-            LoadBehaviours();
             LoadSpawn();
         }
 
@@ -70,25 +68,11 @@ namespace VoxelEngine {
                 if (t != null) outBlock = block.ConvertTo(t);
             }
 
-            if (block.data.behaviour != "") {
-                BlockBehaviour bb;
-                if (behaviours.TryGetValue(block.data.behaviour, out bb)) {
-                    bb.Add(position, outBlock);
-                }
-            }
-
             return outBlock;
         }
 
         public void UnregisterBlock(Block block) {
             if (block == null) return;
-
-            if (block.data.behaviour != "") {
-                BlockBehaviour bb;
-                if (behaviours.TryGetValue(block.data.behaviour, out bb)) {
-                    bb.Remove(block.position);
-                }
-            }
 
             if (block.data.meshType == BlockMeshType.Custom && block is StandaloneBlock) {
                 var sb = (StandaloneBlock) block;
@@ -107,12 +91,6 @@ namespace VoxelEngine {
 
         public void DestroyColumn(Coord2 pos) {
             ChunkColumn col = columns[pos];
-
-            foreach (var bb in behaviours) {
-                foreach (var c in col.chunks) {
-                    bb.Value.UnloadChunk(c.position);
-                }
-            }
 
             columnPool.ReleaseObject(col);
             columns.Remove(pos);
@@ -161,12 +139,6 @@ namespace VoxelEngine {
         public void SetBlock(BlockData block, RaycastHit hit, Coord3 rotation, bool adjacent = true) {
             var pos = Coord3.RaycastToBlock(hit, adjacent);
             SetBlock(block, pos, rotation, true);
-        }
-
-        void LoadBehaviours() {
-            behaviours = new Dictionary<string, BlockBehaviour>();
-
-            behaviours.Add(MovingBehaviour.name, new MovingBehaviour().Awake(this));
         }
 
         void LoadSpawn() {

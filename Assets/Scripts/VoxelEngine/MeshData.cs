@@ -269,6 +269,8 @@ namespace VoxelEngine {
 
         #region tris
 
+        // Overlays, use another material and texture array, tris assigned here.
+
         private void AddDecalCrossTris(int sub) {
             int c = verts.Count;
             AddQuadTris(c - 12, sub);

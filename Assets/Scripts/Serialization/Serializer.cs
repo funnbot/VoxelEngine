@@ -15,8 +15,6 @@ public static class Serializer {
         BinaryFormatter formatter = new BinaryFormatter();
         Stream stream = new FileStream(saveFile, FileMode.Create, FileAccess.Write, FileShare.None);
 
-        Debug.Log("Save: " + pos);
-
         formatter.Serialize(stream, column);
         stream.Close();
     }
