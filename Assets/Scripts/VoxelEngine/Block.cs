@@ -4,20 +4,26 @@ using UnityEngine;
 
 namespace VoxelEngine {
 
+    [System.Serializable]
     public class Block {
-        public BlockData data;
+        public string dataName;
         public Coord3 rotation;
-
         public Coord3 position;
+
+        [System.NonSerialized]
+        public BlockData data;
+        [System.NonSerialized]
         public Chunk chunk;
 
         public Block(BlockData data, Coord3 rotation = new Coord3()) {
             this.data = data;
             this.rotation = rotation;
+            dataName = data.name;
         }
 
         public Block(Block copy) {
             data = copy.data;
+            dataName = copy.dataName;
             rotation = copy.rotation;
             position = copy.position;
             chunk = copy.chunk;

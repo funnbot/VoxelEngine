@@ -4,11 +4,10 @@ using UnityEngine;
 using VoxelEngine;
 using Controller = UnityStandardAssets.Characters.FirstPerson.FirstPersonController;
 
-public class SpawnPlayer : MonoBehaviour {
-    public VoxelWorld world;
-
+public class PlayerSpawner : MonoBehaviour {
     void Start() {
-        world.OnSpawnLoad += OnSpawnLoad;
+
+        WorldManager.ActiveWorld.OnSpawnLoad += OnSpawnLoad;
     }
 
     void OnSpawnLoad() {

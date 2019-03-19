@@ -35,9 +35,7 @@ namespace VoxelEngine {
             }
         }
 
-        protected virtual void UpdateBlock(Block block) {
-
-        }
+        protected virtual void UpdateBlock(Block block) { }
 
         protected virtual void AttachEvents() {
             world.OnTick += OnTick;

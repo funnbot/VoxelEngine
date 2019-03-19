@@ -44,7 +44,7 @@ namespace VoxelEngine {
         public void Init(Coord3 position) {
             blocks = new Block[Size][][];
             for (int x = 0; x < Size; x++) {
-                blocks[x] = new Block[Size][]; 
+                blocks[x] = new Block[Size][];
                 for (int y = 0; y < Size; y++) {
                     blocks[x][y] = new Block[Size];
                 }
@@ -77,12 +77,22 @@ namespace VoxelEngine {
             }
         }
 
-        public void Serialize(ref SerialChunkColumn serial, int w) {
+        public void Serialize(SerialChunkColumn serial, int w) {
             serial.blocks[w] = blocks;
         }
 
-        public void Deserialize(ref SerialChunkColumn serial, int w) {
-            blocks = serial.blocks[w];
+        public void Deserialize(SerialChunkColumn serial, int w) {
+            for (int x = 0; x < Size; x++) {
+                for (int y = 0; y < Size; y++) {
+                    for (int z = 0; z < Size; z++) {
+                        var block = serial.blocks[w][x][y][z];
+                        block.data = ResourceStore.Blocks[block.dataName];
+
+                        var pos = new Coord3(x, y, z).BlockToWorld(worldPosition);
+                        blocks[x][y][z] = world.RegisterBlock(block, pos, this);
+                    }
+                }
+            }
         }
 
         void OnTick() {
@@ -152,7 +162,7 @@ namespace VoxelEngine {
                 var pos = changed + Coord3.Directions[i];
                 if (!pos.InRange(0, Chunk.Size)) {
                     Chunk n = neighbors[i];
-                    if (n == null) continue;
+                    if (n == null || !n.parent.built) continue;
                     n.update = true;
                 }
             }
@@ -193,7 +203,7 @@ namespace VoxelEngine {
             var adjPos = Coord3.Directions[dir] + pos;
             var adjacent = adjPos.InRange(0, Chunk.Size) ? GetBlock(adjPos) :
                 neighbors[dir]?.GetBlock(adjPos + worldPosition - neighbors[dir].worldPosition);
-            return adjacent != null && adjacent.data.subMesh != SubMesh.Transparent;
+            return adjacent == null || adjacent.data.subMesh != SubMesh.Transparent;
         }
 
         private static readonly int[] zRot = { BlockFace.top, BlockFace.left, BlockFace.bottom, BlockFace.right },
@@ -204,7 +214,7 @@ namespace VoxelEngine {
             yFace = { new [] { 0, 0, 3, 1, 0, 0 }, new [] { 0, 0, 2, 2, 0, 0 }, new [] { 0, 0, 1, 3, 0, 0, } },
             xFace = { new [] { 0, 2, 0, 2, 1, 3 }, new [] { 2, 2, 0, 2, 2, 2 }, new [] { 0, 2, 2, 0, 3, 1 } };
 
-        public static(int index, int face) Rotate(int dir, Coord3 rot) {
+        private static(int index, int face) Rotate(int dir, Coord3 rot) {
             rot = rot % 4;
             int frot = 0;
             if (rot.z != 0) {

@@ -4,9 +4,9 @@ using UnityEngine;
 using VoxelEngine;
 
 public class TerrainModifier : MonoBehaviour {
-    public VoxelWorld world;
-
     public Vector3Int rotation;
+
+    private VoxelWorld world;
 
     BlockData air;
     string[] blocks = {
@@ -20,6 +20,7 @@ public class TerrainModifier : MonoBehaviour {
     int selected;
 
     void Start() {
+        world = WorldManager.ActiveWorld;
         air = ResourceStore.Blocks["air"];
         Cursor.lockState = CursorLockMode.Locked;
     }
@@ -56,6 +57,30 @@ public class TerrainModifier : MonoBehaviour {
                 var block = world.GetBlock(hit, true);
                 if (block is IInterfaceable)
                     activeGUI = (IInterfaceable) block;
+            }
+        }
+
+        var cpos = (Coord2) Coord3.FloorToInt(transform.position).WorldToChunk();
+
+        if (Input.GetKeyDown(KeyCode.L)) {
+            if (!world.columns.ContainsKey(cpos)) {
+                world.LoadColumn(cpos);
+                Debug.Log("Loaded: " + cpos);
+            }
+        } else if (Input.GetKeyDown(KeyCode.B)) {
+            if (world.columns.ContainsKey(cpos)) {
+                world.GetColumn(cpos).Build();
+                Debug.Log("Built: " + cpos);
+            }
+        } else if (Input.GetKeyDown(KeyCode.R)) {
+            if (world.columns.ContainsKey(cpos)) {
+                world.GetColumn(cpos).Render();
+                Debug.Log("Rendered: " + cpos);
+            }
+        } else if (Input.GetKeyDown(KeyCode.K)) {
+            if (world.columns.ContainsKey(cpos)) {
+                world.DestroyColumn(cpos);
+                Debug.Log("Destroyed: " + cpos);
             }
         }
     }

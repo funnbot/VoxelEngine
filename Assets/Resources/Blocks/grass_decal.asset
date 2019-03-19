@@ -15,7 +15,7 @@ MonoBehaviour:
   subMesh: 1
   collision: 0
   meshType: 1
-  boundingSize: 1
+  boundingSize: 0.3535
   prefab: {fileID: 0}
   behaviour: 
   dataType: 

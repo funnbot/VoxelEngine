@@ -4,8 +4,6 @@ using UnityEngine;
 using VoxelEngine;
 
 public class ChunkColumnPool : PrefabPool<ChunkColumn> {
-    public VoxelWorld world;
-
     public override void CleanUp(ChunkColumn col) {
         col.CleanUp();
         col.transform.parent = transform;
@@ -13,7 +11,7 @@ public class ChunkColumnPool : PrefabPool<ChunkColumn> {
 
     public override ChunkColumn Create() {
         var col = Instantiate(prefab).GetComponent<ChunkColumn>();
-        col.Create(world);
+        col.Create(WorldManager.ActiveWorld);
         col.transform.parent = transform;
         return col;
     }

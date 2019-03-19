@@ -9,9 +9,7 @@ namespace VoxelEngine {
     public class VoxelWorld : MonoBehaviour {
         public static readonly int Height = 80;
         public static readonly int ChunkHeight = Height / Chunk.Size;
-
-        public static VoxelWorld Active { get; private set; }
-
+        
         public int renderAverage = 0;
         [HideInInspector]
         public int renderTime = 0;
@@ -39,13 +37,8 @@ namespace VoxelEngine {
         public delegate void SpawnLoaded();
         public event SpawnLoaded OnSpawnLoad;
 
-        void Awake() {
-            Active = this;
-            columns = new Dictionary<Coord2, ChunkColumn>();
-            seed = (int) (Random.value * 10000);
-        }
-
         void Start() {
+            columns = new Dictionary<Coord2, ChunkColumn>();
             generator = new ProceduralGenerator(this).Use(generatorType);
 
             LoadBehaviours();
@@ -57,7 +50,7 @@ namespace VoxelEngine {
                 tick = 0;
                 OnTick?.Invoke();
             }
-            renderAverage = renderTime / renderCount;
+            if (renderCount != 0) renderAverage = renderTime / renderCount;
         }
 
         public Block RegisterBlock(Block block, Coord3 position, Chunk chunk) {

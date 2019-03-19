@@ -22,8 +22,6 @@ namespace VoxelEngine {
 
         public void Create(VoxelWorld world) {
             this.world = world;
-            built = false;
-            rendered = false;
 
             chunks = new Chunk[VoxelWorld.ChunkHeight];
             for (int i = 0; i < chunks.Length; i++) {
@@ -34,6 +32,9 @@ namespace VoxelEngine {
 
         public void Init(Coord2 position) {
             this.position = position;
+
+            built = false;
+            rendered = false;
 
             transform.parent = world.transform;
             transform.localPosition = (Coord3) position * Chunk.Size;
@@ -46,20 +47,21 @@ namespace VoxelEngine {
 
         public SerialChunkColumn Serialize() {
             var serial = new SerialChunkColumn();
-            serial.position = position;
+
             serial.blocks = new Block[VoxelWorld.ChunkHeight][][][];
+
             for (int i = 0; i < VoxelWorld.ChunkHeight; i++)
-                chunks[i].Serialize(ref serial, i);
+                chunks[i].Serialize(serial, i);
             return serial;
         }
 
         public void Deserialize(SerialChunkColumn serial) {
-            for (int i = 0; i < VoxelWorld.ChunkHeight; i++) 
-                chunks[i].Deserialize(ref serial, i);
+            for (int i = 0; i < VoxelWorld.ChunkHeight; i++)
+                chunks[i].Deserialize(serial, i);
         }
 
         public void CleanUp() {
-            Serializer.SaveColumn(world.saveName, this.Serialize());
+            if (built) Serializer.SaveColumn(world.saveName, position, this.Serialize());
 
             foreach (var chunk in chunks)
                 chunk.CleanUp();
@@ -68,8 +70,8 @@ namespace VoxelEngine {
         public void Build() {
             built = true;
 
-            SerialChunkColumn serial = null;
-            if (Serializer.LoadColumn(world.saveName, position, ref serial)) 
+            SerialChunkColumn serial;
+            if (Serializer.LoadColumn(world.saveName, position, out serial))
                 this.Deserialize(serial);
             else world.generator.GenerateColumn(this);
         }
