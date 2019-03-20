@@ -1,0 +1,51 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+
+public class UIMonoBehaviour : MonoBehaviour, IBeginDragHandler, IEndDragHandler {
+    public bool noRaycastOnDrag;
+    [System.NonSerialized]
+    new public RectTransform transform;
+    private Graphic graphic;
+
+    protected bool raycastTarget {
+        get => graphic.raycastTarget;
+        set => graphic.raycastTarget = value;
+    }
+
+    protected void SetText(Text comp, string text) {
+        if (text == null || text == "") {
+            comp.text = "";
+        } else {
+            comp.text = text;
+            comp.gameObject.SetActive(true);
+        }
+    }
+
+    protected void SetImage(Image comp, Sprite sprite) {
+        if (sprite == null) {
+            comp.gameObject.SetActive(false);
+        } else {
+            comp.sprite = sprite;
+            comp.gameObject.SetActive(true);
+        }
+    }
+
+    protected virtual void AwakeImpl() { }
+
+    private void Awake() {
+        transform = GetComponent<RectTransform>();
+        graphic = GetComponent<Graphic>();
+        AwakeImpl();
+    }
+
+    public void OnBeginDrag(PointerEventData eventData) {
+        if (noRaycastOnDrag) raycastTarget = false;
+    }
+
+    public void OnEndDrag(PointerEventData eventData) {
+        if (noRaycastOnDrag) raycastTarget = true;
+    }
+}

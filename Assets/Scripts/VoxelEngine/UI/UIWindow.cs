@@ -6,6 +6,8 @@ namespace VoxelEngine.UI {
 
     public class UIWindow : MonoBehaviour {
 
+        
+
     }
 
 }

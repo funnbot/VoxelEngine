@@ -2,7 +2,7 @@
 
 namespace VoxelEngine {
 
-    public class SingletonMonobehaviour<T> : MonoBehaviour where T : MonoBehaviour {
+    public class SingletonMonoBehaviour<T> : MonoBehaviour where T : MonoBehaviour {
         protected virtual void AwakeImpl() { }
 
         public static T Instance;

@@ -14,6 +14,8 @@ namespace VoxelEngine.Data {
         public GameObject prefab;
         public string dataType;
 
+        public Sprite icon;
+
         public BlockPlacingMode placementType;
         public BlockType blockType;
 

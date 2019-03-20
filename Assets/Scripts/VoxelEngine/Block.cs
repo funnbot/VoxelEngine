@@ -1,7 +1,8 @@
 ﻿using MessagePack;
 using VoxelEngine.Data;
+using VoxelEngine.Blocks;
 
-namespace VoxelEngine.Blocks {
+namespace VoxelEngine {
 
     [System.Serializable, MessagePackObject]
     public class Block {

@@ -17,12 +17,13 @@ MonoBehaviour:
   meshType: 0
   boundingSize: 1
   prefab: {fileID: 0}
-  behaviour: 
   dataType: 
+  icon: {fileID: 21300000, guid: e1a81d58da80f4181b24cb4040e8d15d, type: 3}
   placementType: 0
   blockType: 0
   spawnFrequency: 0
   spawnDensity: 0
+  blockName: grass
   textureIndices: 030000000300000002000000010000000300000003000000
   textures:
   - {fileID: 11400000, guid: 60541f8cfbc69418a812ce2570a73233, type: 2}

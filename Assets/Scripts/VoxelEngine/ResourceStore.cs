@@ -6,7 +6,7 @@ using VoxelEngine.Data;
 namespace VoxelEngine {
 
     // Singleton
-    public class ResourceStore : SingletonMonobehaviour<ResourceStore> {
+    public class ResourceStore : SingletonMonoBehaviour<ResourceStore> {
         public static Resource<BlockData> Blocks;
         public static Resource<StructureData> Structures;
 

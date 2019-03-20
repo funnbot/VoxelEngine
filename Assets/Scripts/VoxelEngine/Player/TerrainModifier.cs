@@ -22,7 +22,6 @@ namespace VoxelEngine.Player {
 
         void Start() {
             air = ResourceStore.Blocks["air"];
-            Cursor.lockState = CursorLockMode.Locked;
         }
 
         void Update() {
