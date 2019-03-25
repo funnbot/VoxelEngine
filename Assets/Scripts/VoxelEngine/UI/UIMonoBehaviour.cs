@@ -35,7 +35,7 @@ public class UIMonoBehaviour : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 
     protected virtual void AwakeImpl() { }
 
-    private void Awake() {
+    void Awake() {
         transform = GetComponent<RectTransform>();
         graphic = GetComponent<Graphic>();
         AwakeImpl();
@@ -43,9 +43,15 @@ public class UIMonoBehaviour : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 
     public void OnBeginDrag(PointerEventData eventData) {
         if (noRaycastOnDrag) raycastTarget = false;
+        OnDragBegin();
     }
+
+    public virtual void OnDragBegin() { }
 
     public void OnEndDrag(PointerEventData eventData) {
         if (noRaycastOnDrag) raycastTarget = true;
+        OnDragEnd();
     }
+
+    public virtual void OnDragEnd() { }
 }

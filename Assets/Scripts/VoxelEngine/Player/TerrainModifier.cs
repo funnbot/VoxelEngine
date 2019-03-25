@@ -15,7 +15,8 @@ namespace VoxelEngine.Player {
             "grass",
             "leaf",
             "wood",
-            "hello"
+            "hello",
+            "circle"
         };
 
         int selected;
@@ -55,8 +56,7 @@ namespace VoxelEngine.Player {
                 Ray ray = new Ray(transform.position, transform.forward);
                 if (Physics.Raycast(ray, out hit, 10f)) {
                     var block = world.GetBlock(hit, true);
-                    if (block is IInterfaceable)
-                        activeGUI = (IInterfaceable) block;
+                    //if (block is IInterfaceable);
                 }
             }
 
@@ -82,15 +82,6 @@ namespace VoxelEngine.Player {
                     world.DestroyColumn(cpos);
                     Debug.Log("Destroyed: " + cpos);
                 }
-            }
-        }
-
-        IInterfaceable activeGUI;
-
-        void OnGUI() {
-            if (activeGUI != null) {
-                if (!activeGUI.DrawGUI())
-                    activeGUI = null;
             }
         }
     }

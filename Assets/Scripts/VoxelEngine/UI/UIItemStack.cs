@@ -7,38 +7,43 @@ using VoxelEngine.Data;
 
 namespace VoxelEngine.UI {
 
-    public class UIItemStack : UIMonoBehaviour, IDragHandler, IDropHandler, IPointerEnterHandler, IPointerExitHandler {
+    public class UIItemStack : UIMonoBehaviour, IDragHandler, IPointerEnterHandler, IPointerExitHandler {
         public Text CountText;
         public Text NameText;
         public Image Icon;
-        
+
         [Space]
         public BlockData item;
         public int count;
 
-        public void Init(BlockData item, int count) {
+        private UIItemSlot slot;
+
+        public void SetStackData(BlockData item, int count) {
             this.item = item;
             this.count = count;
-            
+
             SetText(CountText, count.ToString());
             SetText(NameText, item.blockName);
         }
 
+        public void PlacedInSlot(UIItemSlot slot) {
+            this.slot = slot;
+        }
+
+        public void RevertToSlot() {
+            slot?.PlaceInSlot(this);
+        }
+
         public void OnDrag(PointerEventData eventData) {
-            if (transform.parent != null) {
-                var slot = transform.parent.GetComponent<UIItemSlot>();
-                slot?.Pickup();
-            }
             transform.position = eventData.position;
         }
 
-        public void OnDrop(PointerEventData eventData) {
-            Debug.Log("Drop");
+        public override void OnDragBegin() {
+            slot?.PickupFromSlot();
         }
 
         public void OnPointerEnter(PointerEventData eventData) {
-            Debug.Log("Enter");
-            Icon.color = new Color(1, 1, 1, 0.9f);
+            Icon.color = new Color(1, 1, 1, 0.8f);
         }
 
         public void OnPointerExit(PointerEventData eventData) {

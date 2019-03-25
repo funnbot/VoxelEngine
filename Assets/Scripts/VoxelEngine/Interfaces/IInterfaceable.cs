@@ -1,7 +1,8 @@
 ﻿namespace VoxelEngine.Interfaces {
 
     public interface IInterfaceable {
-        bool DrawGUI();
+        void OpenGUI();
+        void CloseGUI();
     }
 
 }
