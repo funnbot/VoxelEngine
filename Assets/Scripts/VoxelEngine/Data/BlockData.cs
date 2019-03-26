@@ -7,31 +7,45 @@ namespace VoxelEngine.Data {
 
     [CreateAssetMenu(fileName = "Block Data")]
     public class BlockData : ScriptableObject {
-        public SubMesh subMesh;
-        public bool collision;
-        public BlockMeshType meshType;
-        public float boundingSize = 1;
-        public GameObject prefab;
-        public string dataType;
-
+        public string blockID;
+        [Space]
+        [Header("Info")]
+        public string blockName;
+        public string description;
         public Sprite icon;
-
+        [Space]
+        public string dataType;
+        [Space]
+        [Header("Mesh Generation")]
+        public BlockMeshType meshType;
+        [DrawIf("meshType", BlockMeshType.Custom)]
+        public GameObject customPrefab;
+        [Space]
+        public bool collision;
+        public float boundingSize = 1;
+        public SubMesh subMesh;
+        [Space]
+        [Header("Interaction")]
         public BlockPlacingMode placementType;
+        [Space]
+        public bool stackable;
+        public bool placeable;
+        [Space]
+        [Header("Procedural Generation")]
         public BlockType blockType;
-
+        [Space]
         [DrawIf("blockType", BlockType.Ore)]
         public float spawnFrequency;
         [DrawIf("blockType", BlockType.Ore)]
         public int spawnDensity;
 
         [HideInInspector]
-        public string blockName;
-        [HideInInspector]
         public int[] textureIndices;
         [HideInInspector]
         public TextureIndex[] textures = new TextureIndex[6];
     }
 
+    [System.Serializable]
     public enum BlockMeshType {
         Cube,
         DecalCross,
@@ -41,12 +55,14 @@ namespace VoxelEngine.Data {
         Custom
     }
 
+    [System.Serializable]
     public enum BlockType {
         Terrain,
         Decoration,
         Ore
     }
 
+    [System.Serializable]
     public enum BlockPlacingMode {
         Zero,
         RotationalDirectional,
@@ -56,6 +72,7 @@ namespace VoxelEngine.Data {
         InvertDirectionalOnly,
     }
 
+    [System.Serializable]
     public enum SubMesh {
         Opaque = 0,
         Transparent = 1
@@ -68,8 +85,8 @@ namespace VoxelEngine.Data {
         BlockData bd;
 
         public override void OnInspectorGUI() {
-            EditorGUI.BeginChangeCheck();
             base.OnInspectorGUI();
+            EditorGUI.BeginChangeCheck();
 
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Textures");
@@ -114,8 +131,6 @@ namespace VoxelEngine.Data {
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
             }
-
-            bd.blockName = bd.name;
         }
 
         void OnEnable() {

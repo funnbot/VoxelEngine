@@ -7,7 +7,7 @@ namespace VoxelEngine {
     [System.Serializable, MessagePackObject]
     public class Block {
         [Key(0)]
-        public string dataName;
+        public string id;
         [Key(1)]
         public Coord3 rotation;
 
@@ -21,25 +21,24 @@ namespace VoxelEngine {
         public Block(BlockData data, Coord3 rotation = new Coord3()) {
             this.data = data;
             this.rotation = rotation;
-            dataName = data.blockName;
+            id = data.blockID;
         }
 
         public Block(Block copy) {
             data = copy.data;
-            dataName = copy.dataName;
+            id = copy.id;
             rotation = copy.rotation;
             position = copy.position;
             chunk = copy.chunk;
         }
 
         [SerializationConstructor]
-        public Block(string dataName, Coord3 rotation) {
-            this.dataName = dataName;
+        public Block(string id, Coord3 rotation) {
+            this.id = id;
             this.rotation = rotation;
         }
 
         public Block ConvertTo(string type) {
-            if (type == "HelloBlock") return new HelloBlock(this);
             if (type == "VirusBlock") return new VirusBlock(this);
 
             throw new System.InvalidCastException($"Converting type \"{typeof(Block)}\" to type \"{type}\" is not supported.");

@@ -59,30 +59,6 @@ namespace VoxelEngine.Player {
                     //if (block is IInterfaceable);
                 }
             }
-
-            var cpos = (Coord2) Coord3.FloorToInt(transform.position).WorldToChunk();
-
-            if (Input.GetKeyDown(KeyCode.L)) {
-                if (!world.columns.ContainsKey(cpos)) {
-                    world.LoadColumn(cpos);
-                    Debug.Log("Loaded: " + cpos);
-                }
-            } else if (Input.GetKeyDown(KeyCode.B)) {
-                if (world.columns.ContainsKey(cpos)) {
-                    world.GetColumn(cpos).Build();
-                    Debug.Log("Built: " + cpos);
-                }
-            } else if (Input.GetKeyDown(KeyCode.R)) {
-                if (world.columns.ContainsKey(cpos)) {
-                    world.GetColumn(cpos).QueueRender();
-                    Debug.Log("Rendered: " + cpos);
-                }
-            } else if (Input.GetKeyDown(KeyCode.K)) {
-                if (world.columns.ContainsKey(cpos)) {
-                    world.DestroyColumn(cpos);
-                    Debug.Log("Destroyed: " + cpos);
-                }
-            }
         }
     }
 

@@ -72,11 +72,11 @@ namespace VoxelEngine {
         }
 
         public void Clear() {
-            verts = new List<Vector3>(verts.Count);
-            normals = new List<Vector3>(verts.Count);
-            uvs = new List<Vector3>(uvs.Count);
+            verts.Clear();
+            normals.Clear();
+            uvs.Clear();
             for (int i = 0; i < SubMeshCount; i++)
-                tris[i] = new List<int>(tris[i].Count);
+                tris[i].Clear();
         }
 
         private const float F = 0.5f,

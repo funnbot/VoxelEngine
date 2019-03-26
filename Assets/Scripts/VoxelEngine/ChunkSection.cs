@@ -10,7 +10,6 @@ namespace VoxelEngine {
     [System.Serializable]
     public class ChunkSection : MonoBehaviour {
         public static readonly int Size = 16;
-        public static readonly int Rollover = 0;
 
         public Transform Blocks;
         public MeshFilter BlockRend;
@@ -88,7 +87,7 @@ namespace VoxelEngine {
                     for (int z = 0; z < Size; z++) {
                         var block = serial.blocks[w][x][y][z];
 
-                        block.data = ResourceStore.Blocks[block.dataName];
+                        block.data = ResourceStore.Blocks[block.id];
 
                         var pos = new Coord3(x, y, z).BlockToWorld(worldPosition);
                         blocks[x][y][z] = world.RegisterBlock(block, pos, this);
@@ -162,7 +161,7 @@ namespace VoxelEngine {
             for (int i = 0; i < 6; i++) {
                 var pos = changed + Coord3.Directions[i];
                 if (!pos.InRange(0, ChunkSection.Size)) {
-                    var neighbor = world.GetChunk(position = Coord3.Directions[i]);
+                    var neighbor = world.chunks.GetSection(position = Coord3.Directions[i]);
                     if (neighbor == null || !neighbor.parent.built) continue;
                     neighbor.QueueUpdate();
                 }

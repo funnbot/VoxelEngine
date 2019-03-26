@@ -16,20 +16,19 @@ namespace VoxelEngine {
         public static readonly int MaxRendersPerTick = 10;
 
         public string saveName;
-        public GameObject ColumnFab;
-        public int seed = 1347;
-        public int texturePixelResolution = 128;
+        public int seed;
         public GeneratorType generatorType = GeneratorType.Classic;
         public Generator generator;
         public int spawnSize;
 
         public int chunkRenders;
 
-        public int tickSpeed = 10;
+        public int tickSpeed;
         private int tick;
 
         public ChunkPool columnPool;
-        public Dictionary<Coord2, Chunk> columns;
+        // public Dictionary<Coord2, Chunk> columns;
+        public ChunkManager chunks;
 
         public delegate void Tick();
         public event Tick OnTick;
@@ -38,18 +37,18 @@ namespace VoxelEngine {
         public event SpawnLoaded OnSpawnLoad;
 
         void Start() {
-            columns = new Dictionary<Coord2, Chunk>();
             generator = new ProceduralGenerator(this).Use(generatorType);
-
+            chunks = new ChunkManager(columnPool);
+            
             LoadSpawn();
         }
 
         void Update() {
             if (++tick == tickSpeed) {
                 tick = 0;
-                Debug.Log(chunkRenders);
                 chunkRenders = 0;
                 OnTick?.Invoke();
+                chunks.UpdateChunks();
             }
         }
 
@@ -59,8 +58,8 @@ namespace VoxelEngine {
 
             Block outBlock = block;
             if (block.data.meshType == BlockMeshType.Custom) {
-                var go = Instantiate(block.data.prefab, position, Quaternion.Euler(block.rotation * 90), chunk.Blocks);
-                go.name = block.data.name + " " + block.position;
+                var go = Instantiate(block.data.customPrefab, position, Quaternion.Euler(block.rotation * 90), chunk.Blocks);
+                go.name = block.data.blockID + " " + block.position;
                 var sb = new StandaloneBlock(block);
                 sb.gameObject = go;
                 outBlock = sb;
@@ -91,6 +90,7 @@ namespace VoxelEngine {
             }
         }
 
+        /*
         public Chunk LoadColumn(Coord2 pos) {
             if (columns.ContainsKey(pos)) return columns[pos];
 
@@ -111,7 +111,7 @@ namespace VoxelEngine {
         public ChunkSection GetChunk(Coord3 pos) {
             var col = GetColumn((Coord2) pos);
             if (col == null) return null;
-            return col.GetChunk(pos.y);
+            return col.GetSection(pos.y);
         }
 
         public Chunk GetColumn(Coord2 pos) {
@@ -119,11 +119,11 @@ namespace VoxelEngine {
             if (columns.TryGetValue(pos, out col)) {
                 return col;
             } else return null;
-        }
+        }*/
 
         public Block GetBlock(Coord3 pos) {
             var chunkPos = pos.WorldToChunk();
-            var chunk = GetChunk(chunkPos);
+            var chunk = chunks.GetSection(chunkPos);
             if (chunk == null) return null;
 
             var blockPos = pos.WorldToBlock(chunk.worldPosition);
@@ -136,14 +136,14 @@ namespace VoxelEngine {
 
         public void SetBlock(Block block, Coord3 pos, bool update = true) {
             var chunkPos = pos.WorldToChunk();
-            var chunk = GetChunk(chunkPos);
+            var chunk = chunks.GetSection(chunkPos);
             if (chunk == null) return;
 
             chunk.SetBlock(block, pos.WorldToBlock(chunk.worldPosition), update);
         }
         public void SetBlock(BlockData block, Coord3 pos, Coord3 rot, bool update = true) {
             var chunkPos = pos.WorldToChunk();
-            var chunk = GetChunk(chunkPos);
+            var chunk = chunks.GetSection(chunkPos);
             if (chunk == null) return;
 
             chunk.SetBlock(block, pos.WorldToBlock(chunk.worldPosition), rot, update);
@@ -158,7 +158,7 @@ namespace VoxelEngine {
             for (int x = -size - 1; x <= size + 1; x++) {
                 for (int z = -size - 1; z <= size + 1; z++) {
                     var pos = new Coord2(x, z);
-                    var col = LoadColumn(pos);
+                    var col = chunks.LoadChunk(pos);
                     col.Build();
                 }
             }
@@ -167,7 +167,7 @@ namespace VoxelEngine {
             for (int x = -size; x <= size; x++) {
                 for (int z = -size; z <= size; z++) {
                     var pos = new Coord2(x, z);
-                    var col = GetColumn(pos);
+                    var col = chunks.GetChunk(pos);
                     col.QueueRender();
                 }
             }
@@ -181,7 +181,7 @@ namespace VoxelEngine {
 
             for (int x = -loadSize; x <= loadSize; x++) {
                 for (int z = -loadSize; z <= loadSize; z++) {
-                    cols[x + loadSize, z + loadSize] = LoadColumn(new Coord2(x, z));
+                    cols[x + loadSize, z + loadSize] = chunks.LoadChunk(new Coord2(x, z));
                 }
             }
 

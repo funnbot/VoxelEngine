@@ -16,7 +16,7 @@ namespace VoxelEngine.Blocks {
                 return;
             }
             var block = chunk.GetBlock(position.WorldToBlock(chunk.worldPosition) + Coord3.Directions[i]);
-            if (block != null && block.data.meshType == BlockMeshType.Cube && (block.data.name == "grass" || block.data.name == "dirt")) {
+            if (block != null && block.data.meshType == BlockMeshType.Cube && (block.data.blockID == "grass" || block.data.blockID == "dirt")) {
                 chunk.SetBlock(data, position.WorldToBlock(chunk.worldPosition) + Coord3.Directions[i], Coord3.zero);
             }
             i++;

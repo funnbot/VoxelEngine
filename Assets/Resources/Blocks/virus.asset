@@ -12,18 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba0e9bb57a82d4ebc98580cb3c739582, type: 3}
   m_Name: virus
   m_EditorClassIdentifier: 
-  subMesh: 0
-  collision: 1
-  meshType: 0
-  boundingSize: 1
-  prefab: {fileID: 0}
-  dataType: VirusBlock
+  blockID: virus
+  blockName: virus
+  description: 
   icon: {fileID: 21300000, guid: b2280fb948dbe480ca952b3ed007c451, type: 3}
+  dataType: VirusBlock
+  meshType: 0
+  customPrefab: {fileID: 0}
+  collision: 1
+  boundingSize: 1
+  subMesh: 0
   placementType: 0
+  stackable: 1
+  placeable: 1
   blockType: 1
   spawnFrequency: 0
   spawnDensity: 0
-  blockName: 
   textureIndices: 080000000800000008000000080000000800000008000000
   textures:
   - {fileID: 11400000, guid: d146b00195c1b4af7a381a19958c10aa, type: 2}

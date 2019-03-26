@@ -50,7 +50,7 @@ namespace VoxelEngine.Player {
             if (!ColumnInRange(load, range - 32)) return;
 
             LoadColumns(load);
-            var column = world.GetColumn(load);
+            var column = world.chunks.GetChunk(load);
 
             try {
                 if (!column.built) {
@@ -59,7 +59,7 @@ namespace VoxelEngine.Player {
                 if (!column.generated) {
                     await Task.Run(column.GenerateMesh);
                     foreach (var dir in Coord2.Directions) {
-                        var col = world.GetColumn(load + dir);
+                        var col = world.chunks.GetChunk(load + dir);
                         if (col != null && col.generated) {
                             await Task.Run(col.GenerateMesh);
                         }
@@ -71,7 +71,7 @@ namespace VoxelEngine.Player {
             if (!column.rendered) {
                 column.ApplyMesh();
                 foreach (var dir in Coord2.Directions) {
-                    var col = world.GetColumn(load + dir);
+                    var col = world.chunks.GetChunk(load + dir);
                     if (col != null && col.generated && col.rendered) {
                         col.ApplyMesh();
                     }
@@ -90,8 +90,8 @@ namespace VoxelEngine.Player {
         }
 
         void LoadColumn(Coord2 pos) {
-            if (world.columns.ContainsKey(pos)) return;
-            world.LoadColumn(pos);
+            if (world.chunks.ContainsChunk(pos)) return;
+            world.chunks.LoadChunk(pos);
             loaded.Add(pos);
         }
 
@@ -100,10 +100,10 @@ namespace VoxelEngine.Player {
             for (int i = len - 1; i >= 0; i--) {
                 var p = loaded[i];
                 if (!ColumnInRange(p, range)) {
-                    var col = world.GetColumn(p);
+                    var col = world.chunks.GetChunk(p);
                     if (col != null) {
                         if (col.built) await Task.Run(col.Save);
-                        world.DestroyColumn(p);
+                        world.chunks.DestroyChunk(p);
                     }
                     loaded.RemoveAt(i);
                     return true;

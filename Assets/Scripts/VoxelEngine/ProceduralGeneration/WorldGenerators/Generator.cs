@@ -17,7 +17,7 @@ namespace VoxelEngine.ProceduralGeneration {
 
         public void GenerateColumn(Chunk col) {
             for (int i = 0; i < VoxelWorld.ChunkHeight; i++) {
-                var chunk = col.GetChunk(i);
+                var chunk = col.GetSection(i);
                 GenerateChunk(chunk);
                 for (int x = 0; x < ChunkSection.Size; x++) {
                     for (int z = 0; z < ChunkSection.Size; z++) {

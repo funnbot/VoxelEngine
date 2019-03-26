@@ -62,7 +62,7 @@ namespace VoxelEngine {
                 chunks[i].Deserialize(serial, i);
         }
 
-        public ChunkSection GetChunk(int y) {
+        public ChunkSection GetSection(int y) {
             if (InRange(y)) return chunks[y];
             else return null;
         }

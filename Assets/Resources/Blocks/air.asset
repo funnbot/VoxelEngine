@@ -12,14 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba0e9bb57a82d4ebc98580cb3c739582, type: 3}
   m_Name: air
   m_EditorClassIdentifier: 
-  subMesh: 1
-  collision: 0
-  meshType: 4
-  boundingSize: 1
-  prefab: {fileID: 0}
-  behaviour: 
+  blockID: air
+  blockName: air
+  description: 
+  icon: {fileID: 0}
   dataType: 
+  meshType: 4
+  customPrefab: {fileID: 0}
+  collision: 0
+  boundingSize: 1
+  subMesh: 1
   placementType: 0
+  stackable: 0
+  placeable: 0
   blockType: 0
   spawnFrequency: 0
   spawnDensity: 0
