@@ -4,7 +4,7 @@ using VoxelEngine.Blocks;
 namespace VoxelEngine.Serialization {
 
     [MessagePackObject]
-    public class SerialChunkColumn {
+    public class SerialChunk {
         [Key(0)]
         public Block[][][][] blocks;
     }

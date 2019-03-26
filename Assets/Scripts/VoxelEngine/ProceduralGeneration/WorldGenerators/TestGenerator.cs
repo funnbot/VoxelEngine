@@ -12,11 +12,11 @@ namespace VoxelEngine.ProceduralGeneration {
             wood = GetBlockData("wood");
         }
 
-        protected override void GenerateColumn(Chunk chunk, int x, int z) {
+        protected override void GenerateColumn(ChunkSection chunk, int x, int z) {
             var localPos = new Coord3(x, 0, z);
             var pos = localPos.BlockToWorld(chunk.worldPosition);
 
-            for (int y = 0; y < Chunk.Size; y++) {
+            for (int y = 0; y < ChunkSection.Size; y++) {
                 localPos.y = y;
                 pos = localPos.BlockToWorld(chunk.worldPosition);
 

@@ -27,12 +27,12 @@ namespace VoxelEngine.ProceduralGeneration {
             ores = GetBlocksOfType(BlockType.Ore);
         }
 
-        protected override void GenerateColumn(Chunk chunk, int x, int z) {
+        protected override void GenerateColumn(ChunkSection chunk, int x, int z) {
             var localPos = new Coord3(x, 0, z);
             void Set(BlockData block) {
                 SetBlock(chunk, localPos, block);
             }
-            for (localPos.y = -Chunk.Rollover; localPos.y < Chunk.Size + Chunk.Rollover; localPos.y++) {
+            for (localPos.y = -ChunkSection.Rollover; localPos.y < ChunkSection.Size + ChunkSection.Rollover; localPos.y++) {
                 var pos = localPos.BlockToWorld(chunk.worldPosition);
                 bool isCave = GetChance(pos.x, pos.y, pos.z, caveFrequency, caveDensity) ||
                     GetChance(pos.y, pos.z, pos.x, caveFrequency + 0.02f, caveDensity + 4) ||

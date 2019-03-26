@@ -4,6 +4,11 @@ using VoxelEngine.UI;
 namespace VoxelEngine.Player {
 
     public class Player : MonoBehaviour {
+        public ColliderBoundsOutliner BoundsOutliner;
+        public PlayerChunkLoader ChunkLoader;
+        public PlayerSpawner Spawner;
+        public TerrainModifier Terrain;
+
         public UIItemStack activeStack;
         int selected = 0;
         UIItemSlot[][] grid;
@@ -11,15 +16,26 @@ namespace VoxelEngine.Player {
         static Color selectedColor = Color.yellow;
 
         void Start() {
+            Cursor.lockState = CursorLockMode.Locked;
+
             var hotbar = UIWindow.Create(8, 1, new Vector2(0.5f, 0));
             grid = hotbar.SlotGrid(0, 0, 8, 1, "bar");
 
-            var virus = ResourceStore.Blocks["virus"];
-            var stack = UICanvas.UIInstantiate(UICanvas.ItemStackFab).GetComponent<UIItemStack>();
-            stack.SetStackData(virus, 1);
-            grid[0][0].PlaceInSlot(stack);
+            SetSlotTo("virus", 0);
+            SetSlotTo("dirt", 1);
+            SetSlotTo("grass", 2);
+            SetSlotTo("wood", 3);
+            SetSlotTo("leaf", 4);
+            SetSlotTo("iron_ore", 5);
 
             Select(0);
+        }
+
+        void SetSlotTo(string name, int i) {
+            var virus = ResourceStore.Blocks[name];
+            var stack = UICanvas.UIInstantiate(UICanvas.ItemStackFab).GetComponent<UIItemStack>();
+            stack.SetStackData(virus, 1);
+            grid[i][0].PlaceInSlot(stack);
         }
 
         void Update() {

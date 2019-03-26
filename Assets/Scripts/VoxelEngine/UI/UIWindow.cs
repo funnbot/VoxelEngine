@@ -106,8 +106,6 @@ namespace VoxelEngine.UI {
             window.size = size;
 
             var offset = (center * 2 - Vector2.one) * (sizeDelta / 2) * new Vector2(1, -1);
-            Debug.Log(offset);
-            //var offset = Vector2.zero;
             window.transform.anchoredPosition = offset;
             window.position = offset;
 

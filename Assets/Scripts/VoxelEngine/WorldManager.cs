@@ -15,7 +15,7 @@ namespace VoxelEngine {
         public static event WorldSpawn OnWorldSpawn;
 
         void Start() {
-            SpawnWorld("Sample", GeneratorType.Classic, 1331);
+            SpawnWorld("Sample", GeneratorType.Classic, System.DateTime.Now.Millisecond);
         }
 
         public static VoxelWorld SpawnWorld(string saveName, GeneratorType generator, int seed) {
@@ -24,7 +24,7 @@ namespace VoxelEngine {
             var world = Instantiate(instance.WorldFab).GetComponent<VoxelWorld>();
             instance._active = world;
 
-            world.columnPool = Instantiate(instance.ColumnPoolFab).GetComponent<ChunkColumnPool>();
+            world.columnPool = Instantiate(instance.ColumnPoolFab).GetComponent<ChunkPool>();
 
             world.saveName = saveName;
             world.name = saveName;

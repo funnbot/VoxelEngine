@@ -10,13 +10,13 @@ namespace VoxelEngine {
         public string dataName;
         [Key(1)]
         public Coord3 rotation;
-        [Key(2)]
-        public Coord3 position;
 
+        [System.NonSerialized, IgnoreMember]
+        public Coord3 position;
         [System.NonSerialized, IgnoreMember]
         public BlockData data;
         [System.NonSerialized, IgnoreMember]
-        public Chunk chunk;
+        public ChunkSection chunk;
 
         public Block(BlockData data, Coord3 rotation = new Coord3()) {
             this.data = data;
@@ -33,10 +33,9 @@ namespace VoxelEngine {
         }
 
         [SerializationConstructor]
-        public Block(string dataName, Coord3 rotation, Coord3 position) {
+        public Block(string dataName, Coord3 rotation) {
             this.dataName = dataName;
             this.rotation = rotation;
-            this.position = position;
         }
 
         public Block ConvertTo(string type) {

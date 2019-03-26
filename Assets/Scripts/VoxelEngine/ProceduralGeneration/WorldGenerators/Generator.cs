@@ -15,35 +15,35 @@ namespace VoxelEngine.ProceduralGeneration {
             this.noise = noise;
         }
 
-        public void GenerateColumn(ChunkColumn col) {
+        public void GenerateColumn(Chunk col) {
             for (int i = 0; i < VoxelWorld.ChunkHeight; i++) {
                 var chunk = col.GetChunk(i);
                 GenerateChunk(chunk);
-                for (int x = 0; x < Chunk.Size; x++) {
-                    for (int z = 0; z < Chunk.Size; z++) {
+                for (int x = 0; x < ChunkSection.Size; x++) {
+                    for (int z = 0; z < ChunkSection.Size; z++) {
                         GenerateColumn(chunk, x, z);
                     }
                 }
             }
         }
 
-        protected virtual void GenerateColumn(Chunk chunk, int x, int z) {
+        protected virtual void GenerateColumn(ChunkSection chunk, int x, int z) {
             var stone = ResourceStore.Blocks["stone"];
-            for (int y = 0; y < Chunk.Size; y++) {
+            for (int y = 0; y < ChunkSection.Size; y++) {
                 var pos = new Coord3(x, y, z);
                 SetBlock(chunk, pos, stone);
             }
         }
 
-        protected virtual void GenerateChunk(Chunk chunk) { }
+        protected virtual void GenerateChunk(ChunkSection chunk) { }
 
-        protected void SetBlock(Chunk chunk, Coord3 localPos, Block block, bool replace = false) {
+        protected void SetBlock(ChunkSection chunk, Coord3 localPos, Block block, bool replace = false) {
             var b = chunk.GetBlock(localPos);
             if (replace || b == null || b.data.meshType == BlockMeshType.Air) {
                 chunk.SetBlock(block, localPos, false);
             }
         }
-        protected void SetBlock(Chunk chunk, Coord3 localPos, BlockData blockData, Coord3 rotation = new Coord3(), bool replace = false) {
+        protected void SetBlock(ChunkSection chunk, Coord3 localPos, BlockData blockData, Coord3 rotation = new Coord3(), bool replace = false) {
             var b = chunk.GetBlock(localPos);
             if (replace || b == null || b.data.meshType == BlockMeshType.Air) {
                 chunk.SetBlock(blockData, localPos, rotation, false);
@@ -76,7 +76,7 @@ namespace VoxelEngine.ProceduralGeneration {
             return GetNoise(x, y, z, frequency, 100) <= density;
         }
 
-        protected void GenerateStructure(Chunk chunk, int x, int y, int z, string id) {
+        protected void GenerateStructure(ChunkSection chunk, int x, int y, int z, string id) {
             var s = ResourceStore.Structures[id];
 
             for (int l = 0; l < s.height; l++) {
@@ -91,11 +91,11 @@ namespace VoxelEngine.ProceduralGeneration {
             }
         }
 
-        protected void FillWithAir(Chunk chunk) {
+        protected void FillWithAir(ChunkSection chunk) {
             var air = ResourceStore.Blocks["air"];
-            for (int x = 0; x < Chunk.Size; x++) {
-                for (int y = 0; y < Chunk.Size; y++) {
-                    for (int z = 0; z < Chunk.Size; z++) {
+            for (int x = 0; x < ChunkSection.Size; x++) {
+                for (int y = 0; y < ChunkSection.Size; y++) {
+                    for (int z = 0; z < ChunkSection.Size; z++) {
                         var pos = new Coord3(x, y, z);
                         SetBlock(chunk, pos, air);
                     }

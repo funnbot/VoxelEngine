@@ -74,7 +74,7 @@ namespace VoxelEngine.Player {
                 }
             } else if (Input.GetKeyDown(KeyCode.R)) {
                 if (world.columns.ContainsKey(cpos)) {
-                    world.GetColumn(cpos).Render();
+                    world.GetColumn(cpos).QueueRender();
                     Debug.Log("Rendered: " + cpos);
                 }
             } else if (Input.GetKeyDown(KeyCode.K)) {

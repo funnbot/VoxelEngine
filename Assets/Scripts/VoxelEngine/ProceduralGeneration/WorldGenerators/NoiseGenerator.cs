@@ -23,13 +23,13 @@ namespace VoxelEngine.ProceduralGeneration {
             stone = GetBlockData("stone");
         }
 
-        protected override void GenerateColumn(Chunk chunk, int x, int z) {
+        protected override void GenerateColumn(ChunkSection chunk, int x, int z) {
             var localPos = new Coord3(x, 0, z);
             var pos = localPos.BlockToWorld(chunk.worldPosition);
 
             var height = baseHeight + GetNoise(pos.x, 0, pos.z, noiseFreq, noiseHeight);
 
-            for (int y = 0; y < Chunk.Size; y++) {
+            for (int y = 0; y < ChunkSection.Size; y++) {
                 localPos.y = y;
                 pos = localPos.BlockToWorld(chunk.worldPosition);
 

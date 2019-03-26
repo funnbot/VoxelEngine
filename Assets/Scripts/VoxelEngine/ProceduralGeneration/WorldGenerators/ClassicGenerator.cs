@@ -30,7 +30,7 @@ namespace VoxelEngine.ProceduralGeneration {
             grass_decal = ResourceStore.Blocks["grass_decal"];
         }
 
-        protected override void GenerateColumn(Chunk chunk, int x, int z) {
+        protected override void GenerateColumn(ChunkSection chunk, int x, int z) {
             var worldPos = new Coord3(x, 0, z).BlockToWorld(chunk.worldPosition);
 
             int stoneHeight = stoneBaseHeight;
@@ -40,7 +40,7 @@ namespace VoxelEngine.ProceduralGeneration {
             int dirtHeight = stoneHeight + dirtBaseHeight;
             dirtHeight += GetNoise(worldPos.x, worldPos.z, dirtNoise, dirtNoiseHeight);
 
-            for (int y = -Chunk.Rollover; y < Chunk.Size + Chunk.Rollover; y++) {
+            for (int y = -ChunkSection.Rollover; y < ChunkSection.Size + ChunkSection.Rollover; y++) {
                 var localPos = new Coord3(x, y, z);
                 worldPos = localPos.BlockToWorld(chunk.worldPosition);
 

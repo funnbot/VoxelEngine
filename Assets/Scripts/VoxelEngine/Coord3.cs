@@ -32,7 +32,7 @@ namespace VoxelEngine {
 
         public Coord3 BlockToWorld(Coord3 chunkWorldPos) => this + chunkWorldPos;
         public Coord3 WorldToBlock(Coord3 chunkWorldPos) => this - chunkWorldPos;
-        public Coord3 WorldToChunk() => this.FloorDiv(Chunk.Size);
+        public Coord3 WorldToChunk() => this.FloorDiv(ChunkSection.Size);
 
         public Coord3 FloorDiv(int i) =>
         new Coord3(Mathf.FloorToInt((float) x / i), Mathf.FloorToInt((float) y / i), Mathf.FloorToInt((float) z / i));

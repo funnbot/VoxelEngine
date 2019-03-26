@@ -6,15 +6,15 @@ namespace VoxelEngine.Serialization {
     public static class Serializer {
         public static readonly string SaveFolder = "Worlds";
 
-        public static void SaveColumn(string worldSave, Coord2 pos, SerialChunkColumn column) {
+        public static void SaveColumn(string worldSave, Coord2 pos, SerialChunk column) {
             string saveFile = FolderName(worldSave) + FileName(pos);
 
             using(FileStream stream = new FileStream(saveFile, FileMode.Create, FileAccess.Write, FileShare.None)) {
-                MessagePackSerializer.Serialize<SerialChunkColumn>(stream, column);
+                MessagePackSerializer.Serialize<SerialChunk>(stream, column);
             }
         }
 
-        public static bool LoadColumn(string worldSave, Coord2 pos, out SerialChunkColumn column) {
+        public static bool LoadColumn(string worldSave, Coord2 pos, out SerialChunk column) {
             string saveFile = FolderName(worldSave) + FileName(pos);
 
             if (!File.Exists(saveFile)) {
@@ -23,7 +23,7 @@ namespace VoxelEngine.Serialization {
             }
 
             using(FileStream stream = new FileStream(saveFile, FileMode.Open)) {
-                column = MessagePackSerializer.Deserialize<SerialChunkColumn>(stream);
+                column = MessagePackSerializer.Deserialize<SerialChunk>(stream);
             }
             return true;
         }

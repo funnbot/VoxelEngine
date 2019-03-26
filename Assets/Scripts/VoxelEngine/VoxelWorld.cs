@@ -12,13 +12,8 @@ namespace VoxelEngine {
 
     public class VoxelWorld : MonoBehaviour {
         public static readonly int Height = 80;
-        public static readonly int ChunkHeight = Height / Chunk.Size;
-
-        public int renderAverage = 0;
-        [HideInInspector]
-        public int renderTime = 0;
-        [HideInInspector]
-        public int renderCount = 0;
+        public static readonly int ChunkHeight = Height / ChunkSection.Size;
+        public static readonly int MaxRendersPerTick = 10;
 
         public string saveName;
         public GameObject ColumnFab;
@@ -28,11 +23,13 @@ namespace VoxelEngine {
         public Generator generator;
         public int spawnSize;
 
+        public int chunkRenders;
+
         public int tickSpeed = 10;
         private int tick;
 
-        public ChunkColumnPool columnPool;
-        public Dictionary<Coord2, ChunkColumn> columns;
+        public ChunkPool columnPool;
+        public Dictionary<Coord2, Chunk> columns;
 
         public delegate void Tick();
         public event Tick OnTick;
@@ -41,25 +38,22 @@ namespace VoxelEngine {
         public event SpawnLoaded OnSpawnLoad;
 
         void Start() {
-            columns = new Dictionary<Coord2, ChunkColumn>();
+            columns = new Dictionary<Coord2, Chunk>();
             generator = new ProceduralGenerator(this).Use(generatorType);
 
             LoadSpawn();
-            StartCoroutine(WorldUpdate());
         }
 
-        IEnumerator WorldUpdate() {
-            while (true) {
+        void Update() {
+            if (++tick == tickSpeed) {
+                tick = 0;
+                Debug.Log(chunkRenders);
+                chunkRenders = 0;
                 OnTick?.Invoke();
-                Debug.Log(OnTick.GetInvocationList().Length);
-
-                yield return new WaitForSeconds(0.5f);
-
-                if (renderCount != 0) renderAverage = renderTime / renderCount;
             }
         }
 
-        public Block RegisterBlock(Block block, Coord3 position, Chunk chunk) {
+        public Block RegisterBlock(Block block, Coord3 position, ChunkSection chunk) {
             block.position = position;
             block.chunk = chunk;
 
@@ -97,30 +91,31 @@ namespace VoxelEngine {
             }
         }
 
-        public ChunkColumn LoadColumn(Coord2 pos) {
+        public Chunk LoadColumn(Coord2 pos) {
             if (columns.ContainsKey(pos)) return columns[pos];
 
             var col = columnPool.GetObject();
             col.Init(pos);
             columns.Add(pos, col);
+
             return col;
         }
 
         public void DestroyColumn(Coord2 pos) {
-            ChunkColumn col = columns[pos];
+            Chunk col = columns[pos];
 
             columnPool.ReleaseObject(col);
             columns.Remove(pos);
         }
 
-        public Chunk GetChunk(Coord3 pos) {
+        public ChunkSection GetChunk(Coord3 pos) {
             var col = GetColumn((Coord2) pos);
             if (col == null) return null;
             return col.GetChunk(pos.y);
         }
 
-        public ChunkColumn GetColumn(Coord2 pos) {
-            ChunkColumn col;
+        public Chunk GetColumn(Coord2 pos) {
+            Chunk col;
             if (columns.TryGetValue(pos, out col)) {
                 return col;
             } else return null;
@@ -173,7 +168,7 @@ namespace VoxelEngine {
                 for (int z = -size; z <= size; z++) {
                     var pos = new Coord2(x, z);
                     var col = GetColumn(pos);
-                    col.Render();
+                    col.QueueRender();
                 }
             }
 
@@ -182,7 +177,7 @@ namespace VoxelEngine {
 
         void LoadSpawnThreaded() {
             int loadSize = spawnSize + 1;
-            var cols = new ChunkColumn[loadSize * 2 + 1, loadSize * 2 + 1];
+            var cols = new Chunk[loadSize * 2 + 1, loadSize * 2 + 1];
 
             for (int x = -loadSize; x <= loadSize; x++) {
                 for (int z = -loadSize; z <= loadSize; z++) {

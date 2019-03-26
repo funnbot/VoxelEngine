@@ -52,17 +52,21 @@ namespace VoxelEngine.Player {
             LoadColumns(load);
             var column = world.GetColumn(load);
 
-            if (!column.built) {
-                await Task.Run(column.Build);
-            }
-            if (!column.generated) {
-                await Task.Run(column.GenerateMesh);
-                foreach (var dir in Coord2.Directions) {
-                    var col = world.GetColumn(load + dir);
-                    if (col != null && col.generated) {
-                        await Task.Run(col.GenerateMesh);
+            try {
+                if (!column.built) {
+                    await Task.Run(column.Build);
+                }
+                if (!column.generated) {
+                    await Task.Run(column.GenerateMesh);
+                    foreach (var dir in Coord2.Directions) {
+                        var col = world.GetColumn(load + dir);
+                        if (col != null && col.generated) {
+                            await Task.Run(col.GenerateMesh);
+                        }
                     }
                 }
+            } catch (System.Exception e) {
+                Debug.Log(e);
             }
             if (!column.rendered) {
                 column.ApplyMesh();
@@ -98,7 +102,7 @@ namespace VoxelEngine.Player {
                 if (!ColumnInRange(p, range)) {
                     var col = world.GetColumn(p);
                     if (col != null) {
-                        await Task.Run(col.Save);
+                        if (col.built) await Task.Run(col.Save);
                         world.DestroyColumn(p);
                     }
                     loaded.RemoveAt(i);
@@ -109,7 +113,7 @@ namespace VoxelEngine.Player {
         }
 
         bool ColumnInRange(Coord2 col, int range) =>
-            Coord2.SqrDistance(pos * Chunk.Size, col * Chunk.Size) < range * range;
+            Coord2.SqrDistance(pos * ChunkSection.Size, col * ChunkSection.Size) < range * range;
 
         void SpiralOut(ref Coord2 c) {
             int x = c.x, y = c.y;
