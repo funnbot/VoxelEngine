@@ -21,6 +21,7 @@ namespace UnityStandardAssets.Utility
             Mobile
         }
 
+        #pragma warning disable
         [SerializeField]
         private BuildTargetGroup m_BuildTargetGroup;
         [SerializeField]
@@ -29,6 +30,7 @@ namespace UnityStandardAssets.Utility
         private MonoBehaviour[] m_MonoBehaviours = new MonoBehaviour[0];
         [SerializeField]
         private bool m_ChildrenOfThisObject;
+        #pragma warning enable
 
 #if !UNITY_EDITOR
 	void OnEnable()

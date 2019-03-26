@@ -7,7 +7,9 @@ namespace UnityStandardAssets.Utility
     {
         // An incredibly simple menu which, when given references
         // to gameobjects in the scene
+        #pragma warning disable
         public GUIText camSwitchButton;
+        #pragma warning enable
         public GameObject[] objects;
 
 

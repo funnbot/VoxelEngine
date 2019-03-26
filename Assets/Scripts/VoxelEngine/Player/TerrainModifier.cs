@@ -9,6 +9,8 @@ namespace VoxelEngine.Player {
 
         private VoxelWorld world;
 
+        private Player player;
+
         BlockData air;
         string[] blocks = {
             "stone",
@@ -22,6 +24,7 @@ namespace VoxelEngine.Player {
         int selected;
 
         void Start() {
+            player = GetComponent<Player>();
             air = ResourceStore.Blocks["air"];
         }
 
@@ -41,12 +44,9 @@ namespace VoxelEngine.Player {
                 if (Physics.Raycast(ray, out hit, 10f)) {
                     int y = -Mathf.RoundToInt(transform.localEulerAngles.y / 90f);
                     var rot = new Coord3(1, y, 0);
-                    // rot = (Coord3)rotation;
-                    Debug.Log(rot);
                     if (!Input.GetKey(KeyCode.LeftAlt)) {
-                        var block = ResourceStore.Blocks[blocks[selected]];
-
-                        world.SetBlock(block, hit, rot, false);
+                        var block = player?.activeStack?.item;
+                        if (block != null) world.SetBlock(block, hit, rot, false);
                     } else {
                         world.SetBlock(air, hit, rot);
                     }

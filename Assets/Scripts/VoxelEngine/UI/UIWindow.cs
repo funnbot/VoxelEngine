@@ -8,21 +8,29 @@ namespace VoxelEngine.UI {
         static readonly int GridSize = 30;
         static readonly int GridSpacing = 10;
 
-        static readonly int ButtonHeight = 10;
+        static readonly int ButtonHeight = 25;
 
         public Vector2 position;
         public Vector2Int size;
 
         public delegate void Click(string buttonName);
-        public event Click OnClick;
+        public event Click OnButtonClick;
+
+        public delegate void SlotUpdate(string slotName, UIItemStack occupant);
+        public event SlotUpdate OnSlotUpdate;
+
+        public delegate void SlotGridUpdate(string slotName, Coord2 pos, UIItemStack occupant);
+        public event SlotGridUpdate OnSlotGridUpdate;
 
         Dictionary<string, UIItemSlot> slots = new Dictionary<string, UIItemSlot>();
         Dictionary<string, UIItemSlot[][]> slotGrids = new Dictionary<string, UIItemSlot[][]>();
 
-        public void Slot(float x, float y, string name) {
+        public UIItemSlot Slot(float x, float y, string name) {
             var slot = UICanvas.UIInstantiate(UICanvas.ItemSlotFab).GetComponent<UIItemSlot>();
             PositionTransform(slot.transform, x, y, 1, 1);
+            slot.OnUpdateOccupant += occupant => OnSlotUpdate?.Invoke(name, occupant);
             slots.Add(name, slot);
+            return slot;
         }
 
         public UIItemSlot GetSlot(string name) {
@@ -31,17 +39,19 @@ namespace VoxelEngine.UI {
             return slot;
         }
 
-        public void SlotGrid(float x, float y, int columns, int rows, string name) {
+        public UIItemSlot[][] SlotGrid(float x, float y, int columns, int rows, string name) {
             var grid = new UIItemSlot[columns][];
             for (int xi = 0; xi < columns; xi++) {
                 grid[xi] = new UIItemSlot[rows];
                 for (int yi = 0; yi < rows; yi++) {
                     var slot = UICanvas.UIInstantiate(UICanvas.ItemSlotFab).GetComponent<UIItemSlot>();
-                    PositionTransform(slot.transform, x, y, 1, 1);
+                    PositionTransform(slot.transform, xi, yi, 1, 1);
                     grid[xi][yi] = slot;
+                    slot.OnUpdateOccupant += occupant => OnSlotGridUpdate?.Invoke(name, new Coord2(xi, yi), occupant);
                 }
             }
             slotGrids.Add(name, grid);
+            return grid;
         }
 
         public UIItemSlot[][] GetGrid(string name) {
@@ -55,7 +65,7 @@ namespace VoxelEngine.UI {
             button.transform.SetParent(transform);
             button.transform.localPosition = TransformGridPosition(new Vector2(x, y));
             button.transform.sizeDelta = new Vector2(width * GridSize, height * ButtonHeight);
-            button.OnClick += () => OnClick?.Invoke(name);
+            button.OnClick += () => OnButtonClick?.Invoke(name);
 
             button.SetText(text);
         }

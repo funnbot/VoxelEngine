@@ -6,12 +6,15 @@ namespace VoxelEngine.Blocks {
 
     public class HelloBlock : Block, IInterfaceable {
         public HelloBlock(Block block) : base(block) { }
-        
-        static UIWindow window;
-        public void OpenGUI() {
-            //if (window == null) window = UIWindow.Create(0, 0, );
 
+        static UIWindow window;
+        public void BuildGUI() {
+            window = UIWindow.Create(10, 10, new Vector2(0.5f, 0.5f));
+        }
+
+        public void OpenGUI() {
             window.Open();
+            
         }
 
         public void CloseGUI() {

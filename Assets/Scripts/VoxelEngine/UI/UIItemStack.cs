@@ -8,11 +8,12 @@ using VoxelEngine.Data;
 namespace VoxelEngine.UI {
 
     public class UIItemStack : UIMonoBehaviour, IDragHandler, IPointerEnterHandler, IPointerExitHandler {
-        public Text CountText;
-        public Text NameText;
+        public TMPro.TMP_Text CountText;
+        public TMPro.TMP_Text NameText;
         public Image Icon;
 
         [Space]
+        public ItemStack data;
         public BlockData item;
         public int count;
 
@@ -24,6 +25,7 @@ namespace VoxelEngine.UI {
 
             SetText(CountText, count.ToString());
             SetText(NameText, item.blockName);
+            SetImage(Icon, item.icon);
         }
 
         public void PlacedInSlot(UIItemSlot slot) {
@@ -34,19 +36,21 @@ namespace VoxelEngine.UI {
             slot?.PlaceInSlot(this);
         }
 
-        public void OnDrag(PointerEventData eventData) {
+        void IDragHandler.OnDrag(PointerEventData eventData) {
             transform.position = eventData.position;
         }
 
         public override void OnDragBegin() {
-            slot?.PickupFromSlot();
+            if (slot != null && !slot.locked) {
+                slot.PickupFromSlot();
+            }
         }
 
-        public void OnPointerEnter(PointerEventData eventData) {
+        void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData) {
             Icon.color = new Color(1, 1, 1, 0.8f);
         }
 
-        public void OnPointerExit(PointerEventData eventData) {
+        void IPointerExitHandler.OnPointerExit(PointerEventData eventData) {
             Icon.color = new Color(1, 1, 1, 1);
         }
     }

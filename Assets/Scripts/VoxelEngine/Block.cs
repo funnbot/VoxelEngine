@@ -39,10 +39,11 @@ namespace VoxelEngine {
             this.position = position;
         }
 
-        public Block ConvertTo(System.Type type) {
-            if (type == typeof(HelloBlock)) return new HelloBlock(this);
+        public Block ConvertTo(string type) {
+            if (type == "HelloBlock") return new HelloBlock(this);
+            if (type == "VirusBlock") return new VirusBlock(this);
 
-            throw new System.InvalidCastException($"Converting type \"{typeof(Block)}\" to type \"{type.Name}\" is not supported.");
+            throw new System.InvalidCastException($"Converting type \"{typeof(Block)}\" to type \"{type}\" is not supported.");
         }
     }
 

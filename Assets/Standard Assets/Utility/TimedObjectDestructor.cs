@@ -21,7 +21,9 @@ namespace UnityStandardAssets.Utility
             {
                 transform.DetachChildren();
             }
+            #pragma warning disable
             DestroyObject(gameObject);
+            #pragma warning enable
         }
     }
 }

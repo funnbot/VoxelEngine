@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using VoxelEngine.Blocks;
 using VoxelEngine.Data;
+using VoxelEngine.Interfaces;
 using VoxelEngine.Pooling;
 using VoxelEngine.ProceduralGeneration;
 
@@ -43,14 +45,18 @@ namespace VoxelEngine {
             generator = new ProceduralGenerator(this).Use(generatorType);
 
             LoadSpawn();
+            StartCoroutine(WorldUpdate());
         }
 
-        void Update() {
-            if (++tick == tickSpeed) {
-                tick = 0;
+        IEnumerator WorldUpdate() {
+            while (true) {
                 OnTick?.Invoke();
+                Debug.Log(OnTick.GetInvocationList().Length);
+
+                yield return new WaitForSeconds(0.5f);
+
+                if (renderCount != 0) renderAverage = renderTime / renderCount;
             }
-            if (renderCount != 0) renderAverage = renderTime / renderCount;
         }
 
         public Block RegisterBlock(Block block, Coord3 position, Chunk chunk) {
@@ -66,8 +72,12 @@ namespace VoxelEngine {
                 outBlock = sb;
             }
             if (block.data.dataType.Length > 0) {
-                var t = System.Type.GetType(block.data.dataType, false, true);
-                if (t != null) outBlock = block.ConvertTo(t);
+                outBlock = block.ConvertTo(block.data.dataType);
+            }
+
+            IUpdateable inter = outBlock as IUpdateable;
+            if (inter != null) {
+                OnTick += inter.OnTick;
             }
 
             return outBlock;
@@ -75,6 +85,11 @@ namespace VoxelEngine {
 
         public void UnregisterBlock(Block block) {
             if (block == null) return;
+
+            IUpdateable inter = block as IUpdateable;
+            if (inter != null) {
+                OnTick -= inter.OnTick;
+            }
 
             if (block.data.meshType == BlockMeshType.Custom && block is StandaloneBlock) {
                 var sb = (StandaloneBlock) block;

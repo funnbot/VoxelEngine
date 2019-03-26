@@ -320,6 +320,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d663c21100cba49c99251b002d507ee7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  activeStack: {fileID: 0}
 --- !u!1 &701127350
 GameObject:
   m_ObjectHideFlags: 0
@@ -568,16 +569,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8707ac28a5ce493b9476d4e02ea6675, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _canvas: {fileID: 981635325}
-  _itemStackFab: {fileID: 5264655788680564547, guid: a5128b457dd6640b391af23e89f183d1,
+  canvas: {fileID: 981635325}
+  itemStackFab: {fileID: 5264655788680564547, guid: a5128b457dd6640b391af23e89f183d1,
     type: 3}
-  _itemSlotFab: {fileID: 911634953377362765, guid: 0deda70c3e7a3431d8e90d29cd7dc62d,
+  itemSlotFab: {fileID: 911634953377362765, guid: 0deda70c3e7a3431d8e90d29cd7dc62d,
     type: 3}
-  _windowFab: {fileID: 1281103585276486441, guid: 215d49a19177945c291cf56f807de429,
+  windowFab: {fileID: 1281103585276486441, guid: 215d49a19177945c291cf56f807de429,
     type: 3}
-  _buttonFab: {fileID: 6317123381593367091, guid: 734f524b7a9de4a19bd32ad42c119ef0,
+  buttonFab: {fileID: 6317123381593367091, guid: 734f524b7a9de4a19bd32ad42c119ef0,
     type: 3}
-  _labelFab: {fileID: 2854617682224940983, guid: bbd420ca041d5445cb8c1aa563c6f98c,
+  labelFab: {fileID: 2854617682224940983, guid: bbd420ca041d5445cb8c1aa563c6f98c,
     type: 3}
 --- !u!4 &1623519647
 Transform:

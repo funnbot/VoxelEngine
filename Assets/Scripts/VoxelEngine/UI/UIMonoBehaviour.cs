@@ -20,7 +20,14 @@ public class UIMonoBehaviour : MonoBehaviour, IBeginDragHandler, IEndDragHandler
             comp.text = "";
         } else {
             comp.text = text;
-            comp.gameObject.SetActive(true);
+        }
+    }
+
+    protected void SetText(TMPro.TMP_Text comp, string text) {
+        if (text == null || text == "") {
+            comp.SetText("");
+        } else {
+            comp.SetText(text);
         }
     }
 

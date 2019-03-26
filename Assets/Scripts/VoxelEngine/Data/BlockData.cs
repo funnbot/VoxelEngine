@@ -30,10 +30,6 @@ namespace VoxelEngine.Data {
         public int[] textureIndices;
         [HideInInspector]
         public TextureIndex[] textures = new TextureIndex[6];
-
-        void Awake() {
-            blockName = name;
-        }
     }
 
     public enum BlockMeshType {
@@ -118,6 +114,8 @@ namespace VoxelEngine.Data {
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
             }
+
+            bd.blockName = bd.name;
         }
 
         void OnEnable() {

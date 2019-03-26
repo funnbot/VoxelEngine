@@ -10,7 +10,7 @@ namespace UnityStandardAssets.Cameras
         [SerializeField] private float m_TrackingSwayAmount = .5f;
         [Range(-1, 1)] [SerializeField] private float m_TrackingBias = 0;
 
-
+ 
         protected override void FollowTarget(float deltaTime)
         {
             base.FollowTarget(deltaTime);

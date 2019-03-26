@@ -11,10 +11,14 @@ namespace VoxelEngine.UI {
     public class UIItemSlot : UIMonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler {
         [System.NonSerialized]
         public UIItemStack occupant;
+        public bool locked;
+
+        public delegate void UpdateOccupant(UIItemStack occupant);
+        public event UpdateOccupant OnUpdateOccupant;
 
         private Image panel;
 
-        void Start() {
+        protected override void AwakeImpl() {
             panel = GetComponent<Image>();
             if (occupant != null) PlaceInSlot(occupant);
         }
@@ -28,32 +32,34 @@ namespace VoxelEngine.UI {
             stack.transform.SetParent(transform);
             stack.transform.localPosition = Vector2.zero;
             stack.PlacedInSlot(this);
+            OnUpdateOccupant?.Invoke(occupant);
         }
 
         public void PickupFromSlot() {
             if (occupant == null) return;
             occupant.transform.SetParent(UICanvas.Transform);
             occupant = null;
+            OnUpdateOccupant?.Invoke(null);
         }
 
         // When a dragged item is dropped on this slot
-        public void OnDrop(PointerEventData eventData) {
+        void IDropHandler.OnDrop(PointerEventData eventData) {
             if (eventData.pointerDrag == null) return;
 
             var stack = eventData.pointerDrag.GetComponent<UIItemStack>();
             if (stack == null) return;
 
-            if (occupant == null) PlaceInSlot(stack);
+            if (!locked || occupant == null) PlaceInSlot(stack);
             else stack.RevertToSlot();
         }
 
-        public void OnPointerEnter(PointerEventData eventData) {
+        void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData) {
             var col = panel.color;
             col.a = 0.8f;
             panel.color = col;
         }
 
-        public void OnPointerExit(PointerEventData eventData) {
+        void IPointerExitHandler.OnPointerExit(PointerEventData eventData) {
             var col = panel.color;
             col.a = 1f;
             panel.color = col;
