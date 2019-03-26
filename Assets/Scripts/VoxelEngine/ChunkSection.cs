@@ -83,19 +83,10 @@ namespace VoxelEngine {
         }
 
         public void Deserialize(SerialChunk serial, int w) {
-            string lastName = "";
-            BlockData lastData = null;
             for (int x = 0; x < Size; x++) {
                 for (int y = 0; y < Size; y++) {
                     for (int z = 0; z < Size; z++) {
                         var block = serial.blocks[w][x][y][z];
-
-                        //if (block.dataName == lastName) block.data = lastData;
-                        //else {
-                        //    lastData = ResourceStore.Blocks[block.dataName];
-                        //    lastName = block.dataName;
-                        //    block.data = lastData;
-                        //}
 
                         block.data = ResourceStore.Blocks[block.dataName];
 
