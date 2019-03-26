@@ -40,7 +40,7 @@ namespace VoxelEngine.ProceduralGeneration {
             int dirtHeight = stoneHeight + dirtBaseHeight;
             dirtHeight += GetNoise(worldPos.x, worldPos.z, dirtNoise, dirtNoiseHeight);
 
-            for (int y = -ChunkSection.Rollover; y < ChunkSection.Size + ChunkSection.Rollover; y++) {
+            for (int y = 0; y < ChunkSection.Size; y++) {
                 var localPos = new Coord3(x, y, z);
                 worldPos = localPos.BlockToWorld(chunk.worldPosition);
 
