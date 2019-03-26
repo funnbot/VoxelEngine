@@ -27,7 +27,6 @@ namespace VoxelEngine {
         private int tick;
 
         public ChunkPool columnPool;
-        // public Dictionary<Coord2, Chunk> columns;
         public ChunkManager chunks;
 
         public delegate void Tick();
@@ -89,37 +88,6 @@ namespace VoxelEngine {
                 if (sb.gameObject != null) Destroy(sb.gameObject, 0.1f);
             }
         }
-
-        /*
-        public Chunk LoadColumn(Coord2 pos) {
-            if (columns.ContainsKey(pos)) return columns[pos];
-
-            var col = columnPool.GetObject();
-            col.Init(pos);
-            columns.Add(pos, col);
-
-            return col;
-        }
-
-        public void DestroyColumn(Coord2 pos) {
-            Chunk col = columns[pos];
-
-            columnPool.ReleaseObject(col);
-            columns.Remove(pos);
-        }
-
-        public ChunkSection GetChunk(Coord3 pos) {
-            var col = GetColumn((Coord2) pos);
-            if (col == null) return null;
-            return col.GetSection(pos.y);
-        }
-
-        public Chunk GetColumn(Coord2 pos) {
-            Chunk col;
-            if (columns.TryGetValue(pos, out col)) {
-                return col;
-            } else return null;
-        }*/
 
         public Block GetBlock(Coord3 pos) {
             var chunkPos = pos.WorldToChunk();

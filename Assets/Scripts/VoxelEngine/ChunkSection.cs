@@ -161,7 +161,7 @@ namespace VoxelEngine {
             for (int i = 0; i < 6; i++) {
                 var pos = changed + Coord3.Directions[i];
                 if (!pos.InRange(0, ChunkSection.Size)) {
-                    var neighbor = world.chunks.GetSection(position = Coord3.Directions[i]);
+                    var neighbor = world.chunks.GetSection(position + Coord3.Directions[i]);
                     if (neighbor == null || !neighbor.parent.built) continue;
                     neighbor.QueueUpdate();
                 }
