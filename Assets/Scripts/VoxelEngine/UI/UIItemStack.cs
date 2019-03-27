@@ -37,19 +37,19 @@ namespace VoxelEngine.UI {
             SetText(CountText, count.ToString());
             SetText(NameText, item.blockName);
 
-            if (item.meshType == BlockMeshType.Cube) {
+            if (item.blockType == BlockType.Cube) {
                 CubeDisplay = Instantiate(ItemStack_CubeFab, transform);
                 CubeDisplay.transform.SetAsFirstSibling();
                 CubeTop = CubeDisplay.transform.Find("Top").GetComponent<RawImage>();
                 CubeLeft = CubeDisplay.transform.Find("Left").GetComponent<RawImage>();
                 CubeRight = CubeDisplay.transform.Find("Right").GetComponent<RawImage>();
 
-                CubeTop.texture = item.textures[2].texture;
-                CubeLeft.texture = item.textures[5].texture;
-                CubeRight.texture = item.textures[4].texture;
+                CubeTop.texture = item.textures[2]?.texture;
+                CubeLeft.texture = item.textures[5]?.texture;
+                CubeRight.texture = item.textures[4]?.texture;
             } else {
                 IconDisplay = Instantiate(ItemStack_IconFab, transform).GetComponent<RawImage>();
-                IconDisplay.texture = item.textures[0].texture;
+                IconDisplay.texture = item.icon ?? item.textures[0]?.texture;
             }
         }
 

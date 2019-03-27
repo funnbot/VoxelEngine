@@ -24,7 +24,7 @@ namespace VoxelEngine.ProceduralGeneration {
             grass = ResourceStore.Blocks["grass"];
             grass_decal = ResourceStore.Blocks["grass_decal"];
 
-            ores = GetBlocksOfType(BlockType.Ore);
+            ores = GetBlocksOfType(BlockSpawnType.Ore);
         }
 
         protected override void GenerateColumn(ChunkSection chunk, int x, int z) {

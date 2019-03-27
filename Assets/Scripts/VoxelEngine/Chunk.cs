@@ -35,6 +35,7 @@ namespace VoxelEngine {
 
             transform.parent = world.transform;
             transform.localPosition = (Coord3) position * ChunkSection.Size;
+            name = "Chunk " + position;
 
             for (int i = 0; i < chunks.Length; i++) {
                 var pos = new Coord3(position.x, i, position.y);

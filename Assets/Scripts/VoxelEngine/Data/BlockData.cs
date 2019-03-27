@@ -12,14 +12,13 @@ namespace VoxelEngine.Data {
         [Header("Info")]
         public string blockName;
         public string description;
-        public Sprite icon;
+        public Texture2D icon;
         [Space]
         public string dataType;
         [Space]
         [Header("Mesh Generation")]
-        public BlockMeshType meshType;
-        [DrawIf("meshType", BlockMeshType.Custom)]
-        public GameObject customPrefab;
+        public BlockType blockType;
+        public GameObject prefab;
         [Space]
         public bool collision;
         public float boundingSize = 1;
@@ -32,11 +31,11 @@ namespace VoxelEngine.Data {
         public bool placeable;
         [Space]
         [Header("Procedural Generation")]
-        public BlockType blockType;
+        public BlockSpawnType spawnType;
         [Space]
-        [DrawIf("blockType", BlockType.Ore)]
+        [DrawIf("spawnType", BlockSpawnType.Ore)]
         public float spawnFrequency;
-        [DrawIf("blockType", BlockType.Ore)]
+        [DrawIf("spawnType", BlockSpawnType.Ore)]
         public int spawnDensity;
 
         [HideInInspector]
@@ -46,7 +45,9 @@ namespace VoxelEngine.Data {
     }
 
     [System.Serializable]
-    public enum BlockMeshType {
+    public enum BlockType {
+        Entity,
+
         Cube,
         DecalCross,
         DecalHash,
@@ -56,7 +57,7 @@ namespace VoxelEngine.Data {
     }
 
     [System.Serializable]
-    public enum BlockType {
+    public enum BlockSpawnType {
         Terrain,
         Decoration,
         Ore

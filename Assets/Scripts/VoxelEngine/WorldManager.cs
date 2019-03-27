@@ -27,7 +27,7 @@ namespace VoxelEngine {
             world.columnPool = Instantiate(instance.ColumnPoolFab).GetComponent<ChunkPool>();
 
             world.saveName = saveName;
-            world.name = saveName;
+            world.name = saveName + " (VoxelWorld)";
             world.generatorType = generator;
             world.seed = seed;
 

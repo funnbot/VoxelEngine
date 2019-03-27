@@ -38,7 +38,7 @@ namespace VoxelEngine {
         void Start() {
             generator = new ProceduralGenerator(this).Use(generatorType);
             chunks = new ChunkManager(columnPool);
-            
+
             LoadSpawn();
         }
 
@@ -56,8 +56,8 @@ namespace VoxelEngine {
             block.chunk = chunk;
 
             Block outBlock = block;
-            if (block.data.meshType == BlockMeshType.Custom) {
-                var go = Instantiate(block.data.customPrefab, position, Quaternion.Euler(block.rotation * 90), chunk.Blocks);
+            if (block.data.blockType == BlockType.Custom) {
+                var go = Instantiate(block.data.prefab, position, Quaternion.Euler(block.rotation * 90), chunk.Blocks);
                 go.name = block.data.blockID + " " + block.position;
                 var sb = new StandaloneBlock(block);
                 sb.gameObject = go;
@@ -72,6 +72,11 @@ namespace VoxelEngine {
                 OnTick += inter.OnTick;
             }
 
+            IPlaceHandler placeHandler = outBlock as IPlaceHandler;
+            if (placeHandler != null) {
+                placeHandler.OnPlace();
+            }
+
             return outBlock;
         }
 
@@ -83,10 +88,20 @@ namespace VoxelEngine {
                 OnTick -= inter.OnTick;
             }
 
-            if (block.data.meshType == BlockMeshType.Custom && block is StandaloneBlock) {
+            IBreakHandler placeHandler = block as IBreakHandler;
+            if (placeHandler != null) {
+                placeHandler.OnBreak();
+            }
+
+            if (block.data.blockType == BlockType.Custom && block is StandaloneBlock) {
                 var sb = (StandaloneBlock) block;
                 if (sb.gameObject != null) Destroy(sb.gameObject, 0.1f);
             }
+        }
+
+        public void SpawnEntity(Block block, Coord3 pos, ChunkSection chunk) {
+            var go = Instantiate(block.data.prefab, pos.BlockToWorld(chunk.worldPosition), Quaternion.Euler(block.rotation * 90), transform);
+            go.name = block.data.blockID + " (Entity)";
         }
 
         public Block GetBlock(Coord3 pos) {

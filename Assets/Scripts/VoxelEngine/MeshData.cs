@@ -143,40 +143,40 @@ namespace VoxelEngine {
             if (down != 3) Debug.LogError("Directional Bounding Boxes Not Implemented");
             switch (dir) {
                 case BlockFace.front:
-                    verts.Add(new Vector3((x - F) * s, (y + F) * s, (z + F) * s));
-                    verts.Add(new Vector3((x + F) * s, (y + F) * s, (z + F) * s));
-                    verts.Add(new Vector3((x + F) * s, (y - F), (z + F) * s));
-                    verts.Add(new Vector3((x - F) * s, (y - F), (z + F) * s));
+                    verts.Add(new Vector3(x - (F * s), y + (F * s), z + (F * s)));
+                    verts.Add(new Vector3(x + (F * s), y + (F * s), z + (F * s)));
+                    verts.Add(new Vector3(x + (F * s), (y - F), z + (F * s)));
+                    verts.Add(new Vector3(x - (F * s), (y - F), z + (F * s)));
                     break;
                 case BlockFace.back:
-                    verts.Add(new Vector3((x + F) * s, (y + F) * s, (z - F) * s));
-                    verts.Add(new Vector3((x - F) * s, (y + F) * s, (z - F) * s));
-                    verts.Add(new Vector3((x - F) * s, (y - F), (z - F) * s));
-                    verts.Add(new Vector3((x + F) * s, (y - F), (z - F) * s));
+                    verts.Add(new Vector3(x + (F * s), y + (F * s), z - (F * s)));
+                    verts.Add(new Vector3(x - (F * s), y + (F * s), z - (F * s)));
+                    verts.Add(new Vector3(x - (F * s), (y - F), z - (F * s)));
+                    verts.Add(new Vector3(x + (F * s), (y - F), z - (F * s)));
                     break;
                 case BlockFace.top:
-                    verts.Add(new Vector3((x - F) * s, (y + F) * s, (z - F) * s));
-                    verts.Add(new Vector3((x + F) * s, (y + F) * s, (z - F) * s));
-                    verts.Add(new Vector3((x + F) * s, (y + F) * s, (z + F) * s));
-                    verts.Add(new Vector3((x - F) * s, (y + F) * s, (z + F) * s));
+                    verts.Add(new Vector3(x - (F * s), y + (F * s), z - (F * s)));
+                    verts.Add(new Vector3(x + (F * s), y + (F * s), z - (F * s)));
+                    verts.Add(new Vector3(x + (F * s), y + (F * s), z + (F * s)));
+                    verts.Add(new Vector3(x - (F * s), y + (F * s), z + (F * s)));
                     break;
                 case BlockFace.bottom:
-                    verts.Add(new Vector3((x - F) * s, (y - F), (z + F) * s));
-                    verts.Add(new Vector3((x + F) * s, (y - F), (z + F) * s));
-                    verts.Add(new Vector3((x + F) * s, (y - F), (z - F) * s));
-                    verts.Add(new Vector3((x - F) * s, (y - F), (z - F) * s));
+                    verts.Add(new Vector3(x - (F * s), (y - F), z + (F * s)));
+                    verts.Add(new Vector3(x + (F * s), (y - F), z + (F * s)));
+                    verts.Add(new Vector3(x + (F * s), (y - F), z - (F * s)));
+                    verts.Add(new Vector3(x - (F * s), (y - F), z - (F * s)));
                     break;
                 case BlockFace.right:
-                    verts.Add(new Vector3((x + F) * s, (y + F) * s, (z + F) * s));
-                    verts.Add(new Vector3((x + F) * s, (y + F) * s, (z - F) * s));
-                    verts.Add(new Vector3((x + F) * s, (y - F), (z - F) * s));
-                    verts.Add(new Vector3((x + F) * s, (y - F), (z + F) * s));
+                    verts.Add(new Vector3(x + (F * s), y + (F * s), z + (F * s)));
+                    verts.Add(new Vector3(x + (F * s), y + (F * s), z - (F * s)));
+                    verts.Add(new Vector3(x + (F * s), (y - F), z - (F * s)));
+                    verts.Add(new Vector3(x + (F * s), (y - F), z + (F * s)));
                     break;
                 case BlockFace.left:
-                    verts.Add(new Vector3((x - F) * s, (y + F) * s, (z - F) * s));
-                    verts.Add(new Vector3((x - F) * s, (y + F) * s, (z + F) * s));
-                    verts.Add(new Vector3((x - F) * s, (y - F), (z + F) * s));
-                    verts.Add(new Vector3((x - F) * s, (y - F), (z - F) * s));
+                    verts.Add(new Vector3(x - (F * s), y + (F * s), z - (F * s)));
+                    verts.Add(new Vector3(x - (F * s), y + (F * s), z + (F * s)));
+                    verts.Add(new Vector3(x - (F * s), (y - F), z + (F * s)));
+                    verts.Add(new Vector3(x - (F * s), (y - F), z - (F * s)));
                     break;
             }
         }
@@ -227,10 +227,10 @@ namespace VoxelEngine {
 
         private void AddDecalFlatVerts(Coord3 pos) {
             float x = pos.x, y = pos.y, z = pos.z;
-            verts.Add(new Vector3(x - F, y + O, z - F));
-            verts.Add(new Vector3(x + F, y + O, z - F));
-            verts.Add(new Vector3(x + F, y + O, z + F));
-            verts.Add(new Vector3(x - F, y + O, z + F));
+            verts.Add(new Vector3(x - F, y - F + O, z - F));
+            verts.Add(new Vector3(x + F, y - F + O, z - F));
+            verts.Add(new Vector3(x + F, y - F + O, z + F));
+            verts.Add(new Vector3(x - F, y - F + O, z + F));
         }
 
         private void AddDecalRampVerts(Coord3 pos, int rot) {

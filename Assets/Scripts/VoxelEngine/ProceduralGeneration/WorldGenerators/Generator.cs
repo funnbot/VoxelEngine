@@ -39,13 +39,13 @@ namespace VoxelEngine.ProceduralGeneration {
 
         protected void SetBlock(ChunkSection chunk, Coord3 localPos, Block block, bool replace = false) {
             var b = chunk.GetBlock(localPos);
-            if (replace || b == null || b.data.meshType == BlockMeshType.Air) {
+            if (replace || b == null || b.data.blockType == BlockType.Air) {
                 chunk.SetBlock(block, localPos, false);
             }
         }
         protected void SetBlock(ChunkSection chunk, Coord3 localPos, BlockData blockData, Coord3 rotation = new Coord3(), bool replace = false) {
             var b = chunk.GetBlock(localPos);
-            if (replace || b == null || b.data.meshType == BlockMeshType.Air) {
+            if (replace || b == null || b.data.blockType == BlockType.Air) {
                 chunk.SetBlock(blockData, localPos, rotation, false);
             }
         }
@@ -64,10 +64,10 @@ namespace VoxelEngine.ProceduralGeneration {
         protected BlockData GetBlockData(string id) =>
             ResourceStore.Blocks[id];
 
-        protected BlockData[] GetBlocksOfType(BlockType type) {
+        protected BlockData[] GetBlocksOfType(BlockSpawnType type) {
             var blocks = new List<BlockData>(10);
             foreach (KeyValuePair<string, BlockData> b in ResourceStore.Blocks) {
-                if (b.Value.blockType == type) blocks.Add(b.Value);
+                if (b.Value.spawnType == type) blocks.Add(b.Value);
             }
             return blocks.ToArray();
         }

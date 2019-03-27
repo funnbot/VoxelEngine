@@ -56,6 +56,7 @@ namespace VoxelEngine {
             this.position = position;
             worldPosition = position * Size;
             transform.localPosition = Coord3.up * worldPosition;
+            name = "ChunkSection " + position;
 
             world.OnTick += OnTick;
         }
@@ -140,6 +141,11 @@ namespace VoxelEngine {
         }
 
         public void SetBlock(Block block, Coord3 pos, bool updateChunk = true) {
+            if (block.data.blockType == BlockType.Entity) {
+                world.SpawnEntity(block, pos, this);
+                return;
+            }
+
             if (pos.InRange(0, ChunkSection.Size)) {
                 world.UnregisterBlock(blocks[pos.x][pos.y][pos.z]);
                 blocks[pos.x][pos.y][pos.z] =
@@ -174,7 +180,7 @@ namespace VoxelEngine {
 
             if (block == null) return false;
 
-            if (block.data.meshType == BlockMeshType.Cube) {
+            if (block.data.blockType == BlockType.Cube) {
                 for (int i = 0; i < 6; i++) {
                     if (CullFace(block, pos, i)) continue;
 
@@ -189,7 +195,7 @@ namespace VoxelEngine {
                         triggerMesh.AddCubeFace(i, pos);
                     }
                 }
-            } else if (block.data.meshType == BlockMeshType.DecalCross) {
+            } else if (block.data.blockType == BlockType.DecalCross) {
                 var texIndex = block.data.textureIndices[0];
                 blockMesh.AddDecalCross(pos, texIndex, (int) block.data.subMesh);
                 if (block.data.collision) {

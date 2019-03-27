@@ -17,15 +17,15 @@ MonoBehaviour:
   description: 
   icon: {fileID: 0}
   dataType: 
-  meshType: 4
-  customPrefab: {fileID: 0}
+  blockType: 5
+  prefab: {fileID: 0}
   collision: 0
   boundingSize: 1
   subMesh: 1
   placementType: 0
   stackable: 0
   placeable: 0
-  blockType: 0
+  spawnType: 0
   spawnFrequency: 0
   spawnDensity: 0
   textureIndices: 000000000000000000000000000000000000000000000000

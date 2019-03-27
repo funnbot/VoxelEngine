@@ -15,17 +15,17 @@ MonoBehaviour:
   blockID: dirt
   blockName: dirt
   description: 
-  icon: {fileID: 21300000, guid: e1a81d58da80f4181b24cb4040e8d15d, type: 3}
+  icon: {fileID: 0}
   dataType: 
-  meshType: 0
-  customPrefab: {fileID: 0}
+  blockType: 1
+  prefab: {fileID: 0}
   collision: 1
   boundingSize: 1
   subMesh: 0
   placementType: 0
   stackable: 1
   placeable: 1
-  blockType: 0
+  spawnType: 0
   spawnFrequency: 0
   spawnDensity: 0
   textureIndices: 010000000100000001000000010000000100000001000000

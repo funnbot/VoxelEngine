@@ -1,6 +1,7 @@
 ﻿using MessagePack;
 using VoxelEngine.Data;
 using VoxelEngine.Blocks;
+using VoxelEngine.Interfaces;
 
 namespace VoxelEngine {
 
@@ -42,6 +43,14 @@ namespace VoxelEngine {
             if (type == "VirusBlock") return new VirusBlock(this);
 
             throw new System.InvalidCastException($"Converting type \"{typeof(Block)}\" to type \"{type}\" is not supported.");
+        }
+
+        protected void UpdateNeighbors() {
+            foreach (var dir in Coord3.Directions) {
+                var block = chunk.GetBlock(position.WorldToBlock(chunk.worldPosition) + dir);
+                INeighborUpdateable neighbor = block as INeighborUpdateable;
+                if (neighbor != null) neighbor.OnNeighborUpdate(this);
+            }
         }
     }
 

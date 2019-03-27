@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6476113726369492590}
   m_Layer: 10
   m_Name: TriggerCollider
-  m_TagString: Untagged
+  m_TagString: Chunk
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -59,7 +59,7 @@ GameObject:
   - component: {fileID: 697792260012381751}
   m_Layer: 0
   m_Name: Blocks
-  m_TagString: Untagged
+  m_TagString: Chunk
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -149,8 +149,8 @@ GameObject:
   - component: {fileID: 9092419571636528248}
   - component: {fileID: 9092419571636528249}
   m_Layer: 0
-  m_Name: Chunk
-  m_TagString: Untagged
+  m_Name: ChunkSection
+  m_TagString: Chunk
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -188,11 +188,3 @@ MonoBehaviour:
   BlockCollider: {fileID: 697792260012381751}
   BlockTrigger: {fileID: 6476113726369492590}
   world: {fileID: 0}
-  position:
-    x: 0
-    y: 0
-    z: 0
-  worldPosition:
-    x: 0
-    y: 0
-    z: 0

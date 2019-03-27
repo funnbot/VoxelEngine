@@ -35,6 +35,12 @@ namespace VoxelEngine.UI {
             OnUpdateOccupant?.Invoke(occupant);
         }
 
+        public void SpawnInSlot(BlockData data, int count) {
+            var stack = UICanvas.UIInstantiate(UICanvas.ItemStackFab).GetComponent<UIItemStack>();
+            stack.SetStackData(data, count);
+            PlaceInSlot(stack);
+        }
+
         public void PickupFromSlot() {
             if (occupant == null) return;
             occupant.transform.SetParent(UICanvas.Transform);

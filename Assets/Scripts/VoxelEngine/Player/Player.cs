@@ -8,6 +8,7 @@ namespace VoxelEngine.Player {
         public PlayerChunkLoader ChunkLoader;
         public PlayerSpawner Spawner;
         public TerrainModifier Terrain;
+        public FreeCameraController CameraController;
 
         public UIItemStack activeStack;
         int selected = 0;
@@ -16,6 +17,8 @@ namespace VoxelEngine.Player {
         static Color selectedColor = Color.yellow;
 
         void Start() {
+            
+
             Cursor.lockState = CursorLockMode.Locked;
 
             var hotbar = UIWindow.Create(8, 1, new Vector2(0.5f, 0));
@@ -27,6 +30,7 @@ namespace VoxelEngine.Player {
             SetSlotTo("wood", 3);
             SetSlotTo("leaf", 4);
             SetSlotTo("iron_ore", 5);
+            SetSlotTo("ribit", 6);
 
             Select(0);
         }
