@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5264655788680564546}
   - component: {fileID: 5264655788680564559}
-  - component: {fileID: 5264655788680564544}
   - component: {fileID: 5264655788680564545}
   m_Layer: 5
   m_Name: ItemStack
@@ -48,35 +47,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5264655788680564547}
   m_CullTransparentMesh: 0
---- !u!114 &5264655788680564544
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5264655788680564547}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: e1a81d58da80f4181b24cb4040e8d15d, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
 --- !u!114 &5264655788680564545
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -90,9 +60,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   noRaycastOnDrag: 1
+  ItemStack_CubeFab: {fileID: 2576855917429328759, guid: c1d3e4e5babda4350b7e1b9c7f83cec4,
+    type: 3}
+  ItemStack_IconFab: {fileID: 9195215784587902765, guid: d0778eecd5e3c47bfa3f00cff1ec4608,
+    type: 3}
+  DiamondSprite: {fileID: 21300000, guid: 5708e53c7e7144ae1aea47b72b030586, type: 3}
   CountText: {fileID: 7599853298667220608}
   NameText: {fileID: 2946786764669268547}
-  Icon: {fileID: 5264655788680564544}
   item: {fileID: 0}
   count: 0
 --- !u!1 &5868426646217565951

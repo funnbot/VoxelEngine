@@ -40,6 +40,16 @@ public class UIMonoBehaviour : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         }
     }
 
+    protected void SetTexture(SpriteRenderer comp, Texture2D tex) {
+        if (tex == null) {
+            comp.gameObject.SetActive(false);
+        } else {
+            var newSprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), comp.sprite.pivot);
+            comp.sprite = newSprite;
+            comp.gameObject.SetActive(true);
+        }
+    }
+
     protected virtual void AwakeImpl() { }
 
     void Awake() {
