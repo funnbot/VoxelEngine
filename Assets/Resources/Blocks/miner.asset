@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba0e9bb57a82d4ebc98580cb3c739582, type: 3}
+  m_Name: miner
+  m_EditorClassIdentifier: 
+  blockID: miner
+  blockName: miner
+  description: Mines blocks
+  icon: {fileID: 0}
+  dataType: MinerBlock
+  blockType: 1
+  prefab: {fileID: 0}
+  collision: 1
+  boundingSize: 1
+  subMesh: 0
+  placementType: 3
+  stackable: 0
+  placeable: 1
+  spawnType: 1
+  spawnFrequency: 0
+  spawnDensity: 0
+  textureIndices: 090000000a0000000c0000000c0000000b0000000b000000
+  textures:
+  - {fileID: 11400000, guid: 2d737d268a829408a9af12e5c9a3c62d, type: 2}
+  - {fileID: 11400000, guid: 4698862e853df4200ad94d59ca6b91bc, type: 2}
+  - {fileID: 11400000, guid: 77514d6612e734e378a738157601a4eb, type: 2}
+  - {fileID: 11400000, guid: 77514d6612e734e378a738157601a4eb, type: 2}
+  - {fileID: 11400000, guid: d146b00195c1b4af7a381a19958c10aa, type: 2}
+  - {fileID: 11400000, guid: d146b00195c1b4af7a381a19958c10aa, type: 2}

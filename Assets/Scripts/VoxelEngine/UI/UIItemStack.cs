@@ -46,7 +46,7 @@ namespace VoxelEngine.UI {
 
                 CubeTop.texture = item.textures[2]?.texture;
                 CubeLeft.texture = item.textures[5]?.texture;
-                CubeRight.texture = item.textures[4]?.texture;
+                CubeRight.texture = item.textures[0]?.texture;
             } else {
                 IconDisplay = Instantiate(ItemStack_IconFab, transform).GetComponent<RawImage>();
                 IconDisplay.texture = item.icon ?? item.textures[0]?.texture;

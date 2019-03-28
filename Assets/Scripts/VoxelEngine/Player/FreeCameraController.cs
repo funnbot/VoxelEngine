@@ -32,13 +32,13 @@ namespace VoxelEngine.Player {
         public void Lock() {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
-            locked = true;
+            locked = false;
         }
 
         public void Unlock() {
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
-            locked = false;
+            locked = true;
         }
     }
 

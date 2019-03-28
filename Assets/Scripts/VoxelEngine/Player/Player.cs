@@ -31,6 +31,7 @@ namespace VoxelEngine.Player {
             SetSlotTo("leaf", 4);
             SetSlotTo("iron_ore", 5);
             SetSlotTo("ribit", 6);
+            SetSlotTo("miner", 7);
 
             Select(0);
         }

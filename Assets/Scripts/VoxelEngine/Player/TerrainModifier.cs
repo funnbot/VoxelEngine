@@ -37,6 +37,7 @@ namespace VoxelEngine.Player {
                 if (Input.GetKeyDown(KeyCode.Escape)) {
                     inGui.CloseGUI();
                     inGui = null;
+                    player.CameraController.Lock();
                 }
             } else if (Input.GetMouseButtonDown(0)) {
                 RaycastHit hit;
@@ -44,7 +45,7 @@ namespace VoxelEngine.Player {
                 if (Physics.Raycast(ray, out hit, 10f)) {
 
                     if (hit.transform.CompareTag("Chunk")) {
-                        int y = -Mathf.RoundToInt(transform.localEulerAngles.y / 90f);
+                        int y = Mathf.RoundToInt(transform.localEulerAngles.y / 90f);
                         var rot = new Coord3(0, y, 0);
                         if (!Input.GetKey(KeyCode.LeftAlt)) {
                             var block = player?.activeStack?.item;
@@ -73,6 +74,7 @@ namespace VoxelEngine.Player {
                     if (inGui != null) {
                         inGui.BuildGUI();
                         inGui.OpenGUI();
+                        player.CameraController.Unlock();
                     }
 
                 }

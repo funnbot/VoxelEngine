@@ -41,6 +41,7 @@ namespace VoxelEngine {
 
         public Block ConvertTo(string type) {
             if (type == "VirusBlock") return new VirusBlock(this);
+            if (type == "MinerBlock") return new MinerBlock(this);
 
             throw new System.InvalidCastException($"Converting type \"{typeof(Block)}\" to type \"{type}\" is not supported.");
         }

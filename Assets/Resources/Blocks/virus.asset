@@ -30,9 +30,9 @@ MonoBehaviour:
   spawnDensity: 0
   textureIndices: 080000000800000008000000080000000800000008000000
   textures:
-  - {fileID: 11400000, guid: d146b00195c1b4af7a381a19958c10aa, type: 2}
-  - {fileID: 11400000, guid: d146b00195c1b4af7a381a19958c10aa, type: 2}
-  - {fileID: 11400000, guid: d146b00195c1b4af7a381a19958c10aa, type: 2}
-  - {fileID: 11400000, guid: d146b00195c1b4af7a381a19958c10aa, type: 2}
-  - {fileID: 11400000, guid: d146b00195c1b4af7a381a19958c10aa, type: 2}
-  - {fileID: 11400000, guid: d146b00195c1b4af7a381a19958c10aa, type: 2}
+  - {fileID: 11400000, guid: 9bef98045ddbd47e7a2ae0cf114426f1, type: 2}
+  - {fileID: 11400000, guid: 9bef98045ddbd47e7a2ae0cf114426f1, type: 2}
+  - {fileID: 11400000, guid: 9bef98045ddbd47e7a2ae0cf114426f1, type: 2}
+  - {fileID: 11400000, guid: 9bef98045ddbd47e7a2ae0cf114426f1, type: 2}
+  - {fileID: 11400000, guid: 9bef98045ddbd47e7a2ae0cf114426f1, type: 2}
+  - {fileID: 11400000, guid: 9bef98045ddbd47e7a2ae0cf114426f1, type: 2}
