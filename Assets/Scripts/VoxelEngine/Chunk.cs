@@ -72,7 +72,7 @@ namespace VoxelEngine {
             built = true;
 
             SerialChunk serial;
-            if (Serializer.LoadColumn(world.saveName, position, out serial))
+            if (Serializer.LoadChunk(world.saveName, position, out serial))
                 this.Deserialize(serial);
             else world.generator.GenerateColumn(this);
         }
@@ -97,7 +97,7 @@ namespace VoxelEngine {
         }
 
         public void Save() {
-            if (built) Serializer.SaveColumn(world.saveName, position, this.Serialized());
+            if (built) Serializer.SaveChunk(world.saveName, position, this.Serialized());
         }
 
         private bool InRange(int y) => y >= 0 && y < chunks.Length;
