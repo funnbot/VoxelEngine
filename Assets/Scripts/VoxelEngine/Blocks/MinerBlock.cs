@@ -12,7 +12,8 @@ namespace VoxelEngine.Blocks {
 
     [MessagePackObject]
     public class MinerBlock : Block, IInterfaceable, IUpdateable, IPlaceHandler {
-        public MinerBlock(Block block) : base(block) { }
+        public MinerBlock(Block clone) : base(clone) { }
+        public MinerBlock() { }
 
         [Key(2)]
         public bool mining;

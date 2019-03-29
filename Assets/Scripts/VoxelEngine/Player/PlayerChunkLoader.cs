@@ -103,7 +103,7 @@ namespace VoxelEngine.Player {
                     var col = world.chunks.GetChunk(p);
                     if (col != null) {
                         try {
-                            if (col.built) await Task.Run(col.Save);
+                            if (col.built && col.isDirty) await Task.Run(col.Save);
                         } catch (System.Exception e) {
                             Debug.Log(e);
                         }

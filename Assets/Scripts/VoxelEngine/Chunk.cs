@@ -12,6 +12,7 @@ namespace VoxelEngine {
         public bool built { get; private set; }
         public bool generated { get; private set; }
         public bool rendered { get; private set; }
+        public bool isDirty { get; set; }
 
         private VoxelWorld world;
         private ChunkSection[] chunks;
@@ -32,6 +33,7 @@ namespace VoxelEngine {
             built = false;
             generated = false;
             rendered = false;
+            isDirty = false;
 
             transform.parent = world.transform;
             transform.localPosition = (Coord3) position * ChunkSection.Size;
@@ -75,6 +77,7 @@ namespace VoxelEngine {
             if (Serializer.LoadChunk(world.saveName, position, out serial))
                 this.Deserialize(serial);
             else world.generator.GenerateColumn(this);
+            isDirty = false;
         }
 
         public void GenerateMesh() {
@@ -97,7 +100,10 @@ namespace VoxelEngine {
         }
 
         public void Save() {
-            if (built) Serializer.SaveChunk(world.saveName, position, this.Serialized());
+            if (!built || !isDirty) return;
+
+            Serializer.SaveChunk(world.saveName, position, this.Serialized());
+            isDirty = false;
         }
 
         private bool InRange(int y) => y >= 0 && y < chunks.Length;

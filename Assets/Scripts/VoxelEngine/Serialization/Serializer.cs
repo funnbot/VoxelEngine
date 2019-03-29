@@ -1,21 +1,35 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using Ceras;
 using MessagePack;
+using VoxelEngine.Data;
 
 namespace VoxelEngine.Serialization {
 
     public static class Serializer {
         public static readonly string SaveFolder = "Worlds";
 
+        static CerasSerializer serializer;
+
         static Serializer() {
             MessagePackSerializer.SetDefaultResolver(MessagePack.Resolvers.StandardResolver.Instance);
+            var config = new SerializerConfig();
+            //config.KnownTypes.Add(typeof(BlockData));
+            serializer = new CerasSerializer(config);
         }
+
+        static byte[] Sbuffer = null;
+        static byte[] Dbuffer = null;
 
         public static void SaveChunk(string worldSave, Coord2 pos, SerialChunk chunk) {
             string saveFile = FolderName(worldSave) + FileName(pos);
 
-            using(FileStream stream = new FileStream(saveFile, FileMode.Create, FileAccess.Write, FileShare.None)) {
-                MessagePackSerializer.Serialize<SerialChunk>(stream, chunk);
-            }
+            serializer.Serialize<SerialChunk>(chunk, ref Sbuffer);
+            File.WriteAllBytes(saveFile, Sbuffer);
+
+            //using(FileStream stream = new FileStream(saveFile, FileMode.Create, FileAccess.Write, FileShare.None)) {
+            //MessagePackSerializer.Serialize<SerialChunk>(stream, chunk);
+            //}
         }
 
         public static bool LoadChunk(string worldSave, Coord2 pos, out SerialChunk chunk) {
@@ -26,9 +40,13 @@ namespace VoxelEngine.Serialization {
                 return false;
             }
 
-            using(FileStream stream = new FileStream(saveFile, FileMode.Open)) {
+            Dbuffer = File.ReadAllBytes(saveFile);
+            chunk = new SerialChunk();
+            serializer.Deserialize<SerialChunk>(ref chunk, Dbuffer);
+
+            /* using(FileStream stream = new FileStream(saveFile, FileMode.Open)) {
                 chunk = MessagePackSerializer.Deserialize<SerialChunk>(stream);
-            }
+            }*/
             return true;
         }
 

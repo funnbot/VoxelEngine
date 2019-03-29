@@ -10,6 +10,7 @@ namespace VoxelEngine.Blocks {
     [MessagePackObject]
     public class VirusBlock : Block, INeighborUpdateable, IInterfaceable {
         public VirusBlock(Block copy) : base(copy) { }
+        public VirusBlock() { }
 
         int i = 0;
         void OnTick() {

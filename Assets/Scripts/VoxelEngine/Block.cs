@@ -1,22 +1,26 @@
-﻿using MessagePack;
-using VoxelEngine.Data;
+﻿//using MessagePack;
+using Ceras;
 using VoxelEngine.Blocks;
+using VoxelEngine.Data;
 using VoxelEngine.Interfaces;
 
 namespace VoxelEngine {
 
-    [MessagePackObject]
+    //[MessagePackObject]
     public class Block {
-        [Key(0)]
+        //[Key(0)]
         public string id;
-        [Key(1)]
+        // [Key(1)]
         public Coord3 rotation;
 
-        [IgnoreMember]
+        //[IgnoreMember]
+        [Exclude]
         public Coord3 position;
-        [IgnoreMember]
+        // [IgnoreMember]
+        [Exclude]
         public BlockData data;
-        [IgnoreMember]
+        //[IgnoreMember]
+        [Exclude]
         public ChunkSection chunk;
 
         public Block(BlockData data, Coord3 rotation = new Coord3()) {
@@ -33,11 +37,13 @@ namespace VoxelEngine {
             chunk = copy.chunk;
         }
 
-        [SerializationConstructor]
-        public Block(string id, Coord3 rotation) {
-            this.id = id;
-            this.rotation = rotation;
-        }
+        // [SerializationConstructor]
+        //public Block(string id, Coord3 rotation) {
+        //    this.id = id;
+        //    this.rotation = rotation;
+        //}
+
+        public Block() { }
 
         public Block ConvertTo(string type) {
             if (type == "VirusBlock") return new VirusBlock(this);
