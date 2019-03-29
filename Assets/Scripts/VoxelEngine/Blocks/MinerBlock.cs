@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using MessagePack;
 using UnityEngine;
 using VoxelEngine.Data;
 using VoxelEngine.Interfaces;
@@ -9,10 +10,13 @@ using VoxelEngine.UI;
 
 namespace VoxelEngine.Blocks {
 
+    [MessagePackObject]
     public class MinerBlock : Block, IInterfaceable, IUpdateable, IPlaceHandler {
         public MinerBlock(Block block) : base(block) { }
 
+        [Key(2)]
         public bool mining;
+        [Key(3)]
         public Coord3 miningLocation;
 
         static BlockData air;
@@ -35,8 +39,8 @@ namespace VoxelEngine.Blocks {
             if (miningLocation.y <= 0) mining = false;
         }
 
-        UIItemStack[, ] inv;
-        ItemStackGrid inventory;
+        private UIItemStack[, ] inv;
+        private ItemStackGrid inventory;
 
         static UIWindow window;
         void IInterfaceable.BuildGUI() {

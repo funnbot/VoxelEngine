@@ -5,18 +5,18 @@ using VoxelEngine.Interfaces;
 
 namespace VoxelEngine {
 
-    [System.Serializable, MessagePackObject]
+    [MessagePackObject]
     public class Block {
         [Key(0)]
         public string id;
         [Key(1)]
         public Coord3 rotation;
 
-        [System.NonSerialized, IgnoreMember]
+        [IgnoreMember]
         public Coord3 position;
-        [System.NonSerialized, IgnoreMember]
+        [IgnoreMember]
         public BlockData data;
-        [System.NonSerialized, IgnoreMember]
+        [IgnoreMember]
         public ChunkSection chunk;
 
         public Block(BlockData data, Coord3 rotation = new Coord3()) {

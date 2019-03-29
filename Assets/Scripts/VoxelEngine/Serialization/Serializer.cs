@@ -6,6 +6,10 @@ namespace VoxelEngine.Serialization {
     public static class Serializer {
         public static readonly string SaveFolder = "Worlds";
 
+        static Serializer() {
+            MessagePackSerializer.SetDefaultResolver(MessagePack.Resolvers.StandardResolver.Instance);
+        }
+
         public static void SaveChunk(string worldSave, Coord2 pos, SerialChunk chunk) {
             string saveFile = FolderName(worldSave) + FileName(pos);
 

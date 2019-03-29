@@ -62,6 +62,14 @@ namespace VoxelEngine {
         }
 
         public void CleanUp() {
+            for (int x = 0; x < Size; x++) {
+                for (int y = 0; y < Size; y++) {
+                    for (int z = 0; z < Size; z++) {
+                        world.UnregisterBlock(blocks[x][y][z]);
+                    }
+                }
+            }
+
             world.OnTick -= OnTick;
             blocks = null;
 
@@ -80,6 +88,14 @@ namespace VoxelEngine {
 
         public void Serialize(SerialChunk serial, int w) {
             serial.blocks[w] = blocks;
+            for (int x = 0; x < Size; x++) {
+                for (int y = 0; y < Size; y++) {
+                    for (int z = 0; z < Size; z++) {
+                        if (blocks[x][y][z].id == "air") 
+                            serial.blocks[w][x][y][z] = null;
+                    }
+                }
+            }
         }
 
         public void Deserialize(SerialChunk serial, int w) {
@@ -87,9 +103,8 @@ namespace VoxelEngine {
                 for (int y = 0; y < Size; y++) {
                     for (int z = 0; z < Size; z++) {
                         var block = serial.blocks[w][x][y][z];
-
+                        if (block == null) block = new Block("air", Coord3.zero);
                         block.data = ResourceStore.Blocks[block.id];
-
                         var pos = new Coord3(x, y, z).BlockToWorld(worldPosition);
                         blocks[x][y][z] = world.RegisterBlock(block, pos, this);
                     }

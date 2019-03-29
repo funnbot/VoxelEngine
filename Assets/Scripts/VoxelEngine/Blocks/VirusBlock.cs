@@ -7,6 +7,7 @@ using VoxelEngine.Interfaces;
 
 namespace VoxelEngine.Blocks {
 
+    [MessagePackObject]
     public class VirusBlock : Block, INeighborUpdateable, IInterfaceable {
         public VirusBlock(Block copy) : base(copy) { }
 

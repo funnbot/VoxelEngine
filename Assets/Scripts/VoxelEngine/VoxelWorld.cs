@@ -63,7 +63,7 @@ namespace VoxelEngine {
                 sb.gameObject = go;
                 outBlock = sb;
             }
-            if (block.data.dataType.Length > 0) {
+            if (block.data.dataType.Length > 0 && !block.GetType().IsSubclassOf(typeof(Block))) {
                 outBlock = block.ConvertTo(block.data.dataType);
             }
 
