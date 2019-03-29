@@ -102,7 +102,11 @@ namespace VoxelEngine.Player {
                 if (!ColumnInRange(p, range)) {
                     var col = world.chunks.GetChunk(p);
                     if (col != null) {
-                        if (col.built) await Task.Run(col.Save);
+                        try {
+                            if (col.built) await Task.Run(col.Save);
+                        } catch (System.Exception e) {
+                            Debug.Log(e);
+                        }
                         world.chunks.DestroyChunk(p);
                     }
                     loaded.RemoveAt(i);

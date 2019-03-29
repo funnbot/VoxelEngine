@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using VoxelEngine.UI;
+using VoxelEngine.Inventory;
 
 namespace VoxelEngine.Player {
 

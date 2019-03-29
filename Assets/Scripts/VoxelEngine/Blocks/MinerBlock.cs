@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using VoxelEngine.Data;
 using VoxelEngine.Interfaces;
+using VoxelEngine.Inventory;
+using VoxelEngine.Serialization;
 using VoxelEngine.UI;
 
 namespace VoxelEngine.Blocks {
@@ -34,6 +36,7 @@ namespace VoxelEngine.Blocks {
         }
 
         UIItemStack[, ] inv;
+        ItemStackGrid inventory;
 
         static UIWindow window;
         void IInterfaceable.BuildGUI() {

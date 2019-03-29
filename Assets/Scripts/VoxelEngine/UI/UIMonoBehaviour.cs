@@ -15,60 +15,32 @@ public class UIMonoBehaviour : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         set => graphic.raycastTarget = value;
     }
 
-    protected void SetText(Text comp, string text) {
-        if (text == null || text == "") {
-            comp.text = "";
-        } else {
-            comp.text = text;
-        }
-    }
-
-    protected void SetText(TMPro.TMP_Text comp, string text) {
-        if (text == null || text == "") {
-            comp.SetText("");
-        } else {
-            comp.SetText(text);
-        }
-    }
-
-    protected void SetImage(Image comp, Sprite sprite) {
-        if (sprite == null) {
-            comp.gameObject.SetActive(false);
-        } else {
-            comp.sprite = sprite;
-            comp.gameObject.SetActive(true);
-        }
-    }
-
-    protected void SetTexture(SpriteRenderer comp, Texture2D tex) {
-        if (tex == null) {
-            comp.gameObject.SetActive(false);
-        } else {
-            var newSprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), comp.sprite.pivot);
-            comp.sprite = newSprite;
-            comp.gameObject.SetActive(true);
-        }
-    }
-
-    protected virtual void AwakeImpl() { }
-
     void Awake() {
         transform = GetComponent<RectTransform>();
         graphic = GetComponent<Graphic>();
         AwakeImpl();
     }
 
-    public void OnBeginDrag(PointerEventData eventData) {
-        if (noRaycastOnDrag) raycastTarget = false;
-        OnDragBegin();
+    public void Disable() {
+        gameObject.SetActive(false);
     }
 
-    public virtual void OnDragBegin() { }
+    public void Enable() {
+        gameObject.SetActive(true);
+    }
+
+    public void OnBeginDrag(PointerEventData eventData) {
+        if (noRaycastOnDrag) raycastTarget = false;
+        OnBeginDrag();
+    }
 
     public void OnEndDrag(PointerEventData eventData) {
         if (noRaycastOnDrag) raycastTarget = true;
-        OnDragEnd();
+        OnEndDrag();
     }
 
-    public virtual void OnDragEnd() { }
+    protected virtual void AwakeImpl() { }
+
+    public virtual void OnBeginDrag() { }
+    public virtual void OnEndDrag() { }
 }

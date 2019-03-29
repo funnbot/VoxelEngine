@@ -7,13 +7,15 @@ using VoxelEngine.Data;
 
 namespace VoxelEngine.UI {
 
-    public class UIItemStack : UIMonoBehaviour, IDragHandler, IPointerEnterHandler, IPointerExitHandler {
+    public class UIItemStack : UIMonoBehaviour, IDragHandler {
         public GameObject ItemStack_CubeFab;
         public GameObject ItemStack_IconFab;
         public Sprite DiamondSprite;
 
         public TMPro.TMP_Text CountText;
         public TMPro.TMP_Text NameText;
+
+        GameObject Display;
 
         // Cube
         GameObject CubeDisplay;
@@ -25,6 +27,7 @@ namespace VoxelEngine.UI {
         RawImage IconDisplay;
 
         [Space]
+        public string itemName;
         public BlockData item;
         public int count;
 
@@ -34,8 +37,8 @@ namespace VoxelEngine.UI {
             this.item = item;
             this.count = count;
 
-            SetText(CountText, count.ToString());
-            SetText(NameText, item.blockName);
+            CountText.text = count.ToString();
+            NameText.text = item.blockName;
 
             if (item.blockType == BlockType.Cube) {
                 CubeDisplay = Instantiate(ItemStack_CubeFab, transform);
@@ -53,6 +56,12 @@ namespace VoxelEngine.UI {
             }
         }
 
+        public void SetStackData(string itemName, int count) {
+            this.itemName = itemName;
+            BlockData data = ResourceStore.Blocks[itemName];
+            SetStackData(data, count);
+        }
+
         public void PlacedInSlot(UIItemSlot slot) {
             this.slot = slot;
         }
@@ -65,18 +74,10 @@ namespace VoxelEngine.UI {
             transform.position = eventData.position;
         }
 
-        public override void OnDragBegin() {
-            if (slot != null && !slot.locked) {
+        public override void OnBeginDrag() {
+            if (slot != null) {
                 slot.PickupFromSlot();
             }
-        }
-
-        void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData) {
-            //Icon.color = new Color(1, 1, 1, 0.8f);
-        }
-
-        void IPointerExitHandler.OnPointerExit(PointerEventData eventData) {
-            //Icon.color = new Color(1, 1, 1, 1);
         }
     }
 }

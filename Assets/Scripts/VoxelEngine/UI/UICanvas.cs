@@ -29,6 +29,10 @@ namespace VoxelEngine.UI {
             return Instantiate(prefab, Transform);
         }
 
+        public static T UIInstantiate<T>(GameObject prefab) where T : MonoBehaviour {
+            return Instantiate(prefab, Transform).GetComponent<T>();
+        }
+
         void Start() {
             var window = UIWindow.Create(14, 6, new Vector2(0.5f, 0.5f));
 

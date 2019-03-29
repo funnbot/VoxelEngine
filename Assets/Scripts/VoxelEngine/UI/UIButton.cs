@@ -37,7 +37,7 @@ public class UIButton : UIMonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         get => _interactable;
         set {
             if (_interactable = value) Default();
-            else Disable();
+            else Disabled();
         }
     }
 
@@ -80,7 +80,7 @@ public class UIButton : UIMonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         if (PressedTextShift != null) TargetText.rectTransform.localPosition = PressedTextShift;
     }
 
-    void Disable() {
+    void Disabled() {
         if (DisabledSprite != null) TargetGraphic.sprite = DisabledSprite;
         if (DisabledColor != null) TargetGraphic.color = DisabledColor;
         if (DisabledTextColor != null) TargetText.color = DisabledTextColor;

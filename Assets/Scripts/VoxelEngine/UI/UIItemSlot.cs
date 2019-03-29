@@ -4,14 +4,14 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using VoxelEngine.Data;
+using VoxelEngine.UI;
+using VoxelEngine.Inventory;
 
 namespace VoxelEngine.UI {
 
     [RequireComponent(typeof(Image))]
     public class UIItemSlot : UIMonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler {
-        [System.NonSerialized]
         public UIItemStack occupant;
-        public bool locked;
 
         public delegate void UpdateOccupant(UIItemStack occupant);
         public event UpdateOccupant OnUpdateOccupant;
@@ -55,7 +55,7 @@ namespace VoxelEngine.UI {
             var stack = eventData.pointerDrag.GetComponent<UIItemStack>();
             if (stack == null) return;
 
-            if (!locked || occupant == null) PlaceInSlot(stack);
+            if (occupant == null) PlaceInSlot(stack);
             else stack.RevertToSlot();
         }
 

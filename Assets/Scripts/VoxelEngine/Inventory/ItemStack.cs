@@ -1,18 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using MessagePack;
 using UnityEngine;
+using VoxelEngine.Data;
+using VoxelEngine.UI;
 
-public class ItemStack : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+namespace VoxelEngine.Inventory {
+
+    [MessagePackObject]
+    public class ItemStack {
+        [Key(0)]
+        public string itemName;
+        [Key(1)]
+        public int count;
+
+        [IgnoreMember]
+        public BlockData item;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

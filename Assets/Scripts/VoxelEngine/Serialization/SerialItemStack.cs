@@ -5,9 +5,11 @@ using UnityEngine;
 
 namespace VoxelEngine.Serialization {
 
-    [System.Serializable]
+    [MessagePackObject]
     public class SerialItemStack {
+        [Key(0)]
         public string blockName;
+        [Key(1)]
         public int count;
     }
 

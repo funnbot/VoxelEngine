@@ -6,24 +6,24 @@ namespace VoxelEngine.Serialization {
     public static class Serializer {
         public static readonly string SaveFolder = "Worlds";
 
-        public static void SaveColumn(string worldSave, Coord2 pos, SerialChunk column) {
+        public static void SaveChunk(string worldSave, Coord2 pos, SerialChunk chunk) {
             string saveFile = FolderName(worldSave) + FileName(pos);
 
             using(FileStream stream = new FileStream(saveFile, FileMode.Create, FileAccess.Write, FileShare.None)) {
-                MessagePackSerializer.Serialize<SerialChunk>(stream, column);
+                MessagePackSerializer.Serialize<SerialChunk>(stream, chunk);
             }
         }
 
-        public static bool LoadColumn(string worldSave, Coord2 pos, out SerialChunk column) {
+        public static bool LoadChunk(string worldSave, Coord2 pos, out SerialChunk chunk) {
             string saveFile = FolderName(worldSave) + FileName(pos);
 
             if (!File.Exists(saveFile)) {
-                column = null;
+                chunk = null;
                 return false;
             }
 
             using(FileStream stream = new FileStream(saveFile, FileMode.Open)) {
-                column = MessagePackSerializer.Deserialize<SerialChunk>(stream);
+                chunk = MessagePackSerializer.Deserialize<SerialChunk>(stream);
             }
             return true;
         }
