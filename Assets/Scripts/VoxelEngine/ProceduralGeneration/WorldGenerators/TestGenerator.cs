@@ -4,10 +4,9 @@ using VoxelEngine.Data;
 namespace VoxelEngine.ProceduralGeneration {
 
     public class TestGenerator : Generator {
-        BlockData air, dirt, wood;
+        BlockData dirt, wood;
 
         public TestGenerator(VoxelWorld world, SimplexNoise noise) : base(world, noise) {
-            air = GetBlockData("air");
             dirt = GetBlockData("grass_decal");
             wood = GetBlockData("wood");
         }
@@ -19,8 +18,6 @@ namespace VoxelEngine.ProceduralGeneration {
             for (int y = 0; y < ChunkSection.Size; y++) {
                 localPos.y = y;
                 pos = localPos.BlockToWorld(chunk.worldPosition);
-
-                SetBlock(chunk, localPos, air);
             }
         }
     }

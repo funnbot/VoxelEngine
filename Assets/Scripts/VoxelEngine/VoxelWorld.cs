@@ -13,7 +13,7 @@ namespace VoxelEngine {
     public class VoxelWorld : MonoBehaviour {
         public static readonly int Height = 80;
         public static readonly int ChunkHeight = Height / ChunkSection.Size;
-        public static readonly int MaxRendersPerTick = 10;
+        public static readonly int MaxRendersPerTick = 5 * ChunkHeight;
 
         public string saveName;
         public int seed;
@@ -51,51 +51,68 @@ namespace VoxelEngine {
             }
         }
 
-        public Block RegisterBlock(Block block, Coord3 position, ChunkSection chunk) {
+        public void CreateBlock(ref Block block, Coord3 position, ChunkSection chunk) {
+            if (block.data.dataType.Length > 0) {
+                block = block.ConvertTo(block.data.dataType);
+            }
+
+            RegisterBlock(ref block, position, chunk);
+
+            if (block.data.dataType.Length > 0) {
+                IPlaceHandler placeHandler = block as IPlaceHandler;
+                if (placeHandler != null) {
+                    placeHandler.OnPlace();
+                }
+            }
+        }
+
+        public void DestroyBlock(Block block) {
+            if (block.data.dataType.Length > 0) {
+                IBreakHandler breakHandler = block as IBreakHandler;
+                if (breakHandler != null) {
+                    breakHandler.OnBreak();
+                }
+            }
+
+            UnregisterBlock(block);
+        }
+
+        public void RegisterBlock(ref Block block, Coord3 position, ChunkSection chunk) {
             block.position = position;
             block.chunk = chunk;
 
-            Block outBlock = block;
             if (block.data.blockType == BlockType.Custom) {
                 var go = Instantiate(block.data.prefab, position, Quaternion.Euler(block.rotation * 90), chunk.Blocks);
                 go.name = block.data.blockID + " " + block.position;
-                var sb = new StandaloneBlock(block);
-                sb.gameObject = go;
-                outBlock = sb;
-            }
-            if (block.data.dataType.Length > 0 && !block.GetType().IsSubclassOf(typeof(Block))) {
-                outBlock = block.ConvertTo(block.data.dataType);
+
+                StandaloneBlock standalone = block as StandaloneBlock;
+                if (standalone == null) standalone = new StandaloneBlock(block);
+
+                standalone.gameObject = go;
+                block = standalone;
             }
 
-            IUpdateable inter = outBlock as IUpdateable;
-            if (inter != null) {
-                OnTick += inter.OnTick;
+            if (block.data.dataType.Length > 0) {
+                IUpdateable inter = block as IUpdateable;
+                if (inter != null) {
+                    OnTick += inter.OnTick;
+                }
             }
-
-            IPlaceHandler placeHandler = outBlock as IPlaceHandler;
-            if (placeHandler != null) {
-                placeHandler.OnPlace();
-            }
-
-            return outBlock;
         }
 
         public void UnregisterBlock(Block block) {
-            if (block == null) return;
-
-            IUpdateable inter = block as IUpdateable;
-            if (inter != null) {
-                OnTick -= inter.OnTick;
+            if (block.data.dataType.Length > 0) {
+                IUpdateable inter = block as IUpdateable;
+                if (inter != null) {
+                    OnTick -= inter.OnTick;
+                }
             }
 
-            IBreakHandler placeHandler = block as IBreakHandler;
-            if (placeHandler != null) {
-                placeHandler.OnBreak();
-            }
-
-            if (block.data.blockType == BlockType.Custom && block is StandaloneBlock) {
-                var sb = (StandaloneBlock) block;
-                if (sb.gameObject != null) Destroy(sb.gameObject, 0.1f);
+            if (block.data.blockType == BlockType.Custom) {
+                StandaloneBlock standalone = block as StandaloneBlock;
+                if (standalone != null && standalone.gameObject != null) {
+                    Destroy(standalone.gameObject, 0.1f);
+                }
             }
         }
 

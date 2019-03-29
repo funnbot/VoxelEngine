@@ -24,30 +24,35 @@ namespace VoxelEngine.Serialization {
         public static void SaveChunk(string worldSave, Coord2 pos, SerialChunk chunk) {
             string saveFile = FolderName(worldSave) + FileName(pos);
 
-            serializer.Serialize<SerialChunk>(chunk, ref Sbuffer);
-            File.WriteAllBytes(saveFile, Sbuffer);
-
-            //using(FileStream stream = new FileStream(saveFile, FileMode.Create, FileAccess.Write, FileShare.None)) {
-            //MessagePackSerializer.Serialize<SerialChunk>(stream, chunk);
-            //}
+            int length = serializer.Serialize<SerialChunk>(chunk, ref Sbuffer);
+            WriteAllBytes(saveFile, length);
         }
 
-        public static bool LoadChunk(string worldSave, Coord2 pos, out SerialChunk chunk) {
+        public static bool LoadChunk(string worldSave, Coord2 pos, ref SerialChunk chunk) {
             string saveFile = FolderName(worldSave) + FileName(pos);
 
             if (!File.Exists(saveFile)) {
-                chunk = null;
                 return false;
             }
 
-            Dbuffer = File.ReadAllBytes(saveFile);
-            chunk = new SerialChunk();
+            ReadAllBytes(saveFile);
             serializer.Deserialize<SerialChunk>(ref chunk, Dbuffer);
 
-            /* using(FileStream stream = new FileStream(saveFile, FileMode.Open)) {
-                chunk = MessagePackSerializer.Deserialize<SerialChunk>(stream);
-            }*/
             return true;
+        }
+
+        public static void ReadAllBytes(string saveFile) {
+            using(FileStream fs = new FileStream(saveFile, FileMode.Open)) {
+                int length = (int) fs.Length;
+                System.Array.Resize(ref Dbuffer, length);
+                fs.Read(Dbuffer, 0, length);
+            }
+        }
+
+        public static void WriteAllBytes(string saveFile, int length) {
+            using(FileStream fs = new FileStream(saveFile, FileMode.Create, FileAccess.Write)) {
+                fs.Write(Sbuffer, 0, length);
+            }
         }
 
         public static string FileName(Coord2 pos) =>

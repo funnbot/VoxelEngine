@@ -14,11 +14,10 @@ namespace VoxelEngine.ProceduralGeneration {
         float caveFrequency = 0.01f;
         int caveDensity = 7;
 
-        BlockData air, stone, dirt, grass, grass_decal;
+        BlockData stone, dirt, grass, grass_decal;
         BlockData[] ores;
 
         public FlatGenerator(VoxelWorld world, SimplexNoise noise) : base(world, noise) {
-            air = ResourceStore.Blocks["air"];
             stone = ResourceStore.Blocks["stone"];
             dirt = ResourceStore.Blocks["dirt"];
             grass = ResourceStore.Blocks["grass"];
@@ -51,7 +50,7 @@ namespace VoxelEngine.ProceduralGeneration {
                     else if (GetChance(pos.x, 0, pos.z, grassFrequency, grassDensity))
                         SetBlock(chunk, new Coord3(localPos.x, localPos.y + 1, localPos.z), grass_decal);
                     Set(grass);
-                } else Set(air);
+                }
             }
         }
     }

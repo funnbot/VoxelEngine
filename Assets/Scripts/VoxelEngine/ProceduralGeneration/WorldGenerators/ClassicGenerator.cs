@@ -20,10 +20,9 @@ namespace VoxelEngine.ProceduralGeneration {
         float grassFrequency = 0.4f;
         int grassDensity = 26;
 
-        BlockData air, stone, dirt, grass, grass_decal;
+        BlockData stone, dirt, grass, grass_decal;
 
         public ClassicGenerator(VoxelWorld world, SimplexNoise noise) : base(world, noise) {
-            air = ResourceStore.Blocks["air"];
             stone = ResourceStore.Blocks["stone"];
             dirt = ResourceStore.Blocks["dirt"];
             grass = ResourceStore.Blocks["grass"];
@@ -55,8 +54,6 @@ namespace VoxelEngine.ProceduralGeneration {
                         GenerateStructure(chunk, localPos.x, localPos.y + 1, localPos.z, "tree");
                     if (worldPos.y == dirtHeight && GetNoise(worldPos.x, worldPos.z, grassFrequency, 100) < grassDensity)
                         SetBlock(chunk, new Coord3(localPos.x, localPos.y + 1, localPos.z), grass_decal);
-                } else {
-                    SetBlock(chunk, localPos, air);
                 }
             }
         }

@@ -8,6 +8,7 @@ namespace VoxelEngine.Blocks {
         public GameObject gameObject;
 
         public StandaloneBlock(Block block) : base(block) { }
+        public StandaloneBlock() { }
     }
 
 }

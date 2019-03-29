@@ -37,12 +37,6 @@ namespace VoxelEngine {
             chunk = copy.chunk;
         }
 
-        // [SerializationConstructor]
-        //public Block(string id, Coord3 rotation) {
-        //    this.id = id;
-        //    this.rotation = rotation;
-        //}
-
         public Block() { }
 
         public Block ConvertTo(string type) {

@@ -17,6 +17,8 @@ namespace VoxelEngine {
         private VoxelWorld world;
         private ChunkSection[] chunks;
 
+        private SerialChunk serialChunk;
+
         public void Create(VoxelWorld world) {
             this.world = world;
 
@@ -25,6 +27,9 @@ namespace VoxelEngine {
                 chunks[i] = Instantiate(chunkFab).GetComponent<ChunkSection>();
                 chunks[i].Create(this, world);
             }
+
+            serialChunk = new SerialChunk();
+            serialChunk.blocks = new Block[VoxelWorld.ChunkHeight][][][];
         }
 
         public void Init(Coord2 position) {
@@ -50,19 +55,15 @@ namespace VoxelEngine {
                 chunk.CleanUp();
         }
 
-        public SerialChunk Serialized() {
-            var serial = new SerialChunk();
-
-            serial.blocks = new Block[VoxelWorld.ChunkHeight][][][];
-
+        public SerialChunk Serialize() {
             for (int i = 0; i < VoxelWorld.ChunkHeight; i++)
-                chunks[i].Serialize(serial, i);
-            return serial;
+                chunks[i].Serialize(serialChunk, i);
+            return serialChunk;
         }
 
-        public void Deserialize(SerialChunk serial) {
+        public void Deserialize() {
             for (int i = 0; i < VoxelWorld.ChunkHeight; i++)
-                chunks[i].Deserialize(serial, i);
+                chunks[i].Deserialize(serialChunk, i);
         }
 
         public ChunkSection GetSection(int y) {
@@ -73,9 +74,8 @@ namespace VoxelEngine {
         public void Build() {
             built = true;
 
-            SerialChunk serial;
-            if (Serializer.LoadChunk(world.saveName, position, out serial))
-                this.Deserialize(serial);
+            if (Serializer.LoadChunk(world.saveName, position, ref serialChunk))
+                this.Deserialize();
             else world.generator.GenerateColumn(this);
             isDirty = false;
         }
@@ -102,7 +102,7 @@ namespace VoxelEngine {
         public void Save() {
             if (!built || !isDirty) return;
 
-            Serializer.SaveChunk(world.saveName, position, this.Serialized());
+            Serializer.SaveChunk(world.saveName, position, this.Serialize());
             isDirty = false;
         }
 

@@ -20,13 +20,9 @@ namespace VoxelEngine.Blocks {
         [Key(3)]
         public Coord3 miningLocation;
 
-        static BlockData air;
-
         void IUpdateable.OnTick() {
-            if (air == null) air = ResourceStore.Blocks["air"];
-
             if (!mining) return;
-            chunk.SetBlock(air, miningLocation.WorldToBlock(chunk.worldPosition), Coord3.zero, true);
+            chunk.SetBlock(null, miningLocation.WorldToBlock(chunk.worldPosition), Coord3.zero, true);
 
             miningLocation.z++;
             if (miningLocation.z > position.z + 2) {
@@ -85,6 +81,7 @@ namespace VoxelEngine.Blocks {
         }
 
         void IPlaceHandler.OnPlace() {
+            Debug.Log("Place");
             miningLocation = position - new Coord3(2, 1, 2);
         }
     }

@@ -15,10 +15,9 @@ namespace VoxelEngine.ProceduralGeneration {
 
         bool noise3d = false;
 
-        BlockData air, dirt, stone;
+        BlockData dirt, stone;
 
         public NoiseGenerator(VoxelWorld world, SimplexNoise noise) : base(world, noise) {
-            air = GetBlockData("air");
             dirt = GetBlockData("grass_decal");
             stone = GetBlockData("stone");
         }
@@ -39,11 +38,8 @@ namespace VoxelEngine.ProceduralGeneration {
                         if (chance) {
                             SetBlock(chunk, localPos, dirt);
                             SetBlock(chunk, new Coord3(localPos.x, localPos.y + 1, localPos.z), stone);
-                        } else SetBlock(chunk, localPos, air);
+                        }
                     }
-                } else {
-                    if (pos.y <= height) SetBlock(chunk, localPos, dirt);
-                    else SetBlock(chunk, localPos, air);
                 }
             }
         }

@@ -39,13 +39,13 @@ namespace VoxelEngine.ProceduralGeneration {
 
         protected void SetBlock(ChunkSection chunk, Coord3 localPos, Block block, bool replace = false) {
             var b = chunk.GetBlock(localPos);
-            if (replace || b == null || b.data.blockType == BlockType.Air) {
+            if (replace || b == null) {
                 chunk.SetBlock(block, localPos, false);
             }
         }
         protected void SetBlock(ChunkSection chunk, Coord3 localPos, BlockData blockData, Coord3 rotation = new Coord3(), bool replace = false) {
             var b = chunk.GetBlock(localPos);
-            if (replace || b == null || b.data.blockType == BlockType.Air) {
+            if (replace || b == null) {
                 chunk.SetBlock(blockData, localPos, rotation, false);
             }
         }

@@ -1,4 +1,5 @@
-﻿using MessagePack;
+﻿using System.Runtime.CompilerServices;
+using MessagePack;
 using UnityEngine;
 
 namespace VoxelEngine {
@@ -30,10 +31,14 @@ namespace VoxelEngine {
             this.z = 0;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Coord3 BlockToWorld(Coord3 chunkWorldPos) => this + chunkWorldPos;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Coord3 WorldToBlock(Coord3 chunkWorldPos) => this - chunkWorldPos;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Coord3 WorldToChunk() => this.FloorDiv(ChunkSection.Size);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Coord3 FloorDiv(int i) =>
         new Coord3(Mathf.FloorToInt((float) x / i), Mathf.FloorToInt((float) y / i), Mathf.FloorToInt((float) z / i));
 

@@ -11,7 +11,7 @@ namespace VoxelEngine {
         public static Resource<StructureData> Structures;
 
         protected override void AwakeImpl() {
-            Blocks = new Resource<BlockData>("Blocks", new [] { "air", "stone", "grass", "dirt" });
+            Blocks = new Resource<BlockData>("Blocks", new [] { "stone", "grass", "dirt" });
 
             Structures = new Resource<StructureData>("Structures");
         }

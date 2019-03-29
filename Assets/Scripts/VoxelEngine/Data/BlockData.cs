@@ -52,7 +52,6 @@ namespace VoxelEngine.Data {
         DecalCross,
         DecalHash,
         DecalFlat,
-        Air,
         Custom
     }
 
