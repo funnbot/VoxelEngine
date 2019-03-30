@@ -12,10 +12,7 @@ namespace VoxelEngine.Blocks {
 
     [MessagePackObject]
     public class MinerBlock : RotatedBlock, IInterfaceable, ITickable {
-        public MinerBlock(Block clone) : base(clone) {
-            RotatedBlock block = clone as RotatedBlock;
-            if (block != null) rotation = block.rotation;
-        }
+        public MinerBlock(Block clone) : base(clone) { }
         public MinerBlock() { }
 
         public bool mining;
