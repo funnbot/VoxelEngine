@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba0e9bb57a82d4ebc98580cb3c739582, type: 3}
   m_Name: grass
   m_EditorClassIdentifier: 
-  blockID: grass
+  blockId: 
+  byteId: 0
   blockName: grass
   description: 
   icon: {fileID: 0}
@@ -22,6 +23,7 @@ MonoBehaviour:
   collision: 1
   boundingSize: 1
   subMesh: 0
+  rotation: 1
   placementType: 0
   stackable: 1
   placeable: 1

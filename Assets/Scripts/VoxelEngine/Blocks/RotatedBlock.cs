@@ -13,7 +13,7 @@ namespace VoxelEngine.Blocks {
         }
         public RotatedBlock(BlockData data, Coord3 rotation) {
             this.data = data;
-            this.id = data.blockID;
+            this.id = data.blockId;
             this.rotation = rotation;
         }
         public RotatedBlock() { }

@@ -7,7 +7,11 @@ namespace VoxelEngine.Data {
 
     [CreateAssetMenu(fileName = "Block Data")]
     public class BlockData : ScriptableObject {
-        public string blockID;
+        [System.NonSerialized]
+        public string blockId;
+        [System.NonSerialized]
+        public byte byteId;
+
         [Space]
         [Header("Info")]
         public string blockName;

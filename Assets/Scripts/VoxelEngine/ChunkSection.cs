@@ -64,7 +64,7 @@ namespace VoxelEngine {
 
             if (block.data.blockType == BlockType.Custom) {
                 var go = Instantiate(block.data.prefab, position, Quaternion.identity, Blocks);
-                go.name = block.data.blockID + " " + block.position;
+                go.name = block.data.blockId + " " + block.position;
 
                 StandaloneBlock standalone = block as StandaloneBlock;
 
@@ -165,7 +165,7 @@ namespace VoxelEngine {
                         blocks[x][y][z] = block;
                         // Air will be null now
                         if (block == null) continue;
-                        block.data = ResourceStore.Blocks[block.id];
+                        block.data = ResourceStore.Blocks[block.byteId];
 
                         RegisterBlock(ref block, new Coord3(x, y, z).BlockToWorld(worldPosition));
                     }

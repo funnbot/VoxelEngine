@@ -57,7 +57,7 @@ namespace VoxelEngine {
             else rotation = Coord3.zero;
 
             var go = Instantiate(block.data.prefab, pos.BlockToWorld(chunk.worldPosition), Quaternion.Euler(rotation * 90), transform);
-            go.name = block.data.blockID + " (Entity)";
+            go.name = block.data.blockId + " (Entity)";
         }
 
         public Block GetBlock(Coord3 pos) {

@@ -8,20 +8,21 @@ namespace VoxelEngine {
 
     //[MessagePackObject]
     public class Block {
-        public string id;
+        public byte byteId;
 
+        [Exclude]
+        public string id;
         [Exclude]
         public Coord3 position;
-
         [Exclude]
         public BlockData data;
-
         [Exclude]
         public ChunkSection chunk;
 
         public Block(BlockData data) {
             this.data = data;
-            id = data.blockID;
+            id = data.blockId;
+            byteId = data.byteId;
         }
 
         public Block(Block copy) {

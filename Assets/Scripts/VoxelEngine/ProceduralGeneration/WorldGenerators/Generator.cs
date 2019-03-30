@@ -67,7 +67,7 @@ namespace VoxelEngine.ProceduralGeneration {
 
         protected BlockData[] GetBlocksOfType(BlockSpawnType type) {
             var blocks = new List<BlockData>(10);
-            foreach (KeyValuePair<string, BlockData> b in ResourceStore.Blocks) {
+            foreach (KeyValuePair<byte, BlockData> b in ResourceStore.Blocks) {
                 if (b.Value.spawnType == type) blocks.Add(b.Value);
             }
             return blocks.ToArray();
