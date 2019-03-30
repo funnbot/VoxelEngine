@@ -29,7 +29,7 @@ namespace VoxelEngine.Player {
             SetSlotTo("dirt", 1);
             SetSlotTo("grass", 2);
             SetSlotTo("wood", 3);
-            SetSlotTo("leaf", 4);
+            SetSlotTo("pipe", 4);
             SetSlotTo("iron_ore", 5);
             SetSlotTo("ribit", 6);
             SetSlotTo("miner", 7);

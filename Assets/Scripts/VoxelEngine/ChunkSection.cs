@@ -157,7 +157,7 @@ namespace VoxelEngine {
                 var oldBlock = blocks[pos.x][pos.y][pos.z];
 
                 if (oldBlock != null) world.DestroyBlock(oldBlock);
-                if (block != null) world.CreateBlock(ref block, pos.BlockToWorld(worldPosition), this);
+                if (block != null) world.InitializeBlock(ref block, pos.BlockToWorld(worldPosition), this);
 
                 blocks[pos.x][pos.y][pos.z] = block;
 
@@ -205,7 +205,6 @@ namespace VoxelEngine {
                             colliderMesh.AddCubeFace(i, pos);
                         else triggerMesh.AddCubeFace(i, pos);
                     }
-
                     break;
                 case BlockType.DecalCross:
                     var tex = block.data.textureIndices[0];
@@ -214,7 +213,10 @@ namespace VoxelEngine {
                     if (block.data.collision)
                         colliderMesh.AddBoundingBox(pos, block.data.boundingSize);
                     else triggerMesh.AddBoundingBox(pos, block.data.boundingSize);
-
+                    break;
+                case BlockType.Custom:
+                    if (block.data.collision) 
+                        colliderMesh.AddBoundingBox(pos, block.data.boundingSize);
                     break;
             }
         }

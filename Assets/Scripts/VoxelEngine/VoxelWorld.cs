@@ -51,7 +51,7 @@ namespace VoxelEngine {
             }
         }
 
-        public void CreateBlock(ref Block block, Coord3 position, ChunkSection chunk) {
+        public void InitializeBlock(ref Block block, Coord3 position, ChunkSection chunk) {
             if (block.data.dataType.Length > 0) {
                 block = block.ConvertTo(block.data.dataType);
             }
