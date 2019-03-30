@@ -1,6 +1,6 @@
 ﻿namespace VoxelEngine.Interfaces {
 
-    public interface IUpdateable {
+    public interface ITickable {
         void OnTick();
     }
 

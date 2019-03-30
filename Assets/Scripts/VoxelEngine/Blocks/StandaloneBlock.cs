@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
+using Ceras;
 
 namespace VoxelEngine.Blocks {
 
-    [System.Serializable]
     public class StandaloneBlock : Block {
-        [System.NonSerialized]
+        [Exclude]
         public GameObject gameObject;
 
         public StandaloneBlock(Block block) : base(block) { }

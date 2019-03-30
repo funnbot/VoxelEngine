@@ -8,33 +8,25 @@ namespace VoxelEngine {
 
     //[MessagePackObject]
     public class Block {
-        //[Key(0)]
         public string id;
-        // [Key(1)]
-        public Coord3 rotation;
 
-        //[IgnoreMember]
         [Exclude]
         public Coord3 position;
-        // [IgnoreMember]
+
         [Exclude]
         public BlockData data;
-        //[IgnoreMember]
+
         [Exclude]
         public ChunkSection chunk;
 
-        public Block(BlockData data, Coord3 rotation = new Coord3()) {
+        public Block(BlockData data) {
             this.data = data;
-            this.rotation = rotation;
             id = data.blockID;
         }
 
         public Block(Block copy) {
             data = copy.data;
             id = copy.id;
-            rotation = copy.rotation;
-            position = copy.position;
-            chunk = copy.chunk;
         }
 
         public Block() { }
@@ -42,6 +34,7 @@ namespace VoxelEngine {
         public Block ConvertTo(string type) {
             if (type == "VirusBlock") return new VirusBlock(this);
             if (type == "MinerBlock") return new MinerBlock(this);
+            if (type == "PipeBlock") return new PipeBlock(this);
 
             throw new System.InvalidCastException($"Converting type \"{typeof(Block)}\" to type \"{type}\" is not supported.");
         }
@@ -49,10 +42,18 @@ namespace VoxelEngine {
         protected void UpdateNeighbors() {
             foreach (var dir in Coord3.Directions) {
                 var block = chunk.GetBlock(position.WorldToBlock(chunk.worldPosition) + dir);
-                INeighborUpdateable neighbor = block as INeighborUpdateable;
-                if (neighbor != null) neighbor.OnNeighborUpdate(this);
+                block.OnNeighborUpdate(this);
             }
         }
+
+        public virtual void OnBreak() { }
+        public virtual void OnPlace() { }
+
+        public virtual void OnLoad() { }
+        public virtual void OnUnload() { }
+
+        public virtual void OnNeighborUpdate(Block block) { }
+        
     }
 
     public static class BlockFace {

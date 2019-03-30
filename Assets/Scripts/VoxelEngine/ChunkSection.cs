@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using UnityEngine;
 using VoxelEngine.Blocks;
 using VoxelEngine.Data;
-using VoxelEngine.Serialization;
 using VoxelEngine.Interfaces;
+using VoxelEngine.Serialization;
 
 namespace VoxelEngine {
 
@@ -35,24 +35,24 @@ namespace VoxelEngine {
         public void InitializeBlock(ref Block block, Coord3 position) {
             if (block.data.dataType.Length > 0) {
                 block = block.ConvertTo(block.data.dataType);
+            } else if (block.data.rotation) {
+                RotatedBlock rotated = block as RotatedBlock;
+                if (rotated == null) block = new RotatedBlock(block);
+            } else if (block.data.blockType == BlockType.Custom) {
+                StandaloneBlock standalone = block as StandaloneBlock;
+                if (standalone == null) standalone = new StandaloneBlock(block);
             }
 
             RegisterBlock(ref block, position);
 
             if (block.data.dataType.Length > 0) {
-                IPlaceHandler placeHandler = block as IPlaceHandler;
-                if (placeHandler != null) {
-                    placeHandler.OnPlace();
-                }
+                block.OnPlace();
             }
         }
 
         public void DestroyBlock(Block block) {
             if (block.data.dataType.Length > 0) {
-                IBreakHandler breakHandler = block as IBreakHandler;
-                if (breakHandler != null) {
-                    breakHandler.OnBreak();
-                }
+                block.OnBreak();
             }
 
             UnregisterBlock(block);
@@ -63,18 +63,19 @@ namespace VoxelEngine {
             block.chunk = this;
 
             if (block.data.blockType == BlockType.Custom) {
-                var go = Instantiate(block.data.prefab, position, Quaternion.Euler(block.rotation * 90), Blocks);
+                var go = Instantiate(block.data.prefab, position, Quaternion.identity, Blocks);
                 go.name = block.data.blockID + " " + block.position;
 
                 StandaloneBlock standalone = block as StandaloneBlock;
-                if (standalone == null) standalone = new StandaloneBlock(block);
 
                 standalone.gameObject = go;
                 block = standalone;
             }
 
             if (block.data.dataType.Length > 0) {
-                IUpdateable inter = block as IUpdateable;
+                block.OnLoad();
+
+                ITickable inter = block as ITickable;
                 if (inter != null) {
                     world.OnTick += inter.OnTick;
                 }
@@ -83,10 +84,12 @@ namespace VoxelEngine {
 
         public void UnregisterBlock(Block block) {
             if (block.data.dataType.Length > 0) {
-                IUpdateable inter = block as IUpdateable;
+                ITickable inter = block as ITickable;
                 if (inter != null) {
                     world.OnTick -= inter.OnTick;
                 }
+
+                block.OnUnload();
             }
 
             if (block.data.blockType == BlockType.Custom) {
@@ -173,7 +176,7 @@ namespace VoxelEngine {
         void OnTick() {
             if (update) TryRender();
         }
-    
+
         public void TryRender() {
             if (world.chunkRenders >= VoxelWorld.MaxRendersPerTick) return;
 
@@ -234,11 +237,11 @@ namespace VoxelEngine {
                 }
             } else world.SetBlock(block, pos.BlockToWorld(worldPosition), updateChunk);
         }
-        
-        public void SetBlock(BlockData blockData, Coord3 pos, Coord3 rot, bool updateChunk = true) {
-            var block = blockData != null ? new Block(blockData, rot) : null;
-            SetBlock(block, pos, updateChunk);
-        }
+
+        //public void SetBlock(BlockData blockData, Coord3 pos, bool updateChunk = true) {
+        //    var block = blockData != null ? new Block(blockData) : null;
+        //    SetBlock(block, pos, updateChunk);
+        //}
 
         public void UpdateNeighbors(Coord3 changed) {
             if (changed.InRange(1, ChunkSection.Size - 1)) return;
@@ -263,10 +266,21 @@ namespace VoxelEngine {
                     for (int i = 0; i < 6; i++) {
                         if (CullFace(block, pos, i)) continue;
 
-                        var rot = Rotate(i, block.rotation);
-                        int texIndex = block.data.textureIndices[rot.index];
+                        int faceRot = 0;
+                        int texIndex = 0;
 
-                        blockMesh.AddCubeFace(i, pos, rot.face, texIndex, (int) block.data.subMesh);
+                        if (block.data.rotation) {
+                            var rotatedBlock = (RotatedBlock) block;
+                            var rot = Rotate(i, rotatedBlock.rotation);
+                            faceRot = rot.face;
+                            texIndex = block.data.textureIndices[rot.index];
+                            //if (block.data.dataType.Length > 0) Debug.Log(rotatedBlock.rotation);
+                        } else {
+                            faceRot = 0;
+                            texIndex = block.data.textureIndices[i];
+                        }
+
+                        blockMesh.AddCubeFace(i, pos, faceRot, texIndex, (int) block.data.subMesh);
 
                         if (block.data.collision)
                             colliderMesh.AddCubeFace(i, pos);
@@ -320,7 +334,7 @@ namespace VoxelEngine {
             yFace = { new [] { 0, 0, 3, 1, 0, 0 }, new [] { 0, 0, 2, 2, 0, 0 }, new [] { 0, 0, 1, 3, 0, 0, } },
             xFace = { new [] { 0, 2, 0, 2, 1, 3 }, new [] { 2, 2, 0, 2, 2, 2 }, new [] { 0, 2, 2, 0, 3, 1 } };
 
-        private static(int index, int face) Rotate(int dir, Coord3 rot) {
+        public static(int index, int face) Rotate(int dir, Coord3 rot) {
             rot = rot % 4;
             int frot = 0;
             if (rot.z != 0) {

@@ -52,7 +52,11 @@ namespace VoxelEngine {
         }
 
         public void SpawnEntity(Block block, Coord3 pos, ChunkSection chunk) {
-            var go = Instantiate(block.data.prefab, pos.BlockToWorld(chunk.worldPosition), Quaternion.Euler(block.rotation * 90), transform);
+            Coord3 rotation;
+            if (block.data.rotation) rotation = ((RotatedBlock)block).rotation;
+            else rotation = Coord3.zero;
+
+            var go = Instantiate(block.data.prefab, pos.BlockToWorld(chunk.worldPosition), Quaternion.Euler(rotation * 90), transform);
             go.name = block.data.blockID + " (Entity)";
         }
 
@@ -76,16 +80,16 @@ namespace VoxelEngine {
 
             chunk.SetBlock(block, pos.WorldToBlock(chunk.worldPosition), update);
         }
-        public void SetBlock(BlockData block, Coord3 pos, Coord3 rot, bool update = true) {
-            var chunkPos = pos.WorldToChunk();
-            var chunk = chunks.GetSection(chunkPos);
-            if (chunk == null) return;
-
-            chunk.SetBlock(block, pos.WorldToBlock(chunk.worldPosition), rot, update);
-        }
-        public void SetBlock(BlockData block, RaycastHit hit, Coord3 rotation, bool adjacent = true) {
+        //public void SetBlock(BlockData block, Coord3 pos, bool update = true) {
+        //    var chunkPos = pos.WorldToChunk();
+        //    var chunk = chunks.GetSection(chunkPos);
+        //    if (chunk == null) return;
+//
+        //    chunk.SetBlock(block, pos.WorldToBlock(chunk.worldPosition), update);
+        //}
+        public void SetBlock(Block block, RaycastHit hit, bool adjacent = true) {
             var pos = Coord3.RaycastToBlock(hit, adjacent);
-            SetBlock(block, pos, rotation, true);
+            SetBlock(block, pos, true);
         }
 
         void LoadSpawn() {

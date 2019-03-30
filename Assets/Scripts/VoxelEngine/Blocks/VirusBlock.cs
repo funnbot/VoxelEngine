@@ -8,7 +8,7 @@ using VoxelEngine.Interfaces;
 namespace VoxelEngine.Blocks {
 
     [MessagePackObject]
-    public class VirusBlock : Block, INeighborUpdateable, IInterfaceable {
+    public class VirusBlock : Block, IInterfaceable {
         public VirusBlock(Block copy) : base(copy) { }
         public VirusBlock() { }
 
@@ -19,13 +19,13 @@ namespace VoxelEngine.Blocks {
             }
             var block = chunk.GetBlock(position.WorldToBlock(chunk.worldPosition) + Coord3.Directions[i]);
             if (block != null && block.data.blockType == BlockType.Cube && (block.data.blockID == "grass" || block.data.blockID == "dirt")) {
-                chunk.SetBlock(data, position.WorldToBlock(chunk.worldPosition) + Coord3.Directions[i], Coord3.zero);
+                chunk.SetBlock(new Block(data), position.WorldToBlock(chunk.worldPosition) + Coord3.Directions[i]);
             }
             i++;
         }
 
-        void INeighborUpdateable.OnNeighborUpdate(Block block) {
-
+        public override void OnNeighborUpdate(Block block) {
+            
         }
 
         void IInterfaceable.BuildGUI() {

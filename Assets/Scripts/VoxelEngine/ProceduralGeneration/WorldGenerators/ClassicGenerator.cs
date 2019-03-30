@@ -45,15 +45,15 @@ namespace VoxelEngine.ProceduralGeneration {
 
                 int caveChance = GetNoise(worldPos, caveFrequency, 100);
                 if (worldPos.y <= stoneHeight && caveSize < caveChance) {
-                    SetBlock(chunk, localPos, stone);
+                    SetBlock(chunk, localPos, new Block(stone));
                 } else if (worldPos.y <= dirtHeight && caveSize < caveChance) {
-                    if (worldPos.y == dirtHeight) SetBlock(chunk, localPos, grass);
-                    else SetBlock(chunk, localPos, dirt);
+                    if (worldPos.y == dirtHeight) SetBlock(chunk, localPos, new Block(grass));
+                    else SetBlock(chunk, localPos, new Block(dirt));
 
                     if (worldPos.y == dirtHeight && GetNoise(worldPos.x, worldPos.z, treeFrequency, 100) < treeDensity)
                         GenerateStructure(chunk, localPos.x, localPos.y + 1, localPos.z, "tree");
                     if (worldPos.y == dirtHeight && GetNoise(worldPos.x, worldPos.z, grassFrequency, 100) < grassDensity)
-                        SetBlock(chunk, new Coord3(localPos.x, localPos.y + 1, localPos.z), grass_decal);
+                        SetBlock(chunk, new Coord3(localPos.x, localPos.y + 1, localPos.z), new Block(grass_decal));
                 }
             }
         }

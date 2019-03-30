@@ -29,7 +29,7 @@ namespace VoxelEngine.ProceduralGeneration {
         protected override void GenerateColumn(ChunkSection chunk, int x, int z) {
             var localPos = new Coord3(x, 0, z);
             void Set(BlockData block) {
-                SetBlock(chunk, localPos, block);
+                SetBlock(chunk, localPos, new Block(block));
             }
             for (localPos.y = 0; localPos.y < ChunkSection.Size; localPos.y++) {
                 var pos = localPos.BlockToWorld(chunk.worldPosition);
@@ -48,7 +48,7 @@ namespace VoxelEngine.ProceduralGeneration {
                     if (GetChance(pos.x, 0, pos.z, treeFrequency, treeDensity))
                         GenerateStructure(chunk, localPos.x, localPos.y + 1, localPos.z, "tree");
                     else if (GetChance(pos.x, 0, pos.z, grassFrequency, grassDensity))
-                        SetBlock(chunk, new Coord3(localPos.x, localPos.y + 1, localPos.z), grass_decal);
+                        SetBlock(chunk, new Coord3(localPos.x, localPos.y + 1, localPos.z), new Block(grass_decal));
                     Set(grass);
                 }
             }

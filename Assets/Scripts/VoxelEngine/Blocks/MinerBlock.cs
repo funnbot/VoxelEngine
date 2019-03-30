@@ -11,18 +11,19 @@ using VoxelEngine.UI;
 namespace VoxelEngine.Blocks {
 
     [MessagePackObject]
-    public class MinerBlock : Block, IInterfaceable, IUpdateable, IPlaceHandler {
-        public MinerBlock(Block clone) : base(clone) { }
+    public class MinerBlock : RotatedBlock, IInterfaceable, ITickable {
+        public MinerBlock(Block clone) : base(clone) {
+            RotatedBlock block = clone as RotatedBlock;
+            if (block != null) rotation = block.rotation;
+        }
         public MinerBlock() { }
 
-        [Key(2)]
         public bool mining;
-        [Key(3)]
         public Coord3 miningLocation;
 
-        void IUpdateable.OnTick() {
+        void ITickable.OnTick() {
             if (!mining) return;
-            chunk.SetBlock(null, miningLocation.WorldToBlock(chunk.worldPosition), Coord3.zero, true);
+            chunk.SetBlock(null, miningLocation.WorldToBlock(chunk.worldPosition), true);
 
             miningLocation.z++;
             if (miningLocation.z > position.z + 2) {
@@ -80,8 +81,7 @@ namespace VoxelEngine.Blocks {
             if (name == "mine") mining = !mining;
         }
 
-        void IPlaceHandler.OnPlace() {
-            Debug.Log("Place");
+        public override void OnPlace() {
             miningLocation = position - new Coord3(2, 1, 2);
         }
     }

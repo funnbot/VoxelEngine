@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using VoxelEngine.Blocks;
 using VoxelEngine.Data;
 using VoxelEngine.Interfaces;
 
@@ -49,16 +50,19 @@ namespace VoxelEngine.Player {
                         var rot = new Coord3(0, y, 0);
                         if (!Input.GetKey(KeyCode.LeftAlt)) {
                             var block = player?.activeStack?.item;
-                            if (block != null) world.SetBlock(block, hit, rot, false);
+                            if (block != null) {
+                                var newBlock = block.rotation ? new RotatedBlock(block, rot) : new Block(block);
+                                world.SetBlock(newBlock, hit, false);
+                            }
                         } else {
-                            world.SetBlock(air, hit, rot);
+                            world.SetBlock(null, hit);
                         }
                     } else {
                         int y = -Mathf.RoundToInt(transform.localEulerAngles.y / 90f);
                         var rot = new Coord3(0, y, 0);
                         if (!Input.GetKey(KeyCode.LeftAlt)) {
                             var block = player?.activeStack?.item;
-                            if (block != null) world.SetBlock(block, hit, rot, false);
+                            if (block != null) world.SetBlock(new Block(block), hit, false);
                         } else {
                             Destroy(hit.transform.gameObject);
                         }

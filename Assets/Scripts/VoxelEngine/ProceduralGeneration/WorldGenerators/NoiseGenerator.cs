@@ -36,8 +36,8 @@ namespace VoxelEngine.ProceduralGeneration {
                     if (noise3d || pos.y == 0) {
                         var chance = GetChance(pos.x, pos.y, pos.z, freq, dens);
                         if (chance) {
-                            SetBlock(chunk, localPos, dirt);
-                            SetBlock(chunk, new Coord3(localPos.x, localPos.y + 1, localPos.z), stone);
+                            SetBlock(chunk, localPos, new Block(dirt));
+                            SetBlock(chunk, new Coord3(localPos.x, localPos.y + 1, localPos.z), new Block(stone));
                         }
                     }
                 }

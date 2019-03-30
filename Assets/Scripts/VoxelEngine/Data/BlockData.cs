@@ -24,6 +24,8 @@ namespace VoxelEngine.Data {
         public float boundingSize = 1;
         public SubMesh subMesh;
         [Space]
+        public bool rotation;
+        [Space]
         [Header("Interaction")]
         public BlockPlacingMode placementType;
         [Space]

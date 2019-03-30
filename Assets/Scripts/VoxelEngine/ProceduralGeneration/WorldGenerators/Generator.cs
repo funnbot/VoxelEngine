@@ -32,7 +32,7 @@ namespace VoxelEngine.ProceduralGeneration {
             var stone = ResourceStore.Blocks["stone"];
             for (int y = 0; y < ChunkSection.Size; y++) {
                 var pos = new Coord3(x, y, z);
-                SetBlock(chunk, pos, stone);
+                SetBlock(chunk, pos, new Block(stone));
             }
         }
 
@@ -44,12 +44,12 @@ namespace VoxelEngine.ProceduralGeneration {
                 chunk.SetBlock(block, localPos, false);
             }
         }
-        protected void SetBlock(ChunkSection chunk, Coord3 localPos, BlockData blockData, Coord3 rotation = new Coord3(), bool replace = false) {
-            var b = chunk.GetBlock(localPos);
-            if (replace || b == null) {
-                chunk.SetBlock(blockData, localPos, rotation, false);
-            }
-        }
+        //protected void SetBlock(ChunkSection chunk, Coord3 localPos, BlockData blockData, bool replace = false) {
+        //    var b = chunk.GetBlock(localPos);
+        //    if (replace || b == null) {
+        //        chunk.SetBlock(new Block(blockData), localPos, false);
+        //    }
+        //}
 
         protected int GetNoise(int x, int y, int z, float scale, int max) {
             return Mathf.FloorToInt((GetNoise(x * scale, y * scale, z * scale) + 1f) * (max / 2f));
@@ -85,8 +85,9 @@ namespace VoxelEngine.ProceduralGeneration {
                     for (int zi = 0; zi < s.size.y; zi++) {
                         var val = s[l][zi * s.size.y + xi];
                         var block = s.blocks[val];
+                        if (block == null) continue;
                         var pos = new Coord3(x + xi, y + l, z + zi) - (Coord3) s.origin + Coord3.one;
-                        SetBlock(chunk, pos, block, Coord3.zero, s.cutout);
+                        SetBlock(chunk, pos, new Block(block), s.cutout);
                     }
                 }
             }
@@ -98,7 +99,7 @@ namespace VoxelEngine.ProceduralGeneration {
                 for (int y = 0; y < ChunkSection.Size; y++) {
                     for (int z = 0; z < ChunkSection.Size; z++) {
                         var pos = new Coord3(x, y, z);
-                        SetBlock(chunk, pos, air);
+                        SetBlock(chunk, pos, new Block(air));
                     }
                 }
             }
