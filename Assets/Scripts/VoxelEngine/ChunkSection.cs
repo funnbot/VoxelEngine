@@ -4,6 +4,7 @@ using UnityEngine;
 using VoxelEngine.Blocks;
 using VoxelEngine.Data;
 using VoxelEngine.Serialization;
+using VoxelEngine.Interfaces;
 
 namespace VoxelEngine {
 
@@ -31,6 +32,71 @@ namespace VoxelEngine {
 
         private bool update;
 
+        public void InitializeBlock(ref Block block, Coord3 position) {
+            if (block.data.dataType.Length > 0) {
+                block = block.ConvertTo(block.data.dataType);
+            }
+
+            RegisterBlock(ref block, position);
+
+            if (block.data.dataType.Length > 0) {
+                IPlaceHandler placeHandler = block as IPlaceHandler;
+                if (placeHandler != null) {
+                    placeHandler.OnPlace();
+                }
+            }
+        }
+
+        public void DestroyBlock(Block block) {
+            if (block.data.dataType.Length > 0) {
+                IBreakHandler breakHandler = block as IBreakHandler;
+                if (breakHandler != null) {
+                    breakHandler.OnBreak();
+                }
+            }
+
+            UnregisterBlock(block);
+        }
+
+        public void RegisterBlock(ref Block block, Coord3 position) {
+            block.position = position;
+            block.chunk = this;
+
+            if (block.data.blockType == BlockType.Custom) {
+                var go = Instantiate(block.data.prefab, position, Quaternion.Euler(block.rotation * 90), Blocks);
+                go.name = block.data.blockID + " " + block.position;
+
+                StandaloneBlock standalone = block as StandaloneBlock;
+                if (standalone == null) standalone = new StandaloneBlock(block);
+
+                standalone.gameObject = go;
+                block = standalone;
+            }
+
+            if (block.data.dataType.Length > 0) {
+                IUpdateable inter = block as IUpdateable;
+                if (inter != null) {
+                    world.OnTick += inter.OnTick;
+                }
+            }
+        }
+
+        public void UnregisterBlock(Block block) {
+            if (block.data.dataType.Length > 0) {
+                IUpdateable inter = block as IUpdateable;
+                if (inter != null) {
+                    world.OnTick -= inter.OnTick;
+                }
+            }
+
+            if (block.data.blockType == BlockType.Custom) {
+                StandaloneBlock standalone = block as StandaloneBlock;
+                if (standalone != null && standalone.gameObject != null) {
+                    Destroy(standalone.gameObject, 0.1f);
+                }
+            }
+        }
+
         public void Create(Chunk parent, VoxelWorld world) {
             this.world = world;
             this.parent = parent;
@@ -50,7 +116,7 @@ namespace VoxelEngine {
             }
         }
 
-        public void Init(Coord3 position) {
+        public void Setup(Coord3 position) {
             update = false;
 
             this.position = position;
@@ -67,7 +133,7 @@ namespace VoxelEngine {
                     for (int z = 0; z < Size; z++) {
                         var block = blocks[x][y][z];
                         if (block == null) continue;
-                        world.UnregisterBlock(block);
+                        UnregisterBlock(block);
                         blocks[x][y][z] = null;
                     }
                 }
@@ -98,7 +164,7 @@ namespace VoxelEngine {
                         if (block == null) continue;
                         block.data = ResourceStore.Blocks[block.id];
 
-                        world.RegisterBlock(ref block, new Coord3(x, y, z).BlockToWorld(worldPosition), this);
+                        RegisterBlock(ref block, new Coord3(x, y, z).BlockToWorld(worldPosition));
                     }
                 }
             }
@@ -107,7 +173,7 @@ namespace VoxelEngine {
         void OnTick() {
             if (update) TryRender();
         }
-
+    
         public void TryRender() {
             if (world.chunkRenders >= VoxelWorld.MaxRendersPerTick) return;
 
@@ -156,8 +222,8 @@ namespace VoxelEngine {
             if (pos.InRange(0, ChunkSection.Size)) {
                 var oldBlock = blocks[pos.x][pos.y][pos.z];
 
-                if (oldBlock != null) world.DestroyBlock(oldBlock);
-                if (block != null) world.InitializeBlock(ref block, pos.BlockToWorld(worldPosition), this);
+                if (oldBlock != null) DestroyBlock(oldBlock);
+                if (block != null) InitializeBlock(ref block, pos.BlockToWorld(worldPosition));
 
                 blocks[pos.x][pos.y][pos.z] = block;
 
@@ -168,6 +234,7 @@ namespace VoxelEngine {
                 }
             } else world.SetBlock(block, pos.BlockToWorld(worldPosition), updateChunk);
         }
+        
         public void SetBlock(BlockData blockData, Coord3 pos, Coord3 rot, bool updateChunk = true) {
             var block = blockData != null ? new Block(blockData, rot) : null;
             SetBlock(block, pos, updateChunk);
@@ -215,7 +282,7 @@ namespace VoxelEngine {
                     else triggerMesh.AddBoundingBox(pos, block.data.boundingSize);
                     break;
                 case BlockType.Custom:
-                    if (block.data.collision) 
+                    if (block.data.collision)
                         colliderMesh.AddBoundingBox(pos, block.data.boundingSize);
                     break;
             }

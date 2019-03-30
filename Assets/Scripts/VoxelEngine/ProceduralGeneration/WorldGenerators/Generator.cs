@@ -25,6 +25,7 @@ namespace VoxelEngine.ProceduralGeneration {
                     }
                 }
             }
+            col.isDirty = false;
         }
 
         protected virtual void GenerateColumn(ChunkSection chunk, int x, int z) {

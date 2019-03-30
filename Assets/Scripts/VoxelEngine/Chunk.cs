@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Threading.Tasks;
+using UnityEngine;
 using VoxelEngine.Blocks;
 using VoxelEngine.Serialization;
 
@@ -32,7 +33,7 @@ namespace VoxelEngine {
             serialChunk.blocks = new Block[VoxelWorld.ChunkHeight][][][];
         }
 
-        public void Init(Coord2 position) {
+        public void Setup(Coord2 position) {
             this.position = position;
 
             built = false;
@@ -46,7 +47,7 @@ namespace VoxelEngine {
 
             for (int i = 0; i < chunks.Length; i++) {
                 var pos = new Coord3(position.x, i, position.y);
-                chunks[i].Init(pos);
+                chunks[i].Setup(pos);
             }
         }
 
@@ -55,10 +56,9 @@ namespace VoxelEngine {
                 chunk.CleanUp();
         }
 
-        public SerialChunk Serialize() {
+        public void Serialize() {
             for (int i = 0; i < VoxelWorld.ChunkHeight; i++)
                 chunks[i].Serialize(serialChunk, i);
-            return serialChunk;
         }
 
         public void Deserialize() {
@@ -73,11 +73,19 @@ namespace VoxelEngine {
 
         public void Build() {
             built = true;
-
-            if (Serializer.LoadChunk(world.saveName, position, ref serialChunk))
+            if (Serializer.IsChunkSaved(world.saveName, position)) {
+                Serializer.LoadChunk(world.saveName, position, ref serialChunk);
                 this.Deserialize();
-            else world.generator.GenerateColumn(this);
-            isDirty = false;
+            } else world.generator.GenerateColumn(this);
+        }
+
+        public async Task BuildThreaded() {
+            built = true;
+            if (Serializer.IsChunkSaved(world.saveName, position)) {
+                await Task.Run(() => Serializer.LoadChunk(world.saveName, position, ref serialChunk));
+                this.Deserialize();
+            } else await Task.Run(() => world.generator.GenerateColumn(this));
+            return;
         }
 
         public void GenerateMesh() {
@@ -100,10 +108,18 @@ namespace VoxelEngine {
         }
 
         public void Save() {
-            if (!built || !isDirty) return;
-
-            Serializer.SaveChunk(world.saveName, position, this.Serialize());
+            if (!isDirty || !built) return;
+            this.Serialize();
+            Serializer.SaveChunk(world.saveName, position, serialChunk);
             isDirty = false;
+        }
+
+        public async Task SaveThreaded() {
+            if (!isDirty || !built) return;
+            this.Serialize();
+            await Task.Run(() => Serializer.SaveChunk(world.saveName, position, serialChunk));
+            isDirty = false;
+            return;
         }
 
         private bool InRange(int y) => y >= 0 && y < chunks.Length;

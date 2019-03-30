@@ -54,7 +54,7 @@ namespace VoxelEngine.Player {
 
             try {
                 if (!column.built) {
-                    await Task.Run(column.Build);
+                    await column.BuildThreaded();
                 }
                 if (!column.generated) {
                     await Task.Run(column.GenerateMesh);
@@ -103,7 +103,7 @@ namespace VoxelEngine.Player {
                     var col = world.chunks.GetChunk(p);
                     if (col != null) {
                         try {
-                            if (col.built && col.isDirty) await Task.Run(col.Save);
+                            await col.SaveThreaded();
                         } catch (System.Exception e) {
                             Debug.Log(e);
                         }

@@ -12,7 +12,7 @@ namespace VoxelEngine.Serialization {
         static CerasSerializer serializer;
 
         static Serializer() {
-            MessagePackSerializer.SetDefaultResolver(MessagePack.Resolvers.StandardResolver.Instance);
+            //MessagePackSerializer.SetDefaultResolver(MessagePack.Resolvers.StandardResolver.Instance);
             var config = new SerializerConfig();
             //config.KnownTypes.Add(typeof(BlockData));
             serializer = new CerasSerializer(config);
@@ -28,17 +28,16 @@ namespace VoxelEngine.Serialization {
             WriteAllBytes(saveFile, length);
         }
 
-        public static bool LoadChunk(string worldSave, Coord2 pos, ref SerialChunk chunk) {
+        public static bool IsChunkSaved(string worldSave, Coord2 pos) {
             string saveFile = FolderName(worldSave) + FileName(pos);
+            return File.Exists(saveFile);
+        }
 
-            if (!File.Exists(saveFile)) {
-                return false;
-            }
+        public static void LoadChunk(string worldSave, Coord2 pos, ref SerialChunk chunk) {
+            string saveFile = FolderName(worldSave) + FileName(pos);
 
             ReadAllBytes(saveFile);
             serializer.Deserialize<SerialChunk>(ref chunk, Dbuffer);
-
-            return true;
         }
 
         public static void ReadAllBytes(string saveFile) {

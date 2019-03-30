@@ -23,7 +23,7 @@ namespace VoxelEngine {
 
         public Chunk LoadChunk(Coord2 coord) {
             var chunk = pool.GetObject();
-            chunk.Init(coord);
+            chunk.Setup(coord);
             chunks.Add(coord, chunk);
             return chunk;
         }
