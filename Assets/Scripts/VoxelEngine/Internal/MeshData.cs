@@ -2,7 +2,7 @@
 using UnityEngine;
 using VoxelEngine.Blocks;
 
-namespace VoxelEngine {
+namespace VoxelEngine.Internal {
 
     public class MeshData {
         private const int MaxVertexCount = 65000;
@@ -50,6 +50,7 @@ namespace VoxelEngine {
         }
 
         public Mesh ToMesh() {
+            if (verts.Count == 0) return null;
             var mesh = new Mesh();
             mesh.subMeshCount = SubMeshCount;
             mesh.SetVertices(verts);
@@ -64,6 +65,7 @@ namespace VoxelEngine {
         }
 
         public Mesh ToColMesh() {
+            if (verts.Count == 0) return null;
             var mesh = new Mesh();
             mesh.SetVertices(verts);
             mesh.SetTriangles(tris[0], 0);

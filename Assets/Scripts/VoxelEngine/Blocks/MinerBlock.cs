@@ -4,6 +4,7 @@ using MessagePack;
 using UnityEngine;
 using VoxelEngine.Data;
 using VoxelEngine.Interfaces;
+using VoxelEngine.Internal;
 using VoxelEngine.Inventory;
 using VoxelEngine.Serialization;
 using VoxelEngine.UI;
@@ -11,17 +12,24 @@ using VoxelEngine.UI;
 namespace VoxelEngine.Blocks {
 
     public class MinerBlock : RotatedBlock, IInterfaceable, ITickable {
-        public MinerBlock(Block clone) : base(clone) { 
-            Debug.Log(byteId);
-        }
-        public MinerBlock() { }
+        public MinerBlock() {}
 
+        [Ceras.Include]
         public bool mining;
+        [Ceras.Include]
         public Coord3 miningLocation;
+
+        Coord3 position;
+        ChunkSection chunk;
+
+        public override void OnLoad(Coord3 pos, BlockData data, ChunkSection chunk) {
+            position = pos;
+            this.chunk = chunk;
+        }
 
         void ITickable.OnTick() {
             if (!mining) return;
-            chunk.SetBlock(null, miningLocation.WorldToBlock(chunk.worldPosition), true);
+            chunk.blocks.PlaceBlock(miningLocation, null, true);
 
             miningLocation.z++;
             if (miningLocation.z > position.z + 2) {
@@ -32,7 +40,7 @@ namespace VoxelEngine.Blocks {
                 miningLocation.x = position.x - 2;
                 miningLocation.y--;
             }
-            if (miningLocation.y <= 0) mining = false;
+            if (miningLocation.y <= -100) mining = false;
         }
 
         private UIItemStack[, ] inv;

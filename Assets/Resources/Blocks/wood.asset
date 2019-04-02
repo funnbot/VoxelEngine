@@ -12,25 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba0e9bb57a82d4ebc98580cb3c739582, type: 3}
   m_Name: wood
   m_EditorClassIdentifier: 
-  blockId: 
-  byteId: 0
+  id: 10
   blockName: wood
   description: 
   icon: {fileID: 0}
-  dataType: 
+  dataType: 1
   blockType: 1
   prefab: {fileID: 0}
   collision: 1
   boundingSize: 1
   subMesh: 0
-  rotation: 1
   placementType: 4
   stackable: 1
   placeable: 1
   spawnType: 0
   spawnFrequency: 0
   spawnDensity: 0
-  textureIndices: 040000000400000005000000050000000400000004000000
+  textureIndices: 050000000500000006000000060000000500000005000000
   textures:
   - {fileID: 11400000, guid: 790e51ce2bc33487f82ecd1d825e6a0f, type: 2}
   - {fileID: 11400000, guid: 790e51ce2bc33487f82ecd1d825e6a0f, type: 2}

@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
+using VoxelEngine.Data;
 using VoxelEngine.Interfaces;
+using VoxelEngine.Internal;
 
 namespace VoxelEngine.Blocks {
 
@@ -11,20 +13,22 @@ namespace VoxelEngine.Blocks {
         [Ceras.Include]
         public Coord3 rotation;
 
-        public PipeBlock(Block block) : base(block) { }
+        Coord3 position;
+        ChunkSection chunk;
+
         public PipeBlock() { }
 
-        public override void OnPlace() {
+        public override void OnLoad(Coord3 pos, BlockData data, ChunkSection chunk) {
+            base.OnLoad(pos, data, chunk);
+            position = pos;
+            this.chunk = chunk;
 
-        }
-
-        public override void OnLoad() {
             obj = gameObject.GetComponent<PipeObject>();
             UpdateShape();
-            UpdateNeighbors();
+            chunk.blocks.UpdateBlockNeighbors(position);
         }
 
-        public override void OnNeighborUpdate(Block block) {
+        public override void OnNeighborUpdate() {
             UpdateShape();
         }
 
@@ -32,7 +36,7 @@ namespace VoxelEngine.Blocks {
             bool[] solid = new bool[6];
             for (int i = 0; i < 6; i++) {
                 Coord3 pos = position + Coord3.Directions[i];
-                var block = chunk.GetBlock(pos, true);
+                var block = chunk.blocks.GetBlock(pos);
                 solid[i] = block != null && block.id == id;
             }
             ChangeShape(solid);
@@ -58,15 +62,15 @@ namespace VoxelEngine.Blocks {
                 else if (sol[BlockFace.bottom]) SetShape(PipeType.Corner, new Coord3(0, 2, 2));
                 else if (sol[BlockFace.left]) SetShape(PipeType.Corner, new Coord3(0, 2, 3));
                 else SetShape(PipeType.End, new Coord3(0, 2, 0));
-            } 
-            
+            }
+
             // End
             else {
                 if (sol[BlockFace.top]) SetShape(PipeType.End, new Coord3(-1, 0, 0));
                 else if (sol[BlockFace.right]) SetShape(PipeType.End, new Coord3(0, 1, 0));
                 else if (sol[BlockFace.bottom]) SetShape(PipeType.End, new Coord3(1, 0, 0));
                 else if (sol[BlockFace.left]) SetShape(PipeType.End, new Coord3(0, -1, 0));
-                
+
                 // None
                 else SetShape(PipeType.End, new Coord3(1, 0, 0));
             }

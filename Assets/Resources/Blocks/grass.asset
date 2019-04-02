@@ -12,23 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba0e9bb57a82d4ebc98580cb3c739582, type: 3}
   m_Name: grass
   m_EditorClassIdentifier: 
+  id: 1
   blockName: grass
   description: 
   icon: {fileID: 0}
-  dataType: 
+  dataType: 0
   blockType: 1
   prefab: {fileID: 0}
   collision: 1
   boundingSize: 1
   subMesh: 0
-  rotation: 1
   placementType: 0
   stackable: 1
   placeable: 1
   spawnType: 0
   spawnFrequency: 0
   spawnDensity: 0
-  textureIndices: 030000000300000002000000010000000300000003000000
+  textureIndices: 020000000200000003000000000000000200000002000000
   textures:
   - {fileID: 11400000, guid: 60541f8cfbc69418a812ce2570a73233, type: 2}
   - {fileID: 11400000, guid: 60541f8cfbc69418a812ce2570a73233, type: 2}

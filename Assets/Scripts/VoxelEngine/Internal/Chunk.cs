@@ -2,8 +2,9 @@
 using UnityEngine;
 using VoxelEngine.Blocks;
 using VoxelEngine.Serialization;
+using VoxelEngine.Internal;
 
-namespace VoxelEngine {
+namespace VoxelEngine.Internal {
 
     public class Chunk : MonoBehaviour {
         public GameObject chunkFab;

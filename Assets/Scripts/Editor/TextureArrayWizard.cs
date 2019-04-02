@@ -20,13 +20,16 @@ public class TextureArrayWizard : ScriptableWizard {
         texArray.wrapMode = t.wrapMode;
 
         for (int i = 0; i < textures.Length; i++) {
+            var ti = textures[i];
+            ti.index = i;
+            EditorUtility.SetDirty(ti);
             for (int m = 0; m < t.mipmapCount; m++) {
-                var ti = textures[i];
-                Graphics.CopyTexture(ti.texture, 0, m, texArray, ti.index, m);
+                Graphics.CopyTexture(ti.texture, 0, m, texArray, i, m);
             }
         }
 
         AssetDatabase.CreateAsset(texArray, path);
+        AssetDatabase.Refresh();
     }
 
     [MenuItem("Assets/Create/Texture Array")]

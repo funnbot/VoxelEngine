@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba0e9bb57a82d4ebc98580cb3c739582, type: 3}
   m_Name: stone
   m_EditorClassIdentifier: 
-  blockID: stone
+  id: 8
   blockName: stone
   description: 
   icon: {fileID: 0}
-  dataType: 
+  dataType: 0
   blockType: 1
   prefab: {fileID: 0}
   collision: 1
@@ -28,7 +28,7 @@ MonoBehaviour:
   spawnType: 0
   spawnFrequency: 0
   spawnDensity: 0
-  textureIndices: 000000000000000000000000000000000000000000000000
+  textureIndices: 0c0000000c0000000c0000000c0000000c0000000c000000
   textures:
   - {fileID: 11400000, guid: 35504e03644a74e33a5190ee5fe0d3c8, type: 2}
   - {fileID: 11400000, guid: 35504e03644a74e33a5190ee5fe0d3c8, type: 2}

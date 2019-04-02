@@ -12,23 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba0e9bb57a82d4ebc98580cb3c739582, type: 3}
   m_Name: leaf
   m_EditorClassIdentifier: 
+  id: 4
   blockName: leaf
   description: 
   icon: {fileID: 0}
-  dataType: 
+  dataType: 0
   blockType: 1
   prefab: {fileID: 0}
   collision: 1
   boundingSize: 1
   subMesh: 1
-  rotation: 0
   placementType: 0
   stackable: 1
   placeable: 1
   spawnType: 0
   spawnFrequency: 0
   spawnDensity: 0
-  textureIndices: 010000000100000001000000010000000100000001000000
+  textureIndices: 000000000000000000000000000000000000000000000000
   textures:
   - {fileID: 11400000, guid: a71b715bd9cc840eda2043aa744b18ed, type: 2}
   - {fileID: 11400000, guid: a71b715bd9cc840eda2043aa744b18ed, type: 2}

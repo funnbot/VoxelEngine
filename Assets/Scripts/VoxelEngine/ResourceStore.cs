@@ -12,7 +12,6 @@ namespace VoxelEngine {
 
         protected override void AwakeImpl() {
             Blocks = new BlockResource("Blocks", new [] { "stone", "grass", "dirt" });
-
             Structures = new Resource<StructureData>("Structures");
         }
     }
@@ -45,36 +44,36 @@ namespace VoxelEngine {
     }
 
     public class BlockResource : IEnumerable {
-        Dictionary<byte, BlockData> blocks;
-        Dictionary<string, byte> blockMap;
+        BlockData[] blocks;
+        Dictionary<string, int> blockMap;
 
         public BlockData this [string id] {
             get {
-                byte key;
+                int key;
                 if (!blockMap.TryGetValue(id, out key)) return null;
-                return this [key];
+                return blocks[key];
             }
         }
 
-        public BlockData this [byte id] {
-            get {
-                BlockData v;
-                blocks.TryGetValue(id, out v);
-                return v;
-            }
+        public BlockData this [int id] {
+            get => blocks[id];
         }
+
+        public BlockData GetData(int id) => blocks[id];
+        public int GetId(string name) => blockMap[name];
 
         public BlockResource(string folder, string[] required = null) {
-            blocks = new Dictionary<byte, BlockData>();
-            blockMap = new Dictionary<string, byte>();
-
-            byte id = 0;
             var loaded = Resources.LoadAll(folder, typeof(BlockData));
-            foreach (BlockData r in loaded) {
-                r.blockId = r.name;
-                r.byteId = id++;
-                blocks.Add(r.byteId, r);
-                blockMap.Add(r.blockId, r.byteId);
+
+            blocks = new BlockData[loaded.Length];
+            blockMap = new Dictionary<string, int>();
+
+            for (int i = 0; i < loaded.Length; i++) {
+                var block = (BlockData)loaded[i];
+                var id = block.id;
+                block.blockId = block.name;
+                blockMap.Add(block.blockId, id);
+                blocks[id] = block;
             }
 
             if (required != null) {

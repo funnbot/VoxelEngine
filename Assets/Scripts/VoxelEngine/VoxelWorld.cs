@@ -5,6 +5,7 @@ using UnityEngine;
 using VoxelEngine.Blocks;
 using VoxelEngine.Data;
 using VoxelEngine.Interfaces;
+using VoxelEngine.Internal;
 using VoxelEngine.Pooling;
 using VoxelEngine.ProceduralGeneration;
 
@@ -51,13 +52,9 @@ namespace VoxelEngine {
             }
         }
 
-        public void SpawnEntity(Block block, Coord3 pos, ChunkSection chunk) {
-            Coord3 rotation;
-            if (block.data.rotation) rotation = ((RotatedBlock)block).rotation;
-            else rotation = Coord3.zero;
-
-            var go = Instantiate(block.data.prefab, pos.BlockToWorld(chunk.worldPosition), Quaternion.Euler(rotation * 90), transform);
-            go.name = block.data.blockId + " (Entity)";
+        public void SpawnEntity(BlockData data, Coord3 pos, Coord3 rotation) {
+            var go = Instantiate(data.prefab, pos, Quaternion.Euler(rotation * 90), transform);
+            go.name = data.blockId + " (Entity)";
         }
 
         public Block GetBlock(Coord3 pos) {
@@ -66,30 +63,39 @@ namespace VoxelEngine {
             if (chunk == null) return null;
 
             var blockPos = pos.WorldToBlock(chunk.worldPosition);
-            return chunk.GetBlock(blockPos);
+            return chunk.blocks.GetBlock(blockPos);
         }
         public Block GetBlock(RaycastHit hit, bool adjacent = false) {
             var pos = Coord3.RaycastToBlock(hit, adjacent);
             return GetBlock(pos);
         }
 
-        public void SetBlock(Block block, Coord3 pos, bool update = true) {
-            var chunkPos = pos.WorldToChunk();
-            var chunk = chunks.GetSection(chunkPos);
-            if (chunk == null) return;
+        public ChunkSection PlaceBlock(Coord3 worldPos, BlockData data, bool updateChunk = true) {
+            var sectionPos = worldPos.WorldToChunk();
+            var section = chunks.GetSection(sectionPos);
+            if (section == null) return null;
 
-            chunk.SetBlock(block, pos.WorldToBlock(chunk.worldPosition), update);
+            section.blocks.PlaceBlock(worldPos.WorldToBlock(section.worldPosition), data, updateChunk);
+            return section;
         }
-        //public void SetBlock(BlockData block, Coord3 pos, bool update = true) {
-        //    var chunkPos = pos.WorldToChunk();
-        //    var chunk = chunks.GetSection(chunkPos);
-        //    if (chunk == null) return;
-//
-        //    chunk.SetBlock(block, pos.WorldToBlock(chunk.worldPosition), update);
-        //}
-        public void SetBlock(Block block, RaycastHit hit, bool adjacent = true) {
+        public ChunkSection PlaceBlock(Coord3 worldPos, BlockData data, out Block block, bool updateChunk = true) {
+            var sectionPos = worldPos.WorldToChunk();
+            var section = chunks.GetSection(sectionPos);
+            if (section == null) {
+                block = null;
+                return null;
+            }
+
+            section.blocks.PlaceBlock(worldPos.WorldToBlock(section.worldPosition), data, out block, updateChunk);
+            return section;
+        }
+        public ChunkSection PlaceBlock(RaycastHit hit, BlockData data, bool adjacent = false) {
             var pos = Coord3.RaycastToBlock(hit, adjacent);
-            SetBlock(block, pos, true);
+            return PlaceBlock(pos, data, true);
+        }
+        public ChunkSection PlaceBlock(RaycastHit hit, BlockData data, out Block block, bool adjacent = false) {
+            var pos = Coord3.RaycastToBlock(hit, adjacent);
+            return PlaceBlock(pos, data, out block, true);
         }
 
         void LoadSpawn() {

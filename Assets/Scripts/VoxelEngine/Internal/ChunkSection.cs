@@ -6,9 +6,8 @@ using VoxelEngine.Data;
 using VoxelEngine.Interfaces;
 using VoxelEngine.Serialization;
 
-namespace VoxelEngine {
+namespace VoxelEngine.Internal {
 
-    [System.Serializable]
     public class ChunkSection : MonoBehaviour {
         public static readonly int Size = 16;
 
@@ -21,82 +20,17 @@ namespace VoxelEngine {
         public Coord3 position;
         public Coord3 worldPosition;
 
-        public Block[][][] blocks;
+        public BlockManager blocks;
 
         public MeshData blockMesh;
         public MeshData colliderMesh;
         public MeshData triggerMesh;
 
+        public bool built { get => parent.built; }
+
         private Chunk parent;
-        private ChunkSection[] neighbors;
 
         private bool update;
-
-        public void InitializeBlock(ref Block block, Coord3 position) {
-            if (block.data.dataType.Length > 0) {
-                block = block.ConvertTo(block.data.dataType);
-            } else if (block.data.rotation) {
-                block = new RotatedBlock(block);
-            } else if (block.data.blockType == BlockType.Custom) {
-                block = new StandaloneBlock(block);
-            }
-
-            RegisterBlock(ref block, position);
-
-            if (block.data.dataType.Length > 0) {
-                block.OnPlace();
-            }
-        }
-
-        public void DestroyBlock(Block block) {
-            if (block.data.dataType.Length > 0) {
-                block.OnBreak();
-            }
-
-            UnregisterBlock(block);
-        }
-
-        public void RegisterBlock(ref Block block, Coord3 position) {
-            block.position = position;
-            block.chunk = this;
-
-            if (block.data.blockType == BlockType.Custom) {
-                var go = Instantiate(block.data.prefab, position, Quaternion.identity, Blocks);
-                go.name = block.data.blockId + " " + block.position;
-
-                StandaloneBlock standalone = block as StandaloneBlock;
-
-                standalone.gameObject = go;
-                block = standalone;
-            }
-
-            if (block.data.dataType.Length > 0) {
-                block.OnLoad();
-
-                ITickable inter = block as ITickable;
-                if (inter != null) {
-                    world.OnTick += inter.OnTick;
-                }
-            }
-        }
-
-        public void UnregisterBlock(Block block) {
-            if (block.data.dataType.Length > 0) {
-                ITickable inter = block as ITickable;
-                if (inter != null) {
-                    world.OnTick -= inter.OnTick;
-                }
-
-                block.OnUnload();
-            }
-
-            if (block.data.blockType == BlockType.Custom) {
-                StandaloneBlock standalone = block as StandaloneBlock;
-                if (standalone != null && standalone.gameObject != null) {
-                    Destroy(standalone.gameObject, 0.1f);
-                }
-            }
-        }
 
         public void Create(Chunk parent, VoxelWorld world) {
             this.world = world;
@@ -108,13 +42,7 @@ namespace VoxelEngine {
             colliderMesh = new MeshData();
             triggerMesh = new MeshData();
 
-            blocks = new Block[Size][][];
-            for (int x = 0; x < Size; x++) {
-                blocks[x] = new Block[Size][];
-                for (int y = 0; y < Size; y++) {
-                    blocks[x][y] = new Block[Size];
-                }
-            }
+            blocks = new BlockManager(this);
         }
 
         public void Setup(Coord3 position) {
@@ -125,22 +53,11 @@ namespace VoxelEngine {
             transform.localPosition = Coord3.up * worldPosition;
             name = "ChunkSection " + position;
 
-            world.OnTick += OnTick;
+            world.chunks.OnChunkUpdate += OnChunkUpdate;
         }
 
         public void CleanUp() {
-            for (int x = 0; x < Size; x++) {
-                for (int y = 0; y < Size; y++) {
-                    for (int z = 0; z < Size; z++) {
-                        var block = blocks[x][y][z];
-                        if (block == null) continue;
-                        UnregisterBlock(block);
-                        blocks[x][y][z] = null;
-                    }
-                }
-            }
-
-            world.OnTick -= OnTick;
+            blocks.UnloadAll();
 
             blockMesh.Clear();
             colliderMesh.Clear();
@@ -149,10 +66,12 @@ namespace VoxelEngine {
             BlockRend.sharedMesh = null;
             BlockCollider.sharedMesh = null;
             BlockTrigger.sharedMesh = null;
+
+            world.chunks.OnChunkUpdate -= OnChunkUpdate;
         }
 
         public void Serialize(SerialChunk serial, int w) {
-            serial.blocks[w] = blocks;
+            serial.blocks[w] = blocks.GetBlocksRaw();
         }
 
         public void Deserialize(SerialChunk serial, int w) {
@@ -160,18 +79,22 @@ namespace VoxelEngine {
                 for (int y = 0; y < Size; y++) {
                     for (int z = 0; z < Size; z++) {
                         var block = serial.blocks[w][x][y][z];
-                        blocks[x][y][z] = block;
-                        // Air will be null now
-                        if (block == null) continue;
-                        block.data = ResourceStore.Blocks[block.byteId];
+                        blocks.SetBlockRaw(x, y, z, block);
 
-                        RegisterBlock(ref block, new Coord3(x, y, z).BlockToWorld(worldPosition));
+                        if (block == null) continue;
+                        var data = ResourceStore.Blocks[block.id];
+
+                        blocks.LoadBlock(new Coord3(x, y, z), data, block);
                     }
                 }
             }
         }
 
-        void OnTick() {
+        public void SetDirty() {
+            parent.isDirty = true;
+        }
+
+        void OnChunkUpdate() {
             if (update) TryRender();
         }
 
@@ -208,39 +131,6 @@ namespace VoxelEngine {
             this.update = true;
         }
 
-        public Block GetBlock(Coord3 pos, bool worldSpace = false) {
-            if (!parent.built) return null;
-            if (worldSpace) pos = pos.WorldToBlock(worldPosition);
-            if (pos.InRange(0, ChunkSection.Size)) return blocks[pos.x][pos.y][pos.z];
-            else return world.GetBlock(pos.BlockToWorld(worldPosition));
-        }
-
-        public void SetBlock(Block block, Coord3 pos, bool updateChunk = true) {
-            if (block?.data.blockType == BlockType.Entity) {
-                world.SpawnEntity(block, pos, this);
-                return;
-            }
-
-            if (pos.InRange(0, ChunkSection.Size)) {
-                var oldBlock = blocks[pos.x][pos.y][pos.z];
-                if (oldBlock != null) DestroyBlock(oldBlock);
-
-                blocks[pos.x][pos.y][pos.z] = block;
-                if (block != null) InitializeBlock(ref blocks[pos.x][pos.y][pos.z], pos.BlockToWorld(worldPosition));
-
-                parent.isDirty = true;
-                if (updateChunk) {
-                    QueueUpdate();
-                    UpdateNeighbors(pos);
-                }
-            } else world.SetBlock(block, pos.BlockToWorld(worldPosition), updateChunk);
-        }
-
-        //public void SetBlock(BlockData blockData, Coord3 pos, bool updateChunk = true) {
-        //    var block = blockData != null ? new Block(blockData) : null;
-        //    SetBlock(block, pos, updateChunk);
-        //}
-
         public void UpdateNeighbors(Coord3 changed) {
             if (changed.InRange(1, ChunkSection.Size - 1)) return;
             for (int i = 0; i < 6; i++) {
@@ -255,54 +145,52 @@ namespace VoxelEngine {
 
         private void AddBlockToMesh(int x, int y, int z) {
             var pos = new Coord3(x, y, z);
-            var block = blocks[x][y][z];
-
+            var block = blocks.GetBlockRaw(x, y, z);
             if (block == null) return;
 
-            switch (block.data.blockType) {
+            var data = ResourceStore.Blocks[block.id];
+            switch (data.blockType) {
                 case BlockType.Cube:
                     for (int i = 0; i < 6; i++) {
-                        if (CullFace(block, pos, i)) continue;
+                        if (CullFace(data, pos, i)) continue;
 
                         int faceRot = 0;
-                        int texIndex = 0;
+                        int texIndex = data.textureIndices[i];
 
-                        if (block.data.rotation) {
-                            var rotatedBlock = (RotatedBlock) block;
-                            var rot = Rotate(i, rotatedBlock.rotation);
-                            faceRot = rot.face;
-                            texIndex = block.data.textureIndices[rot.index];
-                            //if (block.data.dataType.Length > 0) Debug.Log(rotatedBlock.rotation);
-                        } else {
-                            faceRot = 0;
-                            texIndex = block.data.textureIndices[i];
+                        if (data.IsCustomType) {
+                            var rotatedBlock = block as RotatedBlock;
+                            if (rotatedBlock != null) {
+                                var rot = Rotate(i, rotatedBlock.rotation);
+                                faceRot = rot.face;
+                                texIndex = data.textureIndices[rot.index];
+                            }
                         }
 
-                        blockMesh.AddCubeFace(i, pos, faceRot, texIndex, (int) block.data.subMesh);
+                        blockMesh.AddCubeFace(i, pos, faceRot, texIndex, (int) data.subMesh);
 
-                        if (block.data.collision)
+                        if (data.collision)
                             colliderMesh.AddCubeFace(i, pos);
                         else triggerMesh.AddCubeFace(i, pos);
                     }
                     break;
                 case BlockType.DecalCross:
-                    var tex = block.data.textureIndices[0];
-                    blockMesh.AddDecalCross(pos, tex, (int) block.data.subMesh);
+                    //var tex = data.textureIndices[0];
+                    //blockMesh.AddDecalCross(pos, tex, (int) data.subMesh);
 
-                    if (block.data.collision)
-                        colliderMesh.AddBoundingBox(pos, block.data.boundingSize);
-                    else triggerMesh.AddBoundingBox(pos, block.data.boundingSize);
+                    //if (data.collision)
+                    //    colliderMesh.AddBoundingBox(pos, data.boundingSize);
+                    //else triggerMesh.AddBoundingBox(pos, data.boundingSize);
                     break;
                 case BlockType.Custom:
-                    if (block.data.collision)
-                        colliderMesh.AddBoundingBox(pos, block.data.boundingSize);
+                    //if (data.collision)
+                    //    colliderMesh.AddBoundingBox(pos, data.boundingSize);
                     break;
             }
         }
 
-        private bool CullFace(Block block, Coord3 pos, int dir) {
+        private bool CullFace(BlockData data, Coord3 pos, int dir) {
             // If this face is transparent, always render
-            if (block.data.subMesh == SubMesh.Transparent) return false;
+            if (data.subMesh == SubMesh.Transparent) return false;
 
             var adjPos = pos + Coord3.Directions[dir];
             Block adjacent;
@@ -316,12 +204,12 @@ namespace VoxelEngine {
                 // If chunk was just loaded but not built, then don't render
                 if (!chunk.parent.built) return true;
                 // get adjacent
-                adjacent = chunk.GetBlock(worldAdjPos.WorldToBlock(chunk.worldPosition));
+                adjacent = chunk.blocks.GetBlock(worldAdjPos.WorldToBlock(chunk.worldPosition));
             } else {
-                adjacent = GetBlock(adjPos);
+                adjacent = blocks.GetBlock(adjPos);
             }
             // If block is not null/air, and block isnt transparent, don't render;
-            return adjacent != null && adjacent.data.subMesh != SubMesh.Transparent;
+            return adjacent != null && ResourceStore.Blocks[adjacent.id].subMesh != SubMesh.Transparent;
         }
 
         private static readonly int[] zRot = { BlockFace.top, BlockFace.left, BlockFace.bottom, BlockFace.right },

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using VoxelEngine.Pooling;
 
-namespace VoxelEngine {
+namespace VoxelEngine.Internal {
 
     public class ChunkManager {
         public delegate void ChunkUpdate();

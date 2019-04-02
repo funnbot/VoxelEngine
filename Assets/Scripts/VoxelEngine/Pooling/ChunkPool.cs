@@ -1,4 +1,6 @@
-﻿namespace VoxelEngine.Pooling {
+﻿using VoxelEngine.Internal;
+
+namespace VoxelEngine.Pooling {
 
     public class ChunkPool : PrefabPool<Chunk> {
         public override void CleanUp(Chunk col) {

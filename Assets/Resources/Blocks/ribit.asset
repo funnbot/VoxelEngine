@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba0e9bb57a82d4ebc98580cb3c739582, type: 3}
   m_Name: ribit
   m_EditorClassIdentifier: 
-  blockID: ribit
+  id: 7
   blockName: ribit
   description: 
   icon: {fileID: 2800000, guid: 0c7e52ee78c43412ea9e0e0286ff2722, type: 3}
-  dataType: 
+  dataType: 0
   blockType: 0
   prefab: {fileID: 5973427367010357357, guid: e4fbed63d8316430589b653157c6ac62, type: 3}
   collision: 0
@@ -28,7 +28,7 @@ MonoBehaviour:
   spawnType: 1
   spawnFrequency: 0
   spawnDensity: 0
-  textureIndices: 
+  textureIndices: 000000000000000000000000000000000000000000000000
   textures:
   - {fileID: 0}
   - {fileID: 0}

@@ -1,5 +1,6 @@
 ﻿using OpenSimplexNoise;
 using VoxelEngine.Data;
+using VoxelEngine.Internal;
 
 namespace VoxelEngine.ProceduralGeneration {
 

@@ -12,23 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba0e9bb57a82d4ebc98580cb3c739582, type: 3}
   m_Name: iron_ore
   m_EditorClassIdentifier: 
+  id: 3
   blockName: iron ore
   description: 
   icon: {fileID: 0}
-  dataType: 
+  dataType: 0
   blockType: 1
   prefab: {fileID: 0}
   collision: 1
   boundingSize: 1
   subMesh: 0
-  rotation: 0
   placementType: 0
   stackable: 1
   placeable: 1
   spawnType: 2
   spawnFrequency: 0.01
   spawnDensity: 10
-  textureIndices: 060000000600000006000000060000000600000006000000
+  textureIndices: 040000000400000004000000040000000400000004000000
   textures:
   - {fileID: 11400000, guid: 3f00fe4a3662c40eebf9363fa5dc6ab5, type: 2}
   - {fileID: 11400000, guid: 3f00fe4a3662c40eebf9363fa5dc6ab5, type: 2}

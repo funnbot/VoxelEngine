@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using MessagePack;
 using UnityEngine;
+using VoxelEngine.Internal;
 
 namespace VoxelEngine {
 
