@@ -174,12 +174,12 @@ namespace VoxelEngine.Internal {
                     }
                     break;
                 case BlockType.DecalCross:
-                    //var tex = data.textureIndices[0];
-                    //blockMesh.AddDecalCross(pos, tex, (int) data.subMesh);
+                    var tex = data.textureIndices[0];
+                    blockMesh.AddDecalCross(pos, tex, (int) data.subMesh);
 
-                    //if (data.collision)
-                    //    colliderMesh.AddBoundingBox(pos, data.boundingSize);
-                    //else triggerMesh.AddBoundingBox(pos, data.boundingSize);
+                    if (data.collision)
+                        colliderMesh.AddBoundingBox(pos, data.boundingSize);
+                    else triggerMesh.AddBoundingBox(pos, data.boundingSize);
                     break;
                 case BlockType.Custom:
                     //if (data.collision)
