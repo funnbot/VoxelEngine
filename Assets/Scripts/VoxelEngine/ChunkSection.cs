@@ -36,11 +36,9 @@ namespace VoxelEngine {
             if (block.data.dataType.Length > 0) {
                 block = block.ConvertTo(block.data.dataType);
             } else if (block.data.rotation) {
-                RotatedBlock rotated = block as RotatedBlock;
-                if (rotated == null) block = new RotatedBlock(block);
+                block = new RotatedBlock(block);
             } else if (block.data.blockType == BlockType.Custom) {
-                StandaloneBlock standalone = block as StandaloneBlock;
-                if (standalone == null) standalone = new StandaloneBlock(block);
+                block = new StandaloneBlock(block);
             }
 
             RegisterBlock(ref block, position);
@@ -210,8 +208,9 @@ namespace VoxelEngine {
             this.update = true;
         }
 
-        public Block GetBlock(Coord3 pos) {
+        public Block GetBlock(Coord3 pos, bool worldSpace = false) {
             if (!parent.built) return null;
+            if (worldSpace) pos = pos.WorldToBlock(worldPosition);
             if (pos.InRange(0, ChunkSection.Size)) return blocks[pos.x][pos.y][pos.z];
             else return world.GetBlock(pos.BlockToWorld(worldPosition));
         }
@@ -224,11 +223,10 @@ namespace VoxelEngine {
 
             if (pos.InRange(0, ChunkSection.Size)) {
                 var oldBlock = blocks[pos.x][pos.y][pos.z];
-
                 if (oldBlock != null) DestroyBlock(oldBlock);
-                if (block != null) InitializeBlock(ref block, pos.BlockToWorld(worldPosition));
 
                 blocks[pos.x][pos.y][pos.z] = block;
+                if (block != null) InitializeBlock(ref blocks[pos.x][pos.y][pos.z], pos.BlockToWorld(worldPosition));
 
                 parent.isDirty = true;
                 if (updateChunk) {

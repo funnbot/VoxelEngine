@@ -11,13 +11,15 @@ public class PipeObject : MonoBehaviour {
 
     GameObject current;
 
-    public void SetType(PipeBlock.PipeType type, Vector3 rotation) {
+    public void SetType(PipeBlock.PipeType type, Coord3 rotation) {
         if (current != null) Destroy(current);
 
         if (type == PipeBlock.PipeType.Straight) current = PipeStraight;
         else if (type == PipeBlock.PipeType.Corner) current = PipeCorner;
         else if (type == PipeBlock.PipeType.End) current = PipeEnd;
 
-        current = Instantiate(current, Vector3.zero, Quaternion.Euler(rotation), transform);
+        current = Instantiate(current, transform);
+        current.transform.rotation = Quaternion.Euler(rotation * 90);
+        current.transform.localPosition = Vector3.zero;
     }
 }

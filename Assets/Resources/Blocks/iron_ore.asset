@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba0e9bb57a82d4ebc98580cb3c739582, type: 3}
   m_Name: iron_ore
   m_EditorClassIdentifier: 
-  blockID: iron_ore
   blockName: iron ore
   description: 
   icon: {fileID: 0}
@@ -22,6 +21,7 @@ MonoBehaviour:
   collision: 1
   boundingSize: 1
   subMesh: 0
+  rotation: 0
   placementType: 0
   stackable: 1
   placeable: 1

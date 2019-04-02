@@ -10,9 +10,10 @@ using VoxelEngine.UI;
 
 namespace VoxelEngine.Blocks {
 
-    [MessagePackObject]
     public class MinerBlock : RotatedBlock, IInterfaceable, ITickable {
-        public MinerBlock(Block clone) : base(clone) { }
+        public MinerBlock(Block clone) : base(clone) { 
+            Debug.Log(byteId);
+        }
         public MinerBlock() { }
 
         public bool mining;

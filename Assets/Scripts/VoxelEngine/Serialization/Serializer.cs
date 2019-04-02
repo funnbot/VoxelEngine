@@ -40,7 +40,7 @@ namespace VoxelEngine.Serialization {
             serializer.Deserialize<SerialChunk>(ref chunk, Dbuffer);
         }
 
-        public static void ReadAllBytes(string saveFile) {
+        static void ReadAllBytes(string saveFile) {
             using(FileStream fs = new FileStream(saveFile, FileMode.Open)) {
                 int length = (int) fs.Length;
                 System.Array.Resize(ref Dbuffer, length);
@@ -48,16 +48,16 @@ namespace VoxelEngine.Serialization {
             }
         }
 
-        public static void WriteAllBytes(string saveFile, int length) {
+        static void WriteAllBytes(string saveFile, int length) {
             using(FileStream fs = new FileStream(saveFile, FileMode.Create, FileAccess.Write)) {
                 fs.Write(Sbuffer, 0, length);
             }
         }
 
-        public static string FileName(Coord2 pos) =>
+        static string FileName(Coord2 pos) =>
             $"{pos.x},{pos.y}.bin";
 
-        public static string FolderName(string worldSave) {
+        static string FolderName(string worldSave) {
             string saveLocation = $"{SaveFolder}/{worldSave}/";
             if (!Directory.Exists(saveLocation))
                 Directory.CreateDirectory(saveLocation);

@@ -6,17 +6,16 @@ using VoxelEngine.Interfaces;
 
 namespace VoxelEngine {
 
-    //[MessagePackObject]
+    [MemberConfig(TargetMember.None)]
     public class Block {
+        [Include]
         public byte byteId;
 
-        [Exclude]
+        //public Coord3 rot = new Coord3(0, 0, 0);
+
         public string id;
-        [Exclude]
         public Coord3 position;
-        [Exclude]
         public BlockData data;
-        [Exclude]
         public ChunkSection chunk;
 
         public Block(BlockData data) {
@@ -28,6 +27,7 @@ namespace VoxelEngine {
         public Block(Block copy) {
             data = copy.data;
             id = copy.id;
+            byteId = copy.byteId;
         }
 
         public Block() { }
@@ -43,7 +43,7 @@ namespace VoxelEngine {
         protected void UpdateNeighbors() {
             foreach (var dir in Coord3.Directions) {
                 var block = chunk.GetBlock(position.WorldToBlock(chunk.worldPosition) + dir);
-                block.OnNeighborUpdate(this);
+                block?.OnNeighborUpdate(this);
             }
         }
 
