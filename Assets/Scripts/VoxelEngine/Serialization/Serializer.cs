@@ -1,31 +1,30 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using Ceras;
+//using K4os.Compression.LZ4.Streams;
 using MessagePack;
 using VoxelEngine.Data;
+using VoxelEngine.Internal;
 
 namespace VoxelEngine.Serialization {
 
     public static class Serializer {
         public static readonly string SaveFolder = "Worlds";
 
-        static CerasSerializer serializer;
-
-        static Serializer() {
-            //MessagePackSerializer.SetDefaultResolver(MessagePack.Resolvers.StandardResolver.Instance);
-            var config = new SerializerConfig();
-            //config.KnownTypes.Add(typeof(BlockData));
-            serializer = new CerasSerializer(config);
-        }
-
-        static byte[] Sbuffer = null;
-        static byte[] Dbuffer = null;
-
-        public static void SaveChunk(string worldSave, Coord2 pos, SerialChunk chunk) {
+        public static void SaveChunk(string worldSave, Coord2 pos, Chunk chunk) {
             string saveFile = FolderName(worldSave) + FileName(pos);
 
-            int length = serializer.Serialize<SerialChunk>(chunk, ref Sbuffer);
-            WriteAllBytes(saveFile, length);
+            // using(var stream = LZ4Stream.Encode(File.Open(saveFile, FileMode.Create, FileAccess.Write))) {
+            //     using(var writer = new BinaryWriter(stream)) {
+            //         chunk.Serialize(writer);
+            //     }
+            // }
+
+            // using(var stream = new FileStream(saveFile, FileMode.Create, FileAccess.Write)) {
+            //     using(var writer = new BinaryWriter(stream)) {
+            //         chunk.Serialize(writer);
+            //     }
+            // }
         }
 
         public static bool IsChunkSaved(string worldSave, Coord2 pos) {
@@ -33,29 +32,24 @@ namespace VoxelEngine.Serialization {
             return File.Exists(saveFile);
         }
 
-        public static void LoadChunk(string worldSave, Coord2 pos, ref SerialChunk chunk) {
+        public static void LoadChunk(string worldSave, Coord2 pos, Chunk chunk) {
             string saveFile = FolderName(worldSave) + FileName(pos);
 
-            ReadAllBytes(saveFile);
-            serializer.Deserialize<SerialChunk>(ref chunk, Dbuffer);
-        }
+            // using(var stream = LZ4Stream.Decode(File.Open(saveFile, FileMode.Open))) {
+            //     using(var reader = new BinaryReader(stream)) {
+            //         chunk.Deserialize(reader);
+            //     }
+            // }
 
-        static void ReadAllBytes(string saveFile) {
-            using(FileStream fs = new FileStream(saveFile, FileMode.Open)) {
-                int length = (int) fs.Length;
-                System.Array.Resize(ref Dbuffer, length);
-                fs.Read(Dbuffer, 0, length);
-            }
-        }
-
-        static void WriteAllBytes(string saveFile, int length) {
-            using(FileStream fs = new FileStream(saveFile, FileMode.Create, FileAccess.Write)) {
-                fs.Write(Sbuffer, 0, length);
-            }
+            // using(var stream = new FileStream(saveFile, FileMode.Open)) {
+            //     using(var reader = new BinaryReader(stream)) {
+            //         chunk.Deserialize(reader);
+            //     }
+            // }
         }
 
         static string FileName(Coord2 pos) =>
-            $"{pos.x},{pos.y}.bin";
+            $"{pos.x},{pos.y}.chunk";
 
         static string FolderName(string worldSave) {
             string saveLocation = $"{SaveFolder}/{worldSave}/";
@@ -65,4 +59,9 @@ namespace VoxelEngine.Serialization {
         }
     }
 
+    public enum ReservedBytes : byte {
+        Air = 255,
+        AllAir = 254,
+        AllStone = 253
+    }
 }

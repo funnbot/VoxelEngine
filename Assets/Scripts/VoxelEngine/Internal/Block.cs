@@ -8,15 +8,10 @@ using VoxelEngine.Data;
 namespace VoxelEngine.Internal {
 
     public class Block {
-        public int id;
+        public byte id;
 
-        public virtual void Serialize(BinaryWriter writer) {
-            writer.Write((byte) id);
-        }
-
-        public virtual void Deserialize(BinaryReader reader) {
-            id = reader.ReadByte();
-        }
+        public virtual void Serialize(BinaryWriter writer) { }
+        public virtual void Deserialize(BinaryReader reader) { }
 
         public virtual void OnPlace() { }
         public virtual void OnBreak() { }
@@ -26,7 +21,7 @@ namespace VoxelEngine.Internal {
 
         public virtual void OnNeighborUpdate() { }
 
-        public static Block Convert(int id, BlockDataType type) {
+        public static Block Convert(byte id, BlockDataType type) {
             if (type == BlockDataType.RotatedBlock) return new RotatedBlock { id = id };
             if (type == BlockDataType.StandaloneBlock) return new StandaloneBlock { id = id };
             if (type == BlockDataType.PipeBlock) return new PipeBlock { id = id };

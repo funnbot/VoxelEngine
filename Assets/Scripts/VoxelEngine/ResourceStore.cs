@@ -45,34 +45,34 @@ namespace VoxelEngine {
 
     public class BlockResource : IEnumerable {
         BlockData[] blocks;
-        Dictionary<string, int> blockMap;
+        Dictionary<string, byte> blockMap;
 
         public BlockData this [string id] {
             get {
-                int key;
+                byte key;
                 if (!blockMap.TryGetValue(id, out key)) return null;
                 return blocks[key];
             }
         }
 
-        public BlockData this [int id] {
+        public BlockData this [byte id] {
             get => blocks[id];
         }
 
-        public BlockData GetData(int id) => blocks[id];
-        public int GetId(string name) => blockMap[name];
+        public BlockData GetData(byte id) => blocks[id];
+        public byte GetId(string name) => blockMap[name];
 
         public BlockResource(string folder, string[] required = null) {
             var loaded = Resources.LoadAll(folder, typeof(BlockData));
 
             blocks = new BlockData[loaded.Length];
-            blockMap = new Dictionary<string, int>();
+            blockMap = new Dictionary<string, byte>();
 
             for (int i = 0; i < loaded.Length; i++) {
                 var block = (BlockData)loaded[i];
                 var id = block.id;
                 block.blockId = block.name;
-                blockMap.Add(block.blockId, id);
+                blockMap.Add(block.blockId, (byte)id);
                 blocks[id] = block;
             }
 

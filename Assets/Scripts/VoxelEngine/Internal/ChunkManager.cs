@@ -28,10 +28,9 @@ namespace VoxelEngine.Internal {
             return chunk;
         }
 
-        public void DestroyChunk(Coord2 coord) {
-            Chunk chunk = GetChunk(coord);
+        public void DestroyChunk(Chunk chunk) {
+            chunks.Remove(chunk.position);
             pool.ReleaseObject(chunk);
-            chunks.Remove(coord);
         }
 
         public Chunk GetChunk(Coord2 coord) =>

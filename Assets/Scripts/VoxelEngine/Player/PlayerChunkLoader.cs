@@ -55,14 +55,16 @@ namespace VoxelEngine.Player {
 
             try {
                 if (!column.built) {
-                    await column.BuildThreaded();
+                    await column.BuildTask();
                 }
                 if (!column.generated) {
-                    await Task.Run(column.GenerateMesh);
+                    //await column.GenerateMeshTask();
+                    column.GenerateMesh();
                     foreach (var dir in Coord2.Directions) {
                         var col = world.chunks.GetChunk(load + dir);
                         if (col != null && col.generated) {
-                            await Task.Run(col.GenerateMesh);
+                            //await col.GenerateMeshTask();
+                            col.GenerateMesh();
                         }
                     }
                 }
@@ -104,11 +106,11 @@ namespace VoxelEngine.Player {
                     var col = world.chunks.GetChunk(p);
                     if (col != null) {
                         try {
-                            await col.SaveThreaded();
+                            await col.SaveTask();
                         } catch (System.Exception e) {
                             Debug.Log(e);
                         }
-                        world.chunks.DestroyChunk(p);
+                        world.chunks.DestroyChunk(col);
                     }
                     loaded.RemoveAt(i);
                     return true;

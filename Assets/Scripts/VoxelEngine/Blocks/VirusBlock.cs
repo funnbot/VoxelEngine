@@ -11,8 +11,7 @@ namespace VoxelEngine.Blocks {
     public class VirusBlock : Block {
         public VirusBlock() { }
 
-        [Ceras.Include]
-        public int i = 0;
+        int i = 0;
 
         ChunkSection chunk;
         Coord3 position;

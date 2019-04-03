@@ -82,11 +82,21 @@ namespace VoxelEngine.Blocks {
             obj.SetType(type, rotation);
         }
 
+        public override void Serialize(System.IO.BinaryWriter writer) {
+            writer.Write((byte)type);
+            writer.Write(rotation);
+        }
+
+        public override void Deserialize(System.IO.BinaryReader reader) {
+            type = (PipeType)reader.ReadByte();
+            rotation = reader.ReadCoord3();
+        }
+
         [System.Serializable]
         public enum PipeType {
-            Straight,
-            Corner,
-            End
+            Straight = 0,
+            Corner = 1,
+            End = 2
         }
     }
 

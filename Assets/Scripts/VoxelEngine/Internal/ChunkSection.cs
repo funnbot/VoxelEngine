@@ -5,6 +5,8 @@ using VoxelEngine.Blocks;
 using VoxelEngine.Data;
 using VoxelEngine.Interfaces;
 using VoxelEngine.Serialization;
+using BinaryWriter = System.IO.BinaryWriter;
+using BinaryReader = System.IO.BinaryReader;
 
 namespace VoxelEngine.Internal {
 
@@ -28,6 +30,9 @@ namespace VoxelEngine.Internal {
 
         public bool built { get => parent.built; }
 
+        public bool IsAllAir { get; set; }
+        public bool IsAllStone { get; set; }
+
         private Chunk parent;
 
         private bool update;
@@ -47,6 +52,8 @@ namespace VoxelEngine.Internal {
 
         public void Setup(Coord3 position) {
             update = false;
+            IsAllAir = true;
+            IsAllStone = true;
 
             this.position = position;
             worldPosition = position * Size;
@@ -68,26 +75,6 @@ namespace VoxelEngine.Internal {
             BlockTrigger.sharedMesh = null;
 
             world.chunks.OnChunkUpdate -= OnChunkUpdate;
-        }
-
-        public void Serialize(SerialChunk serial, int w) {
-            serial.blocks[w] = blocks.GetBlocksRaw();
-        }
-
-        public void Deserialize(SerialChunk serial, int w) {
-            for (int x = 0; x < Size; x++) {
-                for (int y = 0; y < Size; y++) {
-                    for (int z = 0; z < Size; z++) {
-                        var block = serial.blocks[w][x][y][z];
-                        blocks.SetBlockRaw(x, y, z, block);
-
-                        if (block == null) continue;
-                        var data = ResourceStore.Blocks[block.id];
-
-                        blocks.LoadBlock(new Coord3(x, y, z), data, block);
-                    }
-                }
-            }
         }
 
         public void SetDirty() {
@@ -182,8 +169,8 @@ namespace VoxelEngine.Internal {
                     else triggerMesh.AddBoundingBox(pos, data.boundingSize);
                     break;
                 case BlockType.Custom:
-                    //if (data.collision)
-                    //    colliderMesh.AddBoundingBox(pos, data.boundingSize);
+                    if (data.collision)
+                        colliderMesh.AddBoundingBox(pos, data.boundingSize);
                     break;
             }
         }

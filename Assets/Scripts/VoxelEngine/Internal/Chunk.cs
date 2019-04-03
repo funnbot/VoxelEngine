@@ -1,8 +1,10 @@
 ﻿using System.Threading.Tasks;
 using UnityEngine;
 using VoxelEngine.Blocks;
-using VoxelEngine.Serialization;
 using VoxelEngine.Internal;
+using VoxelEngine.Serialization;
+using BinaryWriter = System.IO.BinaryWriter;
+using BinaryReader = System.IO.BinaryReader;
 
 namespace VoxelEngine.Internal {
 
@@ -57,14 +59,24 @@ namespace VoxelEngine.Internal {
                 chunk.CleanUp();
         }
 
-        public void Serialize() {
+        public void Serialize(BinaryWriter writer) {
             for (int i = 0; i < VoxelWorld.ChunkHeight; i++)
-                chunks[i].Serialize(serialChunk, i);
+                chunks[i].blocks.Serialize(writer);
         }
 
-        public void Deserialize() {
+        public void Deserialize(BinaryReader reader) {
             for (int i = 0; i < VoxelWorld.ChunkHeight; i++)
-                chunks[i].Deserialize(serialChunk, i);
+                chunks[i].blocks.Deserialize(reader);
+        }
+
+        public void LoadBlocks() {
+            for (int i = 0; i < VoxelWorld.ChunkHeight; i++)
+                chunks[i].blocks.LoadAll();
+        }
+
+        public void UnloadBlocks() {
+            for (int i = 0; i < VoxelWorld.ChunkHeight; i++)
+                chunks[i].blocks.UnloadAll();
         }
 
         public ChunkSection GetSection(int y) {
@@ -73,54 +85,62 @@ namespace VoxelEngine.Internal {
         }
 
         public void Build() {
-            built = true;
             if (Serializer.IsChunkSaved(world.saveName, position)) {
-                Serializer.LoadChunk(world.saveName, position, ref serialChunk);
-                this.Deserialize();
+                Serializer.LoadChunk(world.saveName, position, this);
+                LoadBlocks();
             } else world.generator.GenerateColumn(this);
+            built = true;
         }
 
-        public async Task BuildThreaded() {
-            built = true;
+        public async Task BuildTask() {
             if (Serializer.IsChunkSaved(world.saveName, position)) {
-                await Task.Run(() => Serializer.LoadChunk(world.saveName, position, ref serialChunk));
-                this.Deserialize();
+                await Task.Run(() => Serializer.LoadChunk(world.saveName, position, this));
+                LoadBlocks();
             } else await Task.Run(() => world.generator.GenerateColumn(this));
-            return;
+            built = true;
         }
 
         public void GenerateMesh() {
-            generated = true;
             foreach (var chunk in chunks)
                 chunk.GenerateMesh();
+            generated = true;
+        }
+
+        public async Task GenerateMeshTask() {
+            await Task.Run(() => {
+                foreach (var chunk in chunks)
+                    chunk.GenerateMesh();
+            });
+            generated = true;
         }
 
         public void ApplyMesh() {
-            rendered = true;
+            if (!generated) return;
+
             foreach (var chunk in chunks)
                 chunk.ApplyMesh();
+            rendered = true;
         }
 
         public void QueueRender() {
-            generated = true;
-            rendered = true;
             foreach (var chunk in chunks)
                 chunk.QueueUpdate();
+            generated = true;
+            rendered = true;
         }
 
         public void Save() {
             if (!isDirty || !built) return;
-            this.Serialize();
-            Serializer.SaveChunk(world.saveName, position, serialChunk);
+            Serializer.SaveChunk(world.saveName, position, this);
+            UnloadBlocks();
             isDirty = false;
         }
 
-        public async Task SaveThreaded() {
+        public async Task SaveTask() {
             if (!isDirty || !built) return;
-            this.Serialize();
-            await Task.Run(() => Serializer.SaveChunk(world.saveName, position, serialChunk));
+            await Task.Run(() => Serializer.SaveChunk(world.saveName, position, this));
+            UnloadBlocks();
             isDirty = false;
-            return;
         }
 
         private bool InRange(int y) => y >= 0 && y < chunks.Length;

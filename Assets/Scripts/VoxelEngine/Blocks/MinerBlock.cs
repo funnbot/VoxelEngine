@@ -12,7 +12,7 @@ using VoxelEngine.UI;
 namespace VoxelEngine.Blocks {
 
     public class MinerBlock : RotatedBlock, IInterfaceable, ITickable {
-        public MinerBlock() {}
+        public MinerBlock() { }
 
         [Ceras.Include]
         public bool mining;
@@ -89,6 +89,18 @@ namespace VoxelEngine.Blocks {
 
         public override void OnPlace() {
             miningLocation = position - new Coord3(2, 1, 2);
+        }
+
+        public override void Serialize(System.IO.BinaryWriter writer) {
+            base.Serialize(writer);
+            writer.Write(mining);
+            writer.Write(miningLocation);
+        }
+
+        public override void Deserialize(System.IO.BinaryReader reader) {
+            base.Deserialize(reader);
+            mining = reader.ReadBoolean();
+            miningLocation = reader.ReadCoord3();
         }
     }
 

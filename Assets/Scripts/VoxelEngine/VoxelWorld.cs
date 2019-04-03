@@ -104,7 +104,6 @@ namespace VoxelEngine {
                 for (int z = -size - 1; z <= size + 1; z++) {
                     var pos = new Coord2(x, z);
                     var col = chunks.LoadChunk(pos);
-                    col.Build();
                 }
             }
 
@@ -113,6 +112,7 @@ namespace VoxelEngine {
                 for (int z = -size; z <= size; z++) {
                     var pos = new Coord2(x, z);
                     var col = chunks.GetChunk(pos);
+                    col.Build();
                     col.QueueRender();
                 }
             }
@@ -130,6 +130,7 @@ namespace VoxelEngine {
                 }
             }
 
+            // Convert to only building the spawn size
             Parallel.For(-loadSize, loadSize + 1, x => {
                 for (int z = -loadSize; z <= loadSize; z++) {
                     cols[x + loadSize, z + loadSize].Build();
