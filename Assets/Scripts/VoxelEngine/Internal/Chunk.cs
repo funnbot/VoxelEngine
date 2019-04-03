@@ -21,8 +21,6 @@ namespace VoxelEngine.Internal {
         private VoxelWorld world;
         private ChunkSection[] chunks;
 
-        private SerialChunk serialChunk;
-
         public void Create(VoxelWorld world) {
             this.world = world;
 
@@ -31,9 +29,6 @@ namespace VoxelEngine.Internal {
                 chunks[i] = Instantiate(chunkFab).GetComponent<ChunkSection>();
                 chunks[i].Create(this, world);
             }
-
-            serialChunk = new SerialChunk();
-            serialChunk.blocks = new Block[VoxelWorld.ChunkHeight][][][];
         }
 
         public void Setup(Coord2 position) {

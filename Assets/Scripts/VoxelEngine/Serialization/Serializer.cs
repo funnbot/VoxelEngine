@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using Ceras;
-//using K4os.Compression.LZ4.Streams;
+using LZ4;
 using VoxelEngine.Data;
 using VoxelEngine.Internal;
 
@@ -12,12 +11,12 @@ namespace VoxelEngine.Serialization {
 
         public static void SaveChunk(string worldSave, Coord2 pos, Chunk chunk) {
             string saveFile = FolderName(worldSave) + FileName(pos);
-
-            // using(var stream = LZ4Stream.Encode(File.Open(saveFile, FileMode.Create, FileAccess.Write))) {
-            //     using(var writer = new BinaryWriter(stream)) {
-            //         chunk.Serialize(writer);
-            //     }
-            // }
+            
+            using(var stream = new LZ4Stream(File.Open(saveFile, FileMode.Create, FileAccess.Write), LZ4StreamMode.Compress)) {
+                using(var writer = new BinaryWriter(stream)) {
+                    chunk.Serialize(writer);
+                }
+            }
 
             // using(var stream = new FileStream(saveFile, FileMode.Create, FileAccess.Write)) {
             //     using(var writer = new BinaryWriter(stream)) {
@@ -34,11 +33,11 @@ namespace VoxelEngine.Serialization {
         public static void LoadChunk(string worldSave, Coord2 pos, Chunk chunk) {
             string saveFile = FolderName(worldSave) + FileName(pos);
 
-            // using(var stream = LZ4Stream.Decode(File.Open(saveFile, FileMode.Open))) {
-            //     using(var reader = new BinaryReader(stream)) {
-            //         chunk.Deserialize(reader);
-            //     }
-            // }
+            using(var stream = new LZ4Stream(File.Open(saveFile, FileMode.Open), LZ4StreamMode.Decompress)) {
+                using(var reader = new BinaryReader(stream)) {
+                    chunk.Deserialize(reader);
+                }
+            }
 
             // using(var stream = new FileStream(saveFile, FileMode.Open)) {
             //     using(var reader = new BinaryReader(stream)) {

@@ -8,9 +8,7 @@ namespace VoxelEngine.Blocks {
     public class PipeBlock : StandaloneBlock {
         PipeObject obj;
 
-        [Ceras.Include]
         public PipeType type;
-        [Ceras.Include]
         public Coord3 rotation;
 
         Coord3 position;
