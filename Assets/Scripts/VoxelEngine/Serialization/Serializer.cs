@@ -2,7 +2,6 @@
 using System.IO;
 using Ceras;
 //using K4os.Compression.LZ4.Streams;
-using MessagePack;
 using VoxelEngine.Data;
 using VoxelEngine.Internal;
 

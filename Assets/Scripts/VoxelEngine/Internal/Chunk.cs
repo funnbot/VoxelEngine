@@ -88,7 +88,7 @@ namespace VoxelEngine.Internal {
             if (Serializer.IsChunkSaved(world.saveName, position)) {
                 Serializer.LoadChunk(world.saveName, position, this);
                 LoadBlocks();
-            } else world.generator.GenerateColumn(this);
+            } else world.generator.GenerateChunk(this);
             built = true;
         }
 
@@ -96,7 +96,7 @@ namespace VoxelEngine.Internal {
             if (Serializer.IsChunkSaved(world.saveName, position)) {
                 await Task.Run(() => Serializer.LoadChunk(world.saveName, position, this));
                 LoadBlocks();
-            } else await Task.Run(() => world.generator.GenerateColumn(this));
+            } else await Task.Run(() => world.generator.GenerateChunk(this));
             built = true;
         }
 

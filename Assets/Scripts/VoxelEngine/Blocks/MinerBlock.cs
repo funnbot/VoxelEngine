@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using MessagePack;
 using UnityEngine;
 using VoxelEngine.Data;
 using VoxelEngine.Interfaces;
@@ -14,9 +13,7 @@ namespace VoxelEngine.Blocks {
     public class MinerBlock : RotatedBlock, IInterfaceable, ITickable {
         public MinerBlock() { }
 
-        [Ceras.Include]
         public bool mining;
-        [Ceras.Include]
         public Coord3 miningLocation;
 
         Coord3 position;

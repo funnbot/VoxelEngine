@@ -109,7 +109,7 @@ namespace VoxelEngine.Internal {
                     chunk.UpdateNeighbors(localPos);
                 }
                 return chunk;
-            } else return chunk.world.PlaceBlock(ToWorldSpace(localPos), data);
+            } else return chunk.world.PlaceBlock(ToWorldSpace(localPos), data, updateChunk);
         }
         public ChunkSection PlaceBlock(Coord3 localPos, BlockData data, out Block block, bool updateChunk = true) {
             if (InRange(localPos)) {

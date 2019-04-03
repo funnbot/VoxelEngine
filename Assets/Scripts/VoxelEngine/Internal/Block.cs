@@ -42,4 +42,13 @@ namespace VoxelEngine.Internal {
         MinerBlock,
     }
 
+    public static class BlockFace {
+        public const int front = 0;
+        public const int back = 1;
+        public const int top = 2;
+        public const int bottom = 3;
+        public const int right = 4;
+        public const int left = 5;
+    }
+
 }

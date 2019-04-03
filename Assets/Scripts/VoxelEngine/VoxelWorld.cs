@@ -113,7 +113,8 @@ namespace VoxelEngine {
                     var pos = new Coord2(x, z);
                     var col = chunks.GetChunk(pos);
                     col.Build();
-                    col.QueueRender();
+                    col.GenerateMesh();
+                    col.ApplyMesh();
                 }
             }
 

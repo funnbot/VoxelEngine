@@ -35,8 +35,10 @@ namespace VoxelEngine.Player {
         IEnumerator LoadChunksRoutine() {
             while (true) {
                 var t = LoadChunk();
-                do yield return null;
-                while (t.Status != TaskStatus.RanToCompletion);
+                do {
+                    yield return null;
+                    if (t.Exception != null) Debug.Log(t.Exception);
+                } while (t.Status != TaskStatus.RanToCompletion);
             }
         }
 
@@ -53,24 +55,21 @@ namespace VoxelEngine.Player {
             LoadColumns(load);
             var column = world.chunks.GetChunk(load);
 
-            try {
-                if (!column.built) {
-                    await column.BuildTask();
-                }
-                if (!column.generated) {
-                    //await column.GenerateMeshTask();
-                    column.GenerateMesh();
-                    foreach (var dir in Coord2.Directions) {
-                        var col = world.chunks.GetChunk(load + dir);
-                        if (col != null && col.generated) {
-                            //await col.GenerateMeshTask();
-                            col.GenerateMesh();
-                        }
+            if (!column.built) {
+                await column.BuildTask();
+            }
+            if (!column.generated) {
+                await column.GenerateMeshTask();
+                //column.GenerateMesh();
+                foreach (var dir in Coord2.Directions) {
+                    var col = world.chunks.GetChunk(load + dir);
+                    if (col != null && col.generated) {
+                        await col.GenerateMeshTask();
+                        //col.GenerateMesh();
                     }
                 }
-            } catch (System.Exception e) {
-                Debug.Log(e);
             }
+
             if (!column.rendered) {
                 column.ApplyMesh();
                 foreach (var dir in Coord2.Directions) {

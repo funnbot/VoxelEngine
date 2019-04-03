@@ -27,7 +27,7 @@ namespace VoxelEngine.ProceduralGeneration {
             ores = GetBlocksOfType(BlockSpawnType.Ore);
         }
 
-        protected override void GenerateColumn(ChunkSection chunk, int x, int z) {
+        protected override void GenerateChunk(ChunkSection chunk, int x, int z) {
             var localPos = new Coord3(x, 0, z);
             void Set(BlockData block) {
                 SetBlock(chunk, localPos, block);

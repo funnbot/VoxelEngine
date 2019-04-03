@@ -30,7 +30,7 @@ namespace VoxelEngine.ProceduralGeneration {
             grass_decal = ResourceStore.Blocks["grass_decal"];
         }
 
-        protected override void GenerateColumn(ChunkSection chunk, int x, int z) {
+        protected override void GenerateChunk(ChunkSection chunk, int x, int z) {
             var worldPos = new Coord3(x, 0, z).BlockToWorld(chunk.worldPosition);
 
             int stoneHeight = stoneBaseHeight;
