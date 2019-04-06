@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Collections;
 using System.IO;
+using System.Threading.Tasks;
+using UnityEngine;
 
 namespace VoxelEngine {
 
@@ -14,6 +17,15 @@ namespace VoxelEngine {
         public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key) =>
             dictionary.TryGetValue(key, out var ret) ? ret : default;
             
+        public static IEnumerator WaitTillComplete(this Task task) {
+            while (task.Status != TaskStatus.RanToCompletion) {
+                if (task.IsFaulted) {
+                    Debug.Log(task.Exception);
+                    yield break;
+                }
+                yield return null;
+            }
+        } 
 
         public static void Write(this BinaryWriter writer, Coord3 coord) {
             writer.Write(coord.x);

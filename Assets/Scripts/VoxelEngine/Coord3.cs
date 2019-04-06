@@ -126,13 +126,21 @@ namespace VoxelEngine {
 
         #endregion equality
 
+        /// (0, 0, 0)
         public static Coord3 zero { get => s_Zero; }
+        /// (1, 1, 1)
         public static Coord3 one { get => s_One; }
+        /// (0, 0, 1)
         public static Coord3 forward { get => s_Forward; }
+        /// (0, 0, -1)
         public static Coord3 backward { get => s_Backward; }
+        /// (0, 1, 0)
         public static Coord3 up { get => s_Up; }
+        /// (0, -1, 0)
         public static Coord3 down { get => s_Down; }
+        /// (1, 0, 0)
         public static Coord3 right { get => s_Right; }
+        /// (-1, 0, 0)
         public static Coord3 left { get => s_Left; }
 
         private static readonly Coord3 s_Zero = new Coord3(0, 0, 0);

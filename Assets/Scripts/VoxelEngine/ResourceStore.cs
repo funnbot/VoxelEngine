@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using VoxelEngine.Data;
+using VoxelEngine.Internal;
 
 namespace VoxelEngine {
 
@@ -69,10 +70,10 @@ namespace VoxelEngine {
             blockMap = new Dictionary<string, byte>();
 
             for (int i = 0; i < loaded.Length; i++) {
-                var block = (BlockData)loaded[i];
+                var block = (BlockData) loaded[i];
                 var id = block.id;
                 block.blockId = block.name;
-                blockMap.Add(block.blockId, (byte)id);
+                blockMap.Add(block.blockId, (byte) id);
                 blocks[id] = block;
             }
 

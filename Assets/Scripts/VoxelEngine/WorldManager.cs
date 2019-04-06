@@ -33,7 +33,9 @@ namespace VoxelEngine {
 
             OnWorldSpawn?.Invoke(world);
 
-            // System.IO.Directory.Delete($"Worlds/{world.saveName}", true);
+            System.IO.Directory.Delete($"Worlds/{world.saveName}", true);
+
+            Debug.Log("Spawning World: " + saveName);
 
             return world;
         }

@@ -89,13 +89,11 @@ namespace VoxelEngine.Blocks {
         }
 
         public override void Serialize(System.IO.BinaryWriter writer) {
-            base.Serialize(writer);
             writer.Write(mining);
             writer.Write(miningLocation);
         }
 
         public override void Deserialize(System.IO.BinaryReader reader) {
-            base.Deserialize(reader);
             mining = reader.ReadBoolean();
             miningLocation = reader.ReadCoord3();
         }

@@ -11,18 +11,17 @@ namespace VoxelEngine.Serialization {
 
         public static void SaveChunk(string worldSave, Coord2 pos, Chunk chunk) {
             string saveFile = FolderName(worldSave) + FileName(pos);
-            
-            using(var stream = new LZ4Stream(File.Open(saveFile, FileMode.Create, FileAccess.Write), LZ4StreamMode.Compress)) {
-                using(var writer = new BinaryWriter(stream)) {
-                    chunk.Serialize(writer);
-                }
+
+            // using(var stream = new LZ4Stream(File.Open(saveFile, FileMode.Create, FileAccess.Write), LZ4StreamMode.Compress))
+            // using(var writer = new BinaryWriter(stream)) {
+            //     chunk.Serialize(writer);
+            // }
+
+            using(var stream = File.Open(saveFile, FileMode.Create, FileAccess.Write))
+            using(var writer = new BinaryWriter(stream)) {
+                chunk.Serialize(writer);
             }
 
-            // using(var stream = new FileStream(saveFile, FileMode.Create, FileAccess.Write)) {
-            //     using(var writer = new BinaryWriter(stream)) {
-            //         chunk.Serialize(writer);
-            //     }
-            // }
         }
 
         public static bool IsChunkSaved(string worldSave, Coord2 pos) {
@@ -33,17 +32,16 @@ namespace VoxelEngine.Serialization {
         public static void LoadChunk(string worldSave, Coord2 pos, Chunk chunk) {
             string saveFile = FolderName(worldSave) + FileName(pos);
 
-            using(var stream = new LZ4Stream(File.Open(saveFile, FileMode.Open), LZ4StreamMode.Decompress)) {
-                using(var reader = new BinaryReader(stream)) {
-                    chunk.Deserialize(reader);
-                }
+            // using(var stream = new LZ4Stream(File.Open(saveFile, FileMode.Open), LZ4StreamMode.Decompress))
+            // using(var reader = new BinaryReader(stream)) {
+            //     chunk.Deserialize(reader);
+            // }
+
+            using(var stream = File.Open(saveFile, FileMode.Open))
+            using(var reader = new BinaryReader(stream)) {
+                chunk.Deserialize(reader);
             }
 
-            // using(var stream = new FileStream(saveFile, FileMode.Open)) {
-            //     using(var reader = new BinaryReader(stream)) {
-            //         chunk.Deserialize(reader);
-            //     }
-            // }
         }
 
         static string FileName(Coord2 pos) =>

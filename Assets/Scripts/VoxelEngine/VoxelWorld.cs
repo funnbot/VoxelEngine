@@ -20,7 +20,7 @@ namespace VoxelEngine {
         public int seed;
         public GeneratorType generatorType = GeneratorType.Classic;
         public Generator generator;
-        public int spawnSize;
+        private int spawnSize = 4;
 
         public int chunkRenders;
 
@@ -48,7 +48,6 @@ namespace VoxelEngine {
                 tick = 0;
                 chunkRenders = 0;
                 OnTick?.Invoke();
-                chunks.UpdateChunks();
             }
         }
 
@@ -98,50 +97,29 @@ namespace VoxelEngine {
             return PlaceBlock(pos, data, out block, true);
         }
 
-        void LoadSpawn() {
-            int size = spawnSize;
-            for (int x = -size - 1; x <= size + 1; x++) {
-                for (int z = -size - 1; z <= size + 1; z++) {
-                    var pos = new Coord2(x, z);
-                    var col = chunks.LoadChunk(pos);
-                }
-            }
-
-            // Render the 3x3 spawn area
-            for (int x = -size; x <= size; x++) {
-                for (int z = -size; z <= size; z++) {
-                    var pos = new Coord2(x, z);
-                    var col = chunks.GetChunk(pos);
-                    col.Build();
-                    col.GenerateMesh();
-                    col.ApplyMesh();
-                }
-            }
-
-            OnSpawnLoad?.Invoke();
-        }
-
-        void LoadSpawnThreaded() {
+        async void LoadSpawn() {
             int loadSize = spawnSize + 1;
-            var cols = new Chunk[loadSize * 2 + 1, loadSize * 2 + 1];
-
             for (int x = -loadSize; x <= loadSize; x++) {
                 for (int z = -loadSize; z <= loadSize; z++) {
-                    cols[x + loadSize, z + loadSize] = chunks.LoadChunk(new Coord2(x, z));
+                    var pos = new Coord2(x, z);
+                    var chunk = chunks.CreateChunk(pos);
                 }
             }
-
-            // Convert to only building the spawn size
-            Parallel.For(-loadSize, loadSize + 1, x => {
-                for (int z = -loadSize; z <= loadSize; z++) {
-                    cols[x + loadSize, z + loadSize].Build();
-                    cols[x + loadSize, z + loadSize].GenerateMesh();
-                }
-            });
 
             for (int x = -spawnSize; x <= spawnSize; x++) {
                 for (int z = -spawnSize; z <= spawnSize; z++) {
-                    cols[x + loadSize + 1, z + loadSize + 1].ApplyMesh();
+                    var pos = new Coord2(x, z);
+                    var chunk = chunks.GetChunk(pos);
+                    await chunk.BuildTerrain();
+                }
+            }
+
+            for (int x = -spawnSize; x <= spawnSize; x++) {
+                for (int z = -spawnSize; z <= spawnSize; z++) {
+                    var pos = new Coord2(x, z);
+                    var chunk = chunks.GetChunk(pos);
+                    await chunk.GenerateMesh();
+                    chunk.ApplyMesh();
                 }
             }
 

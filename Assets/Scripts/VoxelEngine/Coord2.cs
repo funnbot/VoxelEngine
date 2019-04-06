@@ -76,16 +76,26 @@ namespace VoxelEngine {
 
         #endregion equality
 
+        /// (0, 0)
         public static Coord2 zero { get => s_Zero; }
+        /// (1, 1)
         public static Coord2 one { get => s_One; }
+        /// (0, 1)
         public static Coord2 up { get => s_Up; }
+        /// (0, -1)
         public static Coord2 down { get => s_Down; }
+        /// (1, 0)
         public static Coord2 right { get => s_Right; }
+        /// (-1, 0)
         public static Coord2 left { get => s_Left; }
 
+        /// (-1, 1)
         public static Coord2 topLeft { get => s_TopLeft; }
+        /// (1, 1)
         public static Coord2 topRight { get => s_TopRight; }
+        /// (1, -1)
         public static Coord2 bottomRight { get => s_BottomRight; }
+        /// (-1, -1)
         public static Coord2 bottomLeft { get => s_BottomLeft; }
 
         private static readonly Coord2 s_Zero = new Coord2(0, 0);

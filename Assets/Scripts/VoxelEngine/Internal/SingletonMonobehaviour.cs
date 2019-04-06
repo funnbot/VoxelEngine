@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace VoxelEngine {
+namespace VoxelEngine.Internal {
 
     public class SingletonMonoBehaviour<T> : MonoBehaviour where T : MonoBehaviour {
         protected virtual void AwakeImpl() { }

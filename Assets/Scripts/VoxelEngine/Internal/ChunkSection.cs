@@ -35,8 +35,6 @@ namespace VoxelEngine.Internal {
 
         private Chunk parent;
 
-        private bool update;
-
         public void Create(Chunk parent, VoxelWorld world) {
             this.world = world;
             this.parent = parent;
@@ -51,7 +49,6 @@ namespace VoxelEngine.Internal {
         }
 
         public void Setup(Coord3 position) {
-            update = false;
             IsAllAir = true;
             IsAllStone = true;
 
@@ -59,39 +56,33 @@ namespace VoxelEngine.Internal {
             worldPosition = position * Size;
             transform.localPosition = Coord3.up * worldPosition;
             name = "ChunkSection " + position;
-
-            world.chunks.OnChunkUpdate += OnChunkUpdate;
         }
 
         public void CleanUp() {
-            blocks.UnloadAll();
-
-            blockMesh.Clear();
-            colliderMesh.Clear();
-            triggerMesh.Clear();
-
             BlockRend.sharedMesh = null;
             BlockCollider.sharedMesh = null;
             BlockTrigger.sharedMesh = null;
-
-            world.chunks.OnChunkUpdate -= OnChunkUpdate;
         }
 
         public void SetDirty() {
             parent.isDirty = true;
         }
 
-        void OnChunkUpdate() {
-            if (update) TryRender();
+        public async void Render() {
+            await Task.Run(() => GenerateMesh());
+            ApplyMesh();
         }
 
-        public void TryRender() {
-            if (world.chunkRenders >= VoxelWorld.MaxRendersPerTick) return;
-
-            GenerateMesh();
-            ApplyMesh();
-            update = false;
-            world.chunkRenders++;
+        public void UpdateNeighbors(Coord3 changed) {
+            if (changed.InRange(1, ChunkSection.Size - 1)) return;
+            for (int i = 0; i < 6; i++) {
+                var pos = changed + Coord3.Directions[i];
+                if (!pos.InRange(0, ChunkSection.Size)) {
+                    var neighbor = world.chunks.GetSection(position + Coord3.Directions[i]);
+                    if (neighbor == null || !neighbor.parent.built) continue;
+                    neighbor.Render();
+                }
+            }
         }
 
         public void GenerateMesh() {
@@ -112,22 +103,6 @@ namespace VoxelEngine.Internal {
             BlockRend.sharedMesh = blockMesh.ToMesh();
             BlockCollider.sharedMesh = colliderMesh.ToColMesh();
             BlockTrigger.sharedMesh = triggerMesh.ToColMesh();
-        }
-
-        public void QueueUpdate() {
-            this.update = true;
-        }
-
-        public void UpdateNeighbors(Coord3 changed) {
-            if (changed.InRange(1, ChunkSection.Size - 1)) return;
-            for (int i = 0; i < 6; i++) {
-                var pos = changed + Coord3.Directions[i];
-                if (!pos.InRange(0, ChunkSection.Size)) {
-                    var neighbor = world.chunks.GetSection(position + Coord3.Directions[i]);
-                    if (neighbor == null || !neighbor.parent.built) continue;
-                    neighbor.QueueUpdate();
-                }
-            }
         }
 
         private void AddBlockToMesh(int x, int y, int z) {
@@ -188,8 +163,8 @@ namespace VoxelEngine.Internal {
                 var chunk = world.chunks.GetSection(chunkPos);
                 // if the neighbor chunk isnt there then render, 
                 if (chunk == null) return false;
-                // If chunk was just loaded but not built, then don't render
-                if (!chunk.parent.built) return true;
+                // If chunk was just loaded but not built, then dont render
+                if (!chunk.built) return true;
                 // get adjacent
                 adjacent = chunk.blocks.GetBlock(worldAdjPos.WorldToBlock(chunk.worldPosition));
             } else {

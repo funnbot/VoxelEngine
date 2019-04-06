@@ -30,15 +30,15 @@ namespace VoxelEngine.Internal {
         }
 
         public void Serialize(BinaryWriter writer) {
-            if (chunk.IsAllAir) {
-                writer.Write((byte) ReservedBytes.AllAir);
-                return;
-            }
+            // if (chunk.IsAllAir) {
+            //     writer.Write((byte) ReservedBytes.AllAir);
+            //     return;
+            // }
 
-            if (chunk.IsAllStone) {
-                writer.Write((byte) ReservedBytes.AllStone);
-                return;
-            }
+            // if (chunk.IsAllStone) {
+            //     writer.Write((byte) ReservedBytes.AllStone);
+            //     return;
+            // }
 
             for (int x = 0; x < ChunkSection.Size; x++) {
                 for (int y = 0; y < ChunkSection.Size; y++) {
@@ -50,20 +50,22 @@ namespace VoxelEngine.Internal {
         }
 
         public void Deserialize(BinaryReader reader) {
-            var id = reader.ReadByte();
+            // var id = reader.ReadByte();
 
-            if (id == (byte) ReservedBytes.AllAir) return;
+            // if (id == (byte) ReservedBytes.AllAir) return;
 
-            if (id == (byte) ReservedBytes.AllStone) {
-                FillWithBlock(stoneID);
-                return;
-            }
+            // if (id == (byte) ReservedBytes.AllStone) {
+            //     FillWithBlock(stoneID);
+            //     return;
+            // }
+
+            // DeserializeBlock(reader, id, ref blocks[0][0][0]);
 
             for (int x = 0; x < ChunkSection.Size; x++) {
                 for (int y = 0; y < ChunkSection.Size; y++) {
                     for (int z = 0; z < ChunkSection.Size; z++) {
+                        var id = reader.ReadByte();
                         DeserializeBlock(reader, id, ref blocks[x][y][z]);
-                        id = reader.ReadByte();
                     }
                 }
             }
@@ -85,8 +87,10 @@ namespace VoxelEngine.Internal {
 
         void DeserializeBlock(BinaryReader reader, byte id, ref Block block) {
             if (id == (byte) ReservedBytes.Air) return;
+            BlockData data;
 
-            var data = ResourceStore.Blocks[id];
+            data = ResourceStore.Blocks[id];
+
             if (data.IsCustomType) {
                 block = Block.Convert(id, data.dataType);
                 block.Deserialize(reader);
@@ -105,7 +109,7 @@ namespace VoxelEngine.Internal {
 
                 chunk.SetDirty();
                 if (updateChunk) {
-                    chunk.QueueUpdate();
+                    chunk.Render();
                     chunk.UpdateNeighbors(localPos);
                 }
                 return chunk;
@@ -118,7 +122,7 @@ namespace VoxelEngine.Internal {
 
                 chunk.SetDirty();
                 if (updateChunk) {
-                    chunk.QueueUpdate();
+                    chunk.Render();
                     chunk.UpdateNeighbors(localPos);
                 }
                 block = blocks[localPos.x][localPos.y][localPos.z];
@@ -143,7 +147,7 @@ namespace VoxelEngine.Internal {
                 predicate(blk);
                 chunk.SetDirty();
                 if (updateChunk) {
-                    chunk.QueueUpdate();
+                    chunk.Render();
                 }
             }
         }

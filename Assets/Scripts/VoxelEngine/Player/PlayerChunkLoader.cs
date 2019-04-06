@@ -12,10 +12,11 @@ namespace VoxelEngine.Player {
 
         private VoxelWorld world;
 
-        private Coord2 pos = Coord2.zero;
-        private Coord2 spiral = Coord2.zero;
+        private Coord2 currentPos = Coord2.zero;
+        private Coord2 spiralPos = Coord2.zero;
 
         private List<Coord2> loaded;
+        private bool spawnLoaded;
 
         void Start() {
             loaded = new List<Coord2>();
@@ -31,138 +32,68 @@ namespace VoxelEngine.Player {
         void OnSpawnLoad() {
             StartCoroutine(LoadChunksRoutine());
         }
-
+        
         IEnumerator LoadChunksRoutine() {
             while (true) {
-                var t = LoadChunk();
-                do {
-                    yield return null;
-                    if (t.Exception != null) Debug.Log(t.Exception);
-                } while (t.Status != TaskStatus.RanToCompletion);
+                yield return LoadChunks().WaitTillComplete();
             }
         }
 
-        async Task LoadChunk() {
-            var cpos = (Coord2) Coord3.FloorToInt(transform.position).WorldToChunk();
-            if (pos != cpos) spiral = Coord2.zero;
-            pos = cpos;
-            var load = pos + spiral;
+        async Task LoadChunks() {
+            var chunkPos = (Coord2) Coord3.FloorToInt(transform.position).WorldToChunk();
+            if (currentPos != chunkPos) spiralPos = Coord2.zero;
+            currentPos = chunkPos;
+            var toLoad = currentPos + spiralPos;
 
-            if (await DestroyChunks()) return;
+            if (ChunkInRange(toLoad, range - 32)) {
+                DestroyOldChunks();
 
-            if (!ColumnInRange(load, range - 32)) return;
+                var chunk = LoadChunks(toLoad);
+                await chunk.BuildTerrain();
+                await chunk.GenerateMesh();
+                chunk.ApplyMesh();
+                await chunk.UpdateNeighbors();
 
-            LoadColumns(load);
-            var column = world.chunks.GetChunk(load);
-
-            if (!column.built) {
-                await column.BuildTask();
+                SpiralOut(ref spiralPos);
             }
-            if (!column.generated) {
-                await column.GenerateMeshTask();
-                //column.GenerateMesh();
-                foreach (var dir in Coord2.Directions) {
-                    var col = world.chunks.GetChunk(load + dir);
-                    if (col != null && col.generated) {
-                        await col.GenerateMeshTask();
-                        //col.GenerateMesh();
-                    }
+        }
+
+        Chunk LoadChunks(Coord2 pos) {
+            if (!world.chunks.ContainsChunk(pos)) loaded.Add(pos);
+            var chunk = world.chunks.CreateChunk(pos);
+            for (int i = 0; i < 4; i++) {
+                var p = pos + Coord2.Directions[i];
+                if (!world.chunks.ContainsChunk(p)) {
+                    loaded.Add(p);
+                    world.chunks.CreateChunk(p);
                 }
             }
-
-            if (!column.rendered) {
-                column.ApplyMesh();
-                foreach (var dir in Coord2.Directions) {
-                    var col = world.chunks.GetChunk(load + dir);
-                    if (col != null && col.generated && col.rendered) {
-                        col.ApplyMesh();
-                    }
-                }
-            }
-
-            SpiralOut(ref spiral);
-            return;
+            return chunk;
         }
 
-        void LoadColumns(Coord2 pos) {
-            LoadColumn(pos);
-            foreach (var dir in Coord2.Directions) {
-                LoadColumn(pos + dir);
-            }
-        }
-
-        void LoadColumn(Coord2 pos) {
-            if (world.chunks.ContainsChunk(pos)) return;
-            world.chunks.LoadChunk(pos);
-            loaded.Add(pos);
-        }
-
-        async Task<bool> DestroyChunks() {
-            int len = loaded.Count();
-            for (int i = len - 1; i >= 0; i--) {
-                var p = loaded[i];
-                if (!ColumnInRange(p, range)) {
-                    var col = world.chunks.GetChunk(p);
-                    if (col != null) {
-                        try {
-                            await col.SaveTask();
-                        } catch (System.Exception e) {
-                            Debug.Log(e);
-                        }
-                        world.chunks.DestroyChunk(col);
-                    }
+        async void DestroyOldChunks() {
+            int count = loaded.Count;
+            for (int i = count - 1; i >= 0; i--) {
+                var pos = loaded[i];
+                if (!ChunkInRange(pos, range)) {
+                    var chunk = world.chunks.GetChunk(pos);
+                    await chunk.SaveBlocks();
+                    world.chunks.DeleteChunk(chunk);
                     loaded.RemoveAt(i);
-                    return true;
+                    return;
                 }
             }
-            return false;
         }
 
-        bool ColumnInRange(Coord2 col, int range) =>
-            Coord2.SqrDistance(pos * ChunkSection.Size, col * ChunkSection.Size) < range * range;
+        bool ChunkInRange(Coord2 col, int range) =>
+            Coord2.SqrDistance(currentPos * ChunkSection.Size, col * ChunkSection.Size) < range * range;
 
         void SpiralOut(ref Coord2 c) {
-            int x = c.x, y = c.y;
-            if (x >= 0 && y == 0) y++;
-            else if (x > 0 && y >= 0) {
-                x--;
-                y++;
-            } else if (x <= 0 && y > 0) {
-                x--;
-                y--;
-            } else if (x < 0 && y <= 0) {
-                x++;
-                y--;
-            } else if (x >= 0 && y < 0) {
-                x++;
-                y++;
-            }
-            c.x = x;
-            c.y = y;
-        }
-
-        void Spiral() {
-            int x = spiral.x, y = spiral.y;
-            if (x == y) {
-                if (x >= 0) x++;
-                else y++;
-            } else if (-x == y) {
-                if (x <= 0) x++;
-                else x--;
-            } else if (y >= 0) {
-                if (Mathf.Abs(x) < y) x++;
-                else {
-                    if (x >= 0) y--;
-                    else y++;
-                }
-            } else {
-                if (Mathf.Abs(x) < -y) x--;
-                else {
-                    if (x >= 0) y--;
-                    else y++;
-                }
-            }
-            spiral = new Coord2(x, y);
+            if (c.x >= 0 && c.y == 0) c += Coord2.up;
+            else if (c.x > 0 && c.y >= 0) c += Coord2.topLeft;
+            else if (c.x <= 0 && c.y > 0) c += Coord2.bottomLeft;
+            else if (c.x < 0 && c.y <= 0) c += Coord2.bottomRight;
+            else if (c.x >= 0 && c.y < 0) c += Coord2.topRight;
         }
     }
 }

@@ -1,34 +1,34 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using VoxelEngine.Pooling;
 
 namespace VoxelEngine.Internal {
 
     public class ChunkManager {
-        public delegate void ChunkUpdate();
-        public event ChunkUpdate OnChunkUpdate;
-
         private Dictionary<Coord2, Chunk> chunks;
         private ChunkPool pool;
 
         public ChunkManager(ChunkPool pool) {
-            chunks = new Dictionary<Coord2, Chunk>();
             this.pool = pool;
+
+            chunks = new Dictionary<Coord2, Chunk>();
         }
 
-        public void UpdateChunks() {
-            OnChunkUpdate?.Invoke();
-        }
+        /// Gets a chunk from the pool and initializes it
+        public Chunk CreateChunk(Coord2 coord) {
+            var chunk = GetChunk(coord);
+            if (chunk != null) return chunk;
 
-        public Chunk LoadChunk(Coord2 coord) {
-            var chunk = pool.GetObject();
+            chunk = pool.GetObject();
             chunk.Setup(coord);
             chunks.Add(coord, chunk);
             return chunk;
         }
 
-        public void DestroyChunk(Chunk chunk) {
+        public void DeleteChunk(Chunk chunk) {
             chunks.Remove(chunk.position);
             pool.ReleaseObject(chunk);
         }
@@ -41,7 +41,5 @@ namespace VoxelEngine.Internal {
 
         public ChunkSection GetSection(Coord3 position) =>
             GetChunk((Coord2) position)?.GetSection(position.y);
-
     }
-
 }

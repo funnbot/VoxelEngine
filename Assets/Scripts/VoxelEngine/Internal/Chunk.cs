@@ -64,30 +64,22 @@ namespace VoxelEngine.Internal {
                 chunks[i].blocks.Deserialize(reader);
         }
 
-        public void LoadBlocks() {
-            for (int i = 0; i < VoxelWorld.ChunkHeight; i++)
-                chunks[i].blocks.LoadAll();
-        }
-
-        public void UnloadBlocks() {
-            for (int i = 0; i < VoxelWorld.ChunkHeight; i++)
-                chunks[i].blocks.UnloadAll();
-        }
-
         public ChunkSection GetSection(int y) {
             if (InRange(y)) return chunks[y];
             else return null;
         }
 
-        public void Build() {
-            if (Serializer.IsChunkSaved(world.saveName, position)) {
-                Serializer.LoadChunk(world.saveName, position, this);
-                LoadBlocks();
-            } else world.generator.GenerateChunk(this);
-            built = true;
+        public async Task UpdateNeighbors() {
+            foreach (var dir in Coord2.Directions) {
+                var chunk = world.chunks.GetChunk(position + dir);
+                if (chunk != null && chunk.rendered) {
+                    await chunk.GenerateMesh();
+                    chunk.ApplyMesh();
+                }
+            }
         }
 
-        public async Task BuildTask() {
+        public async Task BuildTerrain() {
             if (Serializer.IsChunkSaved(world.saveName, position)) {
                 await Task.Run(() => Serializer.LoadChunk(world.saveName, position, this));
                 LoadBlocks();
@@ -95,47 +87,36 @@ namespace VoxelEngine.Internal {
             built = true;
         }
 
-        public void GenerateMesh() {
-            foreach (var chunk in chunks)
-                chunk.GenerateMesh();
-            generated = true;
-        }
-
-        public async Task GenerateMeshTask() {
+        public async Task GenerateMesh() {
             await Task.Run(() => {
-                foreach (var chunk in chunks)
-                    chunk.GenerateMesh();
+                for (int i = 0; i < VoxelWorld.ChunkHeight; i++)
+                    chunks[i].GenerateMesh();
             });
             generated = true;
         }
 
         public void ApplyMesh() {
-            if (!generated) return;
-
-            foreach (var chunk in chunks)
-                chunk.ApplyMesh();
+            for (int i = 0; i < VoxelWorld.ChunkHeight; i++)
+                chunks[i].ApplyMesh();
             rendered = true;
         }
 
-        public void QueueRender() {
-            foreach (var chunk in chunks)
-                chunk.QueueUpdate();
-            generated = true;
-            rendered = true;
-        }
-
-        public void Save() {
-            if (!isDirty || !built) return;
-            Serializer.SaveChunk(world.saveName, position, this);
+        public async Task SaveBlocks() {
+            if (!isDirty || !built) {
+                await Task.Run(() => Serializer.SaveChunk(world.saveName, position, this));
+            }
             UnloadBlocks();
             isDirty = false;
         }
 
-        public async Task SaveTask() {
-            if (!isDirty || !built) return;
-            await Task.Run(() => Serializer.SaveChunk(world.saveName, position, this));
-            UnloadBlocks();
-            isDirty = false;
+        private void LoadBlocks() {
+            for (int i = 0; i < VoxelWorld.ChunkHeight; i++)
+                chunks[i].blocks.LoadAll();
+        }
+
+        private void UnloadBlocks() {
+            for (int i = 0; i < VoxelWorld.ChunkHeight; i++)
+                chunks[i].blocks.UnloadAll();
         }
 
         private bool InRange(int y) => y >= 0 && y < chunks.Length;
