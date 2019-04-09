@@ -11,9 +11,9 @@ namespace VoxelEngine.Internal {
         private Dictionary<Coord2, Chunk> chunks;
         private ChunkPool pool;
 
+        /// Initialize with a chunk pool
         public ChunkManager(ChunkPool pool) {
             this.pool = pool;
-
             chunks = new Dictionary<Coord2, Chunk>();
         }
 
@@ -28,17 +28,21 @@ namespace VoxelEngine.Internal {
             return chunk;
         }
 
+        /// Delete a chunk and release it to the pool
         public void DeleteChunk(Chunk chunk) {
             chunks.Remove(chunk.position);
             pool.ReleaseObject(chunk);
         }
 
+        /// Trys to get a chunk
         public Chunk GetChunk(Coord2 coord) =>
             chunks.GetValueOrDefault(coord);
 
+        /// Check if a chunk is loaded
         public bool ContainsChunk(Coord2 coord) =>
             chunks.ContainsKey(coord);
 
+        /// Try to get a section of a chunk
         public ChunkSection GetSection(Coord3 position) =>
             GetChunk((Coord2) position)?.GetSection(position.y);
     }

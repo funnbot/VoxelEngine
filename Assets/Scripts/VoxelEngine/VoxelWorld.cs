@@ -12,15 +12,24 @@ using VoxelEngine.ProceduralGeneration;
 namespace VoxelEngine {
 
     public class VoxelWorld : MonoBehaviour {
-        public static readonly int Height = 80;
-        public static readonly int ChunkHeight = Height / ChunkSection.Size;
+        /// The amount of sections in chunk columns
+        public static readonly int ChunkHeight = 4;
+        /// How many chunk rerenders to do per tick
         public static readonly int MaxRendersPerTick = 5 * ChunkHeight;
+
+        public VoxelWorldOptions Options = new VoxelWorldOptions();
+
+        public class VoxelWorldOptions {
+            public string SaveName { get; set; } = "Sample";
+            public int Seed { get; set; } = 1337;
+            public GeneratorType WorldGenerator { get; set; } = GeneratorType.Classic;
+        }
 
         public string saveName;
         public int seed;
         public GeneratorType generatorType = GeneratorType.Classic;
         public Generator generator;
-        private int spawnSize = 4;
+        private int spawnSize = 2;
 
         public int chunkRenders;
 
@@ -97,7 +106,7 @@ namespace VoxelEngine {
             return PlaceBlock(pos, data, out block, true);
         }
 
-        async void LoadSpawn() {
+        void LoadSpawn() {
             int loadSize = spawnSize + 1;
             for (int x = -loadSize; x <= loadSize; x++) {
                 for (int z = -loadSize; z <= loadSize; z++) {
@@ -110,7 +119,7 @@ namespace VoxelEngine {
                 for (int z = -spawnSize; z <= spawnSize; z++) {
                     var pos = new Coord2(x, z);
                     var chunk = chunks.GetChunk(pos);
-                    await chunk.BuildTerrain();
+                    chunk.Build();
                 }
             }
 
@@ -118,7 +127,7 @@ namespace VoxelEngine {
                 for (int z = -spawnSize; z <= spawnSize; z++) {
                     var pos = new Coord2(x, z);
                     var chunk = chunks.GetChunk(pos);
-                    await chunk.GenerateMesh();
+                    chunk.GenerateMesh();
                     chunk.ApplyMesh();
                 }
             }

@@ -11,6 +11,7 @@ using BinaryReader = System.IO.BinaryReader;
 namespace VoxelEngine.Internal {
 
     public class ChunkSection : MonoBehaviour {
+        /// Square size of all chunk sections
         public static readonly int Size = 16;
 
         public Transform Blocks;
@@ -18,23 +19,34 @@ namespace VoxelEngine.Internal {
         public MeshCollider BlockCollider;
         public MeshCollider BlockTrigger;
 
-        public VoxelWorld world;
-        public Coord3 position;
-        public Coord3 worldPosition;
+        /// World this chunk is in
+        public VoxelWorld world { get; set; }
+        /// Position of this section
+        public Coord3 position { get; set; }
+        /// World position of this section
+        public Coord3 worldPosition { get; set; }
 
+        /// Collection of blocks in this section
         public BlockManager blocks;
 
-        public MeshData blockMesh;
-        public MeshData colliderMesh;
-        public MeshData triggerMesh;
+        /// Get if the parent chunk has been built
+        public bool IsBuilt { get => parent.IsBuilt; }
 
-        public bool built { get => parent.built; }
-
+        /// When loaded if this chunk only contains air
         public bool IsAllAir { get; set; }
+        /// When loaded if this chunk only contains stone
         public bool IsAllStone { get; set; }
+
+        /// Queue a chunk to rerender
+        private bool renderUpdate;
 
         private Chunk parent;
 
+        private MeshData blockMesh;
+        private MeshData colliderMesh;
+        private MeshData triggerMesh;
+
+        /// Create the section to be stored in the pool, run once
         public void Create(Chunk parent, VoxelWorld world) {
             this.world = world;
             this.parent = parent;
@@ -48,38 +60,47 @@ namespace VoxelEngine.Internal {
             blocks = new BlockManager(this);
         }
 
+        /// Setup the chunk after being pulled from the pool
         public void Setup(Coord3 position) {
             IsAllAir = true;
             IsAllStone = true;
+            renderUpdate = false;
 
             this.position = position;
             worldPosition = position * Size;
             transform.localPosition = Coord3.up * worldPosition;
             name = "ChunkSection " + position;
+
+            world.OnTick += OnTick;
         }
 
+        /// Cleanup the chunk before being released back into the pool
         public void CleanUp() {
             BlockRend.sharedMesh = null;
             BlockCollider.sharedMesh = null;
             BlockTrigger.sharedMesh = null;
+
+            world.OnTick -= OnTick;
         }
 
+        /// Set the parent to dirty because a change was made
         public void SetDirty() {
-            parent.isDirty = true;
+            parent.IsDirty = true;
         }
 
-        public async void Render() {
-            await Task.Run(() => GenerateMesh());
-            ApplyMesh();
+        /// Set renderUpdate to true to try and render this chunk
+        public void Render() {
+            renderUpdate = true;
         }
 
+        /// Update the neighbors around this chunk
         public void UpdateNeighbors(Coord3 changed) {
             if (changed.InRange(1, ChunkSection.Size - 1)) return;
             for (int i = 0; i < 6; i++) {
                 var pos = changed + Coord3.Directions[i];
                 if (!pos.InRange(0, ChunkSection.Size)) {
                     var neighbor = world.chunks.GetSection(position + Coord3.Directions[i]);
-                    if (neighbor == null || !neighbor.parent.built) continue;
+                    if (neighbor == null || !neighbor.IsBuilt) continue;
                     neighbor.Render();
                 }
             }
@@ -103,6 +124,21 @@ namespace VoxelEngine.Internal {
             BlockRend.sharedMesh = blockMesh.ToMesh();
             BlockCollider.sharedMesh = colliderMesh.ToColMesh();
             BlockTrigger.sharedMesh = triggerMesh.ToColMesh();
+        }
+
+        private void OnTick() {
+            if (renderUpdate) TryRender();
+        }
+
+        /// Attempt a render, only if it hasnt surpassed the max amount of renders per tick
+        private void TryRender() {
+            if (!IsBuilt || IsAllAir) return;
+            if (world.chunkRenders > VoxelWorld.MaxRendersPerTick) return;
+
+            GenerateMesh();
+            ApplyMesh();
+            world.chunkRenders++;
+            renderUpdate = false;
         }
 
         private void AddBlockToMesh(int x, int y, int z) {
@@ -164,7 +200,7 @@ namespace VoxelEngine.Internal {
                 // if the neighbor chunk isnt there then render, 
                 if (chunk == null) return false;
                 // If chunk was just loaded but not built, then dont render
-                if (!chunk.built) return true;
+                if (!chunk.IsBuilt) return true;
                 // get adjacent
                 adjacent = chunk.blocks.GetBlock(worldAdjPos.WorldToBlock(chunk.worldPosition));
             } else {

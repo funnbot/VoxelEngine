@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 6818899227645528277}
   - component: {fileID: 6818899227645528265}
   - component: {fileID: 6818899227645528270}
-  - component: {fileID: 6818899227645528264}
   - component: {fileID: 6818899227645528271}
   m_Layer: 0
   m_Name: FreeCameraController
@@ -29,7 +28,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6818899227645528276}
-  m_LocalRotation: {x: 0.7310979, y: -0.004624542, z: -0.004954093, w: 0.68223894}
+  m_LocalRotation: {x: 0.7310969, y: -0.0046287556, z: -0.0049495106, w: 0.68223995}
   m_LocalPosition: {x: 8.65964, y: 37.66, z: 26.28737}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -114,19 +113,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotation: {x: 0, y: 0, z: 1}
---- !u!114 &6818899227645528264
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6818899227645528276}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 72c5264ecd0d240bead142f2be3f94cc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  range: 100
 --- !u!114 &6818899227645528271
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -142,5 +128,6 @@ MonoBehaviour:
   BoundsOutliner: {fileID: 0}
   ChunkLoader: {fileID: 0}
   Spawner: {fileID: 0}
-  Terrain: {fileID: 0}
+  Terrain: {fileID: 6818899227645528270}
+  CameraController: {fileID: 6818899227645528265}
   activeStack: {fileID: 0}

@@ -19,6 +19,8 @@ namespace VoxelEngine.Data {
         public string description;
         public Texture2D icon;
         [Space]
+        public bool isCustomType;
+        [DrawIf("isCustomType", true)]
         public BlockDataType dataType;
         public bool IsCustomType { get => dataType != BlockDataType.None; }
 

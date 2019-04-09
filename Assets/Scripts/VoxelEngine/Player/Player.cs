@@ -5,8 +5,6 @@ using VoxelEngine.Inventory;
 namespace VoxelEngine.Player {
 
     public class Player : MonoBehaviour {
-        public ColliderBoundsOutliner BoundsOutliner;
-        public PlayerChunkLoader ChunkLoader;
         public PlayerSpawner Spawner;
         public TerrainModifier Terrain;
         public FreeCameraController CameraController;

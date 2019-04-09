@@ -10,7 +10,7 @@ namespace VoxelEngine.Serialization {
         public static readonly string SaveFolder = "Worlds";
 
         public static void SaveChunk(string worldSave, Coord2 pos, Chunk chunk) {
-            string saveFile = FolderName(worldSave) + FileName(pos);
+            string saveFile = FolderName(worldSave) + "chunks/" + FileName(pos);
 
             // using(var stream = new LZ4Stream(File.Open(saveFile, FileMode.Create, FileAccess.Write), LZ4StreamMode.Compress))
             // using(var writer = new BinaryWriter(stream)) {
@@ -25,12 +25,12 @@ namespace VoxelEngine.Serialization {
         }
 
         public static bool IsChunkSaved(string worldSave, Coord2 pos) {
-            string saveFile = FolderName(worldSave) + FileName(pos);
+            string saveFile = FolderName(worldSave) + "chunks/" + FileName(pos);
             return File.Exists(saveFile);
         }
 
         public static void LoadChunk(string worldSave, Coord2 pos, Chunk chunk) {
-            string saveFile = FolderName(worldSave) + FileName(pos);
+            string saveFile = FolderName(worldSave) + "chunks/" + FileName(pos);
 
             // using(var stream = new LZ4Stream(File.Open(saveFile, FileMode.Open), LZ4StreamMode.Decompress))
             // using(var reader = new BinaryReader(stream)) {

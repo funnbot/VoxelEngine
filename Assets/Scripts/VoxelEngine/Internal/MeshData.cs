@@ -73,6 +73,28 @@ namespace VoxelEngine.Internal {
             return mesh;
         }
 
+        public void ApplyToMesh(ref Mesh mesh) {
+            if (verts.Count == 0) return;
+            if (mesh == null) mesh = new Mesh();
+
+            mesh.subMeshCount = SubMeshCount;
+            mesh.SetVertices(verts);
+
+            for (int i = 0; i < SubMeshCount; i++)
+                mesh.SetTriangles(tris[i], i);
+
+            mesh.SetUVs(0, uvs);
+            mesh.RecalculateNormals();
+        }
+
+        public void ApplyToColMesh(ref Mesh mesh) {
+            if (verts.Count == 0) return;
+            if (mesh == null) mesh = new Mesh();
+
+            mesh.SetVertices(verts);
+            mesh.SetTriangles(tris[0], 0);
+        }
+
         public void Clear() {
             verts.Clear();
             normals.Clear();
