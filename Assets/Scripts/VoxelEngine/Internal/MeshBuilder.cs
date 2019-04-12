@@ -4,7 +4,7 @@ using VoxelEngine.Blocks;
 
 namespace VoxelEngine.Internal {
 
-    public class MeshData {
+    public class MeshBuilder {
         private const int MaxVertexCount = 65000;
         private const int SubMeshCount = 2;
 
@@ -13,7 +13,7 @@ namespace VoxelEngine.Internal {
         List<Vector3> uvs;
         List<int>[] tris;
 
-        public MeshData() {
+        public MeshBuilder() {
             verts = new List<Vector3>();
             normals = new List<Vector3>();
             uvs = new List<Vector3>();
@@ -121,6 +121,48 @@ namespace VoxelEngine.Internal {
         #region verts
 
         private void AddCubeFaceVerts(int dir, Coord3 pos) {
+            float x = pos.x, y = pos.y, z = pos.z;
+            switch (dir) {
+                case BlockFace.front:
+                    verts.Add(new Vector3(x - F, y + F, z + F));
+                    verts.Add(new Vector3(x + F, y + F, z + F));
+                    verts.Add(new Vector3(x + F, y - F, z + F));
+                    verts.Add(new Vector3(x - F, y - F, z + F));
+                    break;
+                case BlockFace.back:
+                    verts.Add(new Vector3(x + F, y + F, z - F));
+                    verts.Add(new Vector3(x - F, y + F, z - F));
+                    verts.Add(new Vector3(x - F, y - F, z - F));
+                    verts.Add(new Vector3(x + F, y - F, z - F));
+                    break;
+                case BlockFace.top:
+                    verts.Add(new Vector3(x - F, y + F, z - F));
+                    verts.Add(new Vector3(x + F, y + F, z - F));
+                    verts.Add(new Vector3(x + F, y + F, z + F));
+                    verts.Add(new Vector3(x - F, y + F, z + F));
+                    break;
+                case BlockFace.bottom:
+                    verts.Add(new Vector3(x - F, y - F, z + F));
+                    verts.Add(new Vector3(x + F, y - F, z + F));
+                    verts.Add(new Vector3(x + F, y - F, z - F));
+                    verts.Add(new Vector3(x - F, y - F, z - F));
+                    break;
+                case BlockFace.right:
+                    verts.Add(new Vector3(x + F, y + F, z + F));
+                    verts.Add(new Vector3(x + F, y + F, z - F));
+                    verts.Add(new Vector3(x + F, y - F, z - F));
+                    verts.Add(new Vector3(x + F, y - F, z + F));
+                    break;
+                case BlockFace.left:
+                    verts.Add(new Vector3(x - F, y + F, z - F));
+                    verts.Add(new Vector3(x - F, y + F, z + F));
+                    verts.Add(new Vector3(x - F, y - F, z + F));
+                    verts.Add(new Vector3(x - F, y - F, z - F));
+                    break;
+            }
+        }
+
+        private void AddCubeFaceNormalVerts(int dir, Coord3 pos) {
             float x = pos.x, y = pos.y, z = pos.z;
             switch (dir) {
                 case BlockFace.front:
