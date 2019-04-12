@@ -112,7 +112,7 @@ namespace VoxelEngine {
 
         public static readonly Coord2[] Directions = { up, down, right, left };
         public static readonly Coord2[] TileCorners = { up, one, right, zero };
-
+        // public static readonly Coord2[] TileCorners = { one, up, zero, right };
     }
 
 }

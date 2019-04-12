@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using VoxelEngine.Data;
 using VoxelEngine.Internal;
+using VoxelEngine.Utilities;
 
 namespace VoxelEngine.Blocks {
 
@@ -10,7 +11,9 @@ namespace VoxelEngine.Blocks {
         public Coord3 rotation;
 
         public void SetRotation(Coord3 rotation) {
-            this.rotation = rotation;
+            // rotation = (Coord3)(Quaternion.Euler(rotation * 90).eulerAngles) / 90;
+            this.rotation = rotation.ModWrap(4);
+            Debug.Log(this.rotation);
         }
 
         public override void Serialize(System.IO.BinaryWriter writer) {

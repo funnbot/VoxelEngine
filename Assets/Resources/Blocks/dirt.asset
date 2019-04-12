@@ -16,6 +16,7 @@ MonoBehaviour:
   blockName: dirt
   description: 
   icon: {fileID: 0}
+  isCustomType: 0
   dataType: 0
   blockType: 1
   prefab: {fileID: 0}

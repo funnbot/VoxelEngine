@@ -24,13 +24,15 @@ namespace VoxelEngine.Player {
             grid = hotbar.SlotGrid(0, 0, 8, 1, "bar");
 
             SetSlotTo("virus", 0);
-            SetSlotTo("dirt", 1);
+            SetSlotTo("stone", 1);
             SetSlotTo("grass", 2);
-            SetSlotTo("wood", 3);
+            SetSlotTo("proto", 3);
             SetSlotTo("pipe", 4);
             SetSlotTo("iron_ore", 5);
             SetSlotTo("ribit", 6);
             SetSlotTo("miner", 7);
+
+            var data = ResourceStore.Blocks["stone"];
 
             Select(0);
         }

@@ -113,11 +113,11 @@ namespace VoxelEngine.Data {
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("left", GUILayout.Width(20));
-            d.textures[4] = (TextureIndex) EditorGUILayout.ObjectField(d.textures[4], typeof(TextureIndex), true);
+            d.textures[5] = (TextureIndex) EditorGUILayout.ObjectField(d.textures[5], typeof(TextureIndex), true);
             EditorGUILayout.LabelField("front", GUILayout.Width(30));
             d.textures[0] = (TextureIndex) EditorGUILayout.ObjectField(d.textures[0], typeof(TextureIndex), true);
             EditorGUILayout.LabelField("right", GUILayout.Width(30));
-            d.textures[5] = (TextureIndex) EditorGUILayout.ObjectField(d.textures[5], typeof(TextureIndex), true);
+            d.textures[4] = (TextureIndex) EditorGUILayout.ObjectField(d.textures[4], typeof(TextureIndex), true);
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();

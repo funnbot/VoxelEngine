@@ -5,7 +5,7 @@ using VoxelEngine.Internal;
 namespace VoxelEngine.Blocks {
 
     public class StandaloneBlock : Block {
-        protected GameObject gameObject;
+        public GameObject gameObject;
 
         public StandaloneBlock() { }
 

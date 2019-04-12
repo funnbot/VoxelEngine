@@ -38,11 +38,14 @@ namespace VoxelEngine.ProceduralGeneration {
 
         protected virtual void GenerateSection(ChunkSection chunk) { }
 
-        protected void SetBlock(ChunkSection chunk, Coord3 localPos, BlockData data, bool replace = false) {
+        protected Block SetBlock(ChunkSection chunk, Coord3 localPos, BlockData data, bool replace = false) {
             var b = chunk.blocks.GetBlock(localPos);
             if (replace || b == null) {
-                chunk.blocks.PlaceBlock(localPos, data, false);
+                Block outb;
+                chunk.blocks.PlaceBlock(localPos, data, out outb, false);
+                return outb;
             }
+            return null;
         }
 
         protected int GetNoise(int x, int y, int z, float scale, int max) {

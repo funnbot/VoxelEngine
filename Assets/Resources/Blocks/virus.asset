@@ -16,6 +16,7 @@ MonoBehaviour:
   blockName: virus
   description: 
   icon: {fileID: 0}
+  isCustomType: 0
   dataType: 3
   blockType: 1
   prefab: {fileID: 0}

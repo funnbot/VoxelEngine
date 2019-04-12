@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using UnityEngine;
 using VoxelEngine.Internal;
+using VoxelEngine.Utilities;
 
 namespace VoxelEngine {
 
@@ -33,6 +34,8 @@ namespace VoxelEngine {
         public Coord3 WorldToBlock(Coord3 chunkWorldPos) => this - chunkWorldPos;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Coord3 WorldToChunk() => this.FloorDiv(ChunkSection.Size);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Coord3 ModWrap(int m) => new Coord3(BlockUtil.ModWrap(x, m), BlockUtil.ModWrap(y, m), BlockUtil.ModWrap(z, m));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Coord3 FloorDiv(int i) =>

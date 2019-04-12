@@ -35,6 +35,8 @@ namespace VoxelEngine.Player {
         void Update() {
             world = WorldManager.ActiveWorld;
 
+            if (player.CameraController.locked) return;
+
             if (inGui != null) {
                 if (Input.GetKeyDown(KeyCode.Tab)) {
                     inGui.CloseGUI();
@@ -47,27 +49,23 @@ namespace VoxelEngine.Player {
                 if (Physics.Raycast(ray, out hit, 10f)) {
 
                     if (hit.transform.CompareTag("Chunk")) {
-                        int y = -Mathf.RoundToInt(transform.localEulerAngles.y / 90f);
-                        var rot = new Coord3(0, y, 0);
                         if (!Input.GetKey(KeyCode.LeftAlt)) {
                             var block = player?.activeStack?.item;
                             if (block != null) {
                                 Block placed;
                                 var chunk = world.PlaceBlock(hit, block, out placed, false);
-                                chunk.blocks.GetCustomBlock<RotatedBlock>(placed, b => b.SetRotation(rot));
+                                chunk.blocks.GetCustomBlock<RotatedBlock>(placed, b => b.SetRotation(rotation), true);
                             }
                         } else {
                             world.PlaceBlock(hit, null, true);
                         }
                     } else {
-                        int y = -Mathf.RoundToInt(transform.localEulerAngles.y / 90f);
-                        var rot = new Coord3(0, y, 0);
                         if (!Input.GetKey(KeyCode.LeftAlt)) {
                             var block = player?.activeStack?.item;
                             if (block != null) {
                                 Block placed;
                                 var chunk = world.PlaceBlock(hit, block, out placed, false);
-                                chunk.blocks.GetCustomBlock<RotatedBlock>(placed, b => b.SetRotation(rot));
+                                chunk.blocks.GetCustomBlock<RotatedBlock>(placed, b => b.SetRotation(rotation), true);
                             }
                         } else {
                             Destroy(hit.transform.gameObject);

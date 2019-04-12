@@ -1,40 +1,33 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using VoxelEngine;
+using VoxelEngine.Data;
+using VoxelEngine.Internal;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
+[ExecuteInEditMode]
 public class CodeTester : MonoBehaviour {
-    public Texture2D InTex;
-    public Texture2D OutTex;
+    public MeshFilter filter;
 
-    public Vector2Int axis;
-    public float theta;
+    public BlockData data;
 
-    object TestCode() {
-        string o = "";
-
-        OutTex = new Texture2D(InTex.width, InTex.height, TextureFormat.ARGB32, false, false);
-
-        for (int x = 0; x < InTex.width; x++) {
-            for (int y = 0; y < InTex.height; y++) {
-                int x2 = Mathf.RoundToInt (Mathf.Cos(theta) * (x - axis.x) - Mathf.Sin(theta) * (y - axis.y) + axis.x);
-                if (x2 < 0 || x2 >= InTex.width) continue;
-                int y2 = Mathf.RoundToInt (Mathf.Sin(theta) * (x - axis.x) + Mathf.Cos(theta) * (y - axis.y) + axis.y);
-                if (y2 < 0 || y2 >= InTex.height) continue;
-
-                var col = InTex.GetPixel(x, y);
-                OutTex.SetPixel(x2, y2, col);
-            }
+    void TestCode() {
+        var mesh = new MeshBuilder();
+        for (int i = 0; i < 6; i++) {
+            mesh.AddCubeFace(i, new Coord3(0, 0, 0), 0, data.textureIndices[i], 0);
         }
-        OutTex.Apply();
 
-        return o;
+        filter.sharedMesh = mesh.ToMesh();
+
+        AssetDatabase.CreateAsset(filter.sharedMesh, "Assets/indexed_cube.asset");
     }
 
     bool runOnAwake = false;
     public void Run() {
-        Debug.Log(TestCode());
+        TestCode();
     }
     void Awake() {
         if (runOnAwake) Run();

@@ -151,13 +151,10 @@ namespace VoxelEngine.Internal {
         /// Run a custom action on a block
         public void GetCustomBlock<T>(Block block, System.Action<T> predicate, bool updateChunk = false) where T : Block {
             if (block == null) return;
-            var blk = this as T;
-            if (blk != null) {
-                predicate(blk);
+            if (block is T b) {
+                predicate(b);
                 chunk.SetDirty();
-                if (updateChunk) {
-                    chunk.Render();
-                }
+                if (updateChunk) chunk.Render();
             }
         }
         public void GetCustomBlock<T>(Coord3 pos, System.Action<T> predicate, bool updateChunk = false) where T : Block =>
@@ -188,14 +185,14 @@ namespace VoxelEngine.Internal {
         /// Loads custom actions of a block
         public void LoadBlock(Coord3 pos, BlockData data, Block block) {
             block.OnLoad(pos, data, chunk);
-            var tickable = block as ITickable;
-            if (tickable != null) chunk.world.OnTick += tickable.OnTick;
+            if (block is ITickable tickable)
+                chunk.world.OnTick -= tickable.OnTick;
         }
 
         /// Unloads the custom actions of a block
         public void UnloadBlock(Block block) {
-            var tickable = block as ITickable;
-            if (tickable != null) chunk.world.OnTick -= tickable.OnTick;
+            if (block is ITickable tickable)
+                chunk.world.OnTick -= tickable.OnTick;
             block.OnUnload();
         }
 

@@ -5,6 +5,7 @@ using VoxelEngine.Blocks;
 using VoxelEngine.Data;
 using VoxelEngine.Interfaces;
 using VoxelEngine.Serialization;
+using VoxelEngine.Utilities;
 using BinaryWriter = System.IO.BinaryWriter;
 using BinaryReader = System.IO.BinaryReader;
 
@@ -42,9 +43,9 @@ namespace VoxelEngine.Internal {
 
         private Chunk parent;
 
-        private MeshData blockMesh;
-        private MeshData colliderMesh;
-        private MeshData triggerMesh;
+        private MeshBuilder blockMesh;
+        private MeshBuilder colliderMesh;
+        private MeshBuilder triggerMesh;
 
         /// Create the section to be stored in the pool, run once
         public void Create(Chunk parent, VoxelWorld world) {
@@ -53,9 +54,9 @@ namespace VoxelEngine.Internal {
 
             transform.parent = parent.transform;
 
-            blockMesh = new MeshData();
-            colliderMesh = new MeshData();
-            triggerMesh = new MeshData();
+            blockMesh = new MeshBuilder();
+            colliderMesh = new MeshBuilder();
+            triggerMesh = new MeshBuilder();
 
             blocks = new BlockManager(this);
         }
@@ -158,12 +159,13 @@ namespace VoxelEngine.Internal {
                         if (data.IsCustomType) {
                             var rotatedBlock = block as RotatedBlock;
                             if (rotatedBlock != null) {
-                                var rot = Rotate(i, rotatedBlock.rotation);
-                                faceRot = rot.face;
-                                texIndex = data.textureIndices[rot.index];
+                                int index = RotationUtil.IndexRotateAround(i, ref rotatedBlock.rotation);
+                                texIndex = data.textureIndices[index];
+                                //texIndex = i;
+                                faceRot = RotationUtil.FaceRotate(i, ref rotatedBlock.rotation);
                             }
                         }
-
+                        //Debug.Log(texIndex);
                         blockMesh.AddCubeFace(i, pos, faceRot, texIndex, (int) data.subMesh);
 
                         if (data.collision)

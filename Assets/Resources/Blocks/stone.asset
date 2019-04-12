@@ -16,6 +16,7 @@ MonoBehaviour:
   blockName: stone
   description: 
   icon: {fileID: 0}
+  isCustomType: 0
   dataType: 0
   blockType: 1
   prefab: {fileID: 0}
@@ -28,7 +29,7 @@ MonoBehaviour:
   spawnType: 0
   spawnFrequency: 0
   spawnDensity: 0
-  textureIndices: 0c0000000c0000000c0000000c0000000c0000000c000000
+  textureIndices: 120000001200000012000000120000001200000012000000
   textures:
   - {fileID: 11400000, guid: 35504e03644a74e33a5190ee5fe0d3c8, type: 2}
   - {fileID: 11400000, guid: 35504e03644a74e33a5190ee5fe0d3c8, type: 2}

@@ -9,13 +9,16 @@ namespace VoxelEngine.Player {
 
         Vector2 mouse;
         Vector3 input;
-        bool locked;
+        public bool locked { get; private set; }
 
         void Start() {
             mouse = new Vector2(transform.localEulerAngles.x, transform.localEulerAngles.y);
         }
 
         void Update() {
+            if (Input.GetKeyDown(KeyCode.Escape)) Unlock();
+            if (locked && Input.GetMouseButtonDown(0)) Lock();
+
             if (locked) return;
             var speed = Input.GetKey(KeyCode.LeftShift) ? fastMoveSpeed : moveSpeed;
             // var inputY = (Input.GetKey(KeyCode.E) ? 1 : 0) - (Input.GetKey(KeyCode.Q) ? 1 : 0);

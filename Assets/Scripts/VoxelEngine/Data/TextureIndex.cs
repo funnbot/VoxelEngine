@@ -4,7 +4,7 @@ namespace VoxelEngine.Data {
 
     [CreateAssetMenu(fileName = "Texture Index")]
     public class TextureIndex : ScriptableObject {
-        [HideInInspector]
+        //[HideInInspector]
         public int index;
         public Texture2D texture;
     }
