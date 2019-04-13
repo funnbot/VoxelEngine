@@ -85,7 +85,7 @@ namespace VoxelEngine.Internal {
             writer.Write(block.id);
 
             if (data.IsCustomType) {
-                var customBlock = (CustomBlock)block;
+                var customBlock = (CustomBlock) block;
                 customBlock.Serialize(writer);
             }
         }
@@ -99,7 +99,7 @@ namespace VoxelEngine.Internal {
 
             if (data.IsCustomType || data.IsStandalone) {
                 block = CustomBlock.Convert(id, data.dataType);
-                var customBlock = (CustomBlock)block;
+                var customBlock = (CustomBlock) block;
                 customBlock.Deserialize(reader);
             } else block = new Block(id);
         }
@@ -241,6 +241,8 @@ namespace VoxelEngine.Internal {
 
         /// When a new block it placed, setup custom actions
         void CreateBlock(Coord3 pos, BlockData data, ref Block block) {
+            UpdateBlockNeighbors(pos);
+
             if (data == null) {
                 block = null;
                 return;
@@ -256,7 +258,6 @@ namespace VoxelEngine.Internal {
             var customBlock = (CustomBlock) block;
             LoadBlock(pos, data, customBlock);
             customBlock.OnPlace();
-            UpdateBlockNeighbors(pos);
         }
 
         /// When a block is destroyed, remove custom actions
