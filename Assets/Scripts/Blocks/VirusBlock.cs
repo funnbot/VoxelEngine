@@ -7,14 +7,10 @@ using VoxelEngine.Internal;
 
 namespace VoxelEngine.Blocks {
 
-    public class VirusBlock : Block {
-        public VirusBlock() { }
+    public class VirusBlock : CustomBlock {
+        public VirusBlock(byte id) : base(id) { }
 
         int i = 0;
-
-        ChunkSection chunk;
-        Coord3 position;
-        BlockData data;
 
         public override void OnNeighborUpdate() {
             if (i == 6) {
@@ -25,16 +21,8 @@ namespace VoxelEngine.Blocks {
             if (block != null && (block.id == ResourceStore.Blocks.GetId("grass") || block.id == ResourceStore.Blocks.GetId("dirt"))) {
                 Block placed;
                 chunk.blocks.PlaceBlock(pos, data, out placed, true);
-                placed.OnNeighborUpdate();
             }
             i++;
-        }
-
-
-        public override void OnLoad(Coord3 pos, BlockData data, ChunkSection chunk) {
-            position = pos;
-            this.data = data;
-            this.chunk = chunk;
         }
     }
 

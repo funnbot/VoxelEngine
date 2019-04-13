@@ -85,7 +85,8 @@ namespace VoxelEngine.Internal {
             writer.Write(block.id);
 
             if (data.IsCustomType) {
-                block.Serialize(writer);
+                var customBlock = (CustomBlock)block;
+                customBlock.Serialize(writer);
             }
         }
 
@@ -96,10 +97,11 @@ namespace VoxelEngine.Internal {
 
             data = ResourceStore.Blocks[id];
 
-            if (data.IsCustomType) {
-                block = Block.Convert(id, data.dataType);
-                block.Deserialize(reader);
-            } else block = new Block { id = id };
+            if (data.IsCustomType || data.IsStandalone) {
+                block = CustomBlock.Convert(id, data.dataType);
+                var customBlock = (CustomBlock)block;
+                customBlock.Deserialize(reader);
+            } else block = new Block(id);
         }
 
         /// Place a block data in a position
@@ -147,7 +149,7 @@ namespace VoxelEngine.Internal {
             for (int x = 0; x < ChunkSection.Size; x++) {
                 for (int y = 0; y < ChunkSection.Size; y++) {
                     for (int z = 0; z < ChunkSection.Size; z++) {
-                        blocks[x][y][z] = new Block { id = id };
+                        blocks[x][y][z] = new Block(id);
                     }
                 }
             }
@@ -183,19 +185,21 @@ namespace VoxelEngine.Internal {
         public void UpdateBlockNeighbors(Coord3 pos) {
             foreach (var dir in Coord3.Directions) {
                 var block = GetBlock(pos + dir);
-                block?.OnNeighborUpdate();
+                if (block is CustomBlock custom)
+                    custom?.OnNeighborUpdate();
             }
         }
 
         /// Loads custom actions of a block
-        public void LoadBlock(Coord3 pos, BlockData data, Block block) {
-            block.OnLoad(pos, data, chunk);
+        public void LoadBlock(Coord3 pos, BlockData data, CustomBlock block) {
+            block.Setup(data, chunk, pos);
+            block.OnLoad();
             if (block is ITickable tickable)
                 chunk.world.OnTick -= tickable.OnTick;
         }
 
         /// Unloads the custom actions of a block
-        public void UnloadBlock(Block block) {
+        public void UnloadBlock(CustomBlock block) {
             if (block is ITickable tickable)
                 chunk.world.OnTick -= tickable.OnTick;
             block.OnUnload();
@@ -210,7 +214,10 @@ namespace VoxelEngine.Internal {
                         if (block == null) continue;
                         var pos = new Coord3(x, y, z);
                         var data = ResourceStore.Blocks[block.id];
-                        LoadBlock(pos, data, block);
+                        if (data.IsCustomType || data.IsStandalone) {
+                            var customBlock = (CustomBlock) block;
+                            LoadBlock(pos, data, customBlock);
+                        }
                     }
                 }
             }
@@ -223,7 +230,9 @@ namespace VoxelEngine.Internal {
                     for (int z = 0; z < ChunkSection.Size; z++) {
                         var block = blocks[x][y][z];
                         if (block == null) continue;
-                        UnloadBlock(block);
+                        if (block is CustomBlock customBlock) {
+                            UnloadBlock(customBlock);
+                        }
                         blocks[x][y][z] = null;
                     }
                 }
@@ -237,24 +246,28 @@ namespace VoxelEngine.Internal {
                 return;
             }
             if (!data.IsCustomType && !data.IsStandalone) {
-                block = new Block { id = (byte) data.id };
+                block = new Block(data.id);
                 return;
             }
 
             var type = data.IsCustomType ? data.dataType : BlockDataType.StandaloneBlock;
-            block = Block.Convert((byte) data.id, type);
+            block = CustomBlock.Convert(data.id, type);
 
-            LoadBlock(pos, data, block);
-            block.OnPlace();
+            var customBlock = (CustomBlock) block;
+            LoadBlock(pos, data, customBlock);
+            customBlock.OnPlace();
+            UpdateBlockNeighbors(pos);
         }
 
         /// When a block is destroyed, remove custom actions
         void DestroyBlock(Block block) {
             if (block == null) return;
-            var data = ResourceStore.Blocks.GetData(block.id);
+            var data = ResourceStore.Blocks[block.id];
+
             if (data.IsCustomType || data.IsStandalone) {
-                block.OnBreak();
-                UnloadBlock(block);
+                var customBlock = (CustomBlock) block;
+                customBlock.OnBreak();
+                UnloadBlock(customBlock);
             }
         }
 

@@ -2,11 +2,12 @@
 using VoxelEngine.Data;
 using VoxelEngine.Internal;
 using VoxelEngine.Utilities;
+using System.IO;
 
 namespace VoxelEngine.Blocks {
 
-    public class RotatedBlock : Block {
-        public RotatedBlock() { }
+    public class RotatedBlock : CustomBlock {
+        public RotatedBlock(byte id) : base(id) { }
 
         public Coord3 rotation;
 
@@ -14,11 +15,11 @@ namespace VoxelEngine.Blocks {
             this.rotation = rotation.ModWrap(4);
         }
 
-        public override void Serialize(System.IO.BinaryWriter writer) {
+        public override void Serialize(BinaryWriter writer) {
             rotation.Serialize(writer);
         }
 
-        public override void Deserialize(System.IO.BinaryReader reader) {
+        public override void Deserialize(BinaryReader reader) {
             rotation.Deserialize(reader);
         }
     }

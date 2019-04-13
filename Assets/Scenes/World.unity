@@ -378,6 +378,7 @@ MonoBehaviour:
     type: 3}
   labelFab: {fileID: 2854617682224940983, guid: bbd420ca041d5445cb8c1aa563c6f98c,
     type: 3}
+  rectTransform: {fileID: 0}
 --- !u!1 &1282990250
 GameObject:
   m_ObjectHideFlags: 0
@@ -771,5 +772,6 @@ PrefabInstance:
       propertyPath: rotation.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6818899227645528271, guid: 054d8e3155dd54a31995a8f63e9f222f, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 054d8e3155dd54a31995a8f63e9f222f, type: 3}

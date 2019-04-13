@@ -6,20 +6,15 @@ using VoxelEngine.Internal;
 namespace VoxelEngine.Blocks {
 
     public class PipeBlock : StandaloneBlock {
+                public PipeBlock(byte id) : base(id) { }
+        
         PipeObject obj;
 
         public PipeType type;
         public Coord3 rotation;
 
-        Coord3 position;
-        ChunkSection chunk;
-
-        public PipeBlock() { }
-
-        public override void OnLoad(Coord3 pos, BlockData data, ChunkSection chunk) {
-            base.OnLoad(pos, data, chunk);
-            position = pos;
-            this.chunk = chunk;
+        public override void OnLoad() {
+            base.OnLoad();
 
             obj = gameObject.GetComponent<PipeObject>();
             UpdateShape();

@@ -4,15 +4,15 @@ using VoxelEngine.Internal;
 
 namespace VoxelEngine.Blocks {
 
-    public class StandaloneBlock : Block {
+    public class StandaloneBlock : CustomBlock {
+        public StandaloneBlock(byte id) : base(id) { }
+
         public GameObject gameObject;
 
-        public StandaloneBlock() { }
-
-        public override void OnLoad(Coord3 pos, BlockData data, ChunkSection chunk) {
+        public override void OnLoad() {
             gameObject = Chunk.Instantiate(data.prefab, chunk.Blocks);
-            gameObject.transform.localPosition = pos;
-            gameObject.name = data.blockId + " " + pos;
+            gameObject.transform.localPosition = position;
+            gameObject.name = data.blockId + " " + position;
         }
 
         public override void OnUnload() {

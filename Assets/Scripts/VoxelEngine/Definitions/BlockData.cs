@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using VoxelEngine.Internal;
+using VoxelEngine.Blocks;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif

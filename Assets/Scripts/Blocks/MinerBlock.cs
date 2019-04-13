@@ -9,18 +9,10 @@ using VoxelEngine.Serialization;
 namespace VoxelEngine.Blocks {
 
     public class MinerBlock : RotatedBlock, ITickable {
-        public MinerBlock() { }
+        public MinerBlock(byte id) : base(id) { }
 
         public bool mining;
         public Coord3 miningLocation;
-
-        Coord3 position;
-        ChunkSection chunk;
-
-        public override void OnLoad(Coord3 pos, BlockData data, ChunkSection chunk) {
-            position = pos;
-            this.chunk = chunk;
-        }
 
         void ITickable.OnTick() {
             if (!mining) return;
