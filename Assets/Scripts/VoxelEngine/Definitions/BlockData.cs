@@ -12,7 +12,7 @@ namespace VoxelEngine.Data {
         [System.NonSerialized]
         public string blockId;
         
-        public int id;
+        public byte id;
         [Space]
         [Header("Info")]
         public string blockName;

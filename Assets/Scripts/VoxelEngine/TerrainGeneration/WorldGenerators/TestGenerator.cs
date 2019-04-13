@@ -4,7 +4,7 @@ using VoxelEngine.Blocks;
 using VoxelEngine.Data;
 using VoxelEngine.Internal;
 
-namespace VoxelEngine.ProceduralGeneration {
+namespace VoxelEngine.TerrainGeneration {
 
     public class TestGenerator : Generator {
         BlockData proto, proto_obj;

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using OpenSimplexNoise;
 
-namespace VoxelEngine.ProceduralGeneration {
+namespace VoxelEngine.TerrainGeneration {
 
     public class ProceduralGenerator {
         VoxelWorld world;

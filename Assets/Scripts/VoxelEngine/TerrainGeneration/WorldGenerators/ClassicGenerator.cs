@@ -2,7 +2,7 @@
 using VoxelEngine.Data;
 using VoxelEngine.Internal;
 
-namespace VoxelEngine.ProceduralGeneration {
+namespace VoxelEngine.TerrainGeneration {
 
     public class ClassicGenerator : Generator {
         int stoneBaseHeight = 24;

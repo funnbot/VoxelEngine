@@ -1,11 +1,13 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.IO;
+using System.Runtime.CompilerServices;
 using UnityEngine;
+using VoxelEngine.Interfaces;
 using VoxelEngine.Internal;
 using VoxelEngine.Utilities;
 
 namespace VoxelEngine {
 
-    public struct Coord3 : System.IEquatable<Coord3> {
+    public struct Coord3 : System.IEquatable<Coord3>, ISerializeable {
         public int x;
         public int y;
         public int z;
@@ -39,71 +41,83 @@ namespace VoxelEngine {
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Coord3 FloorDiv(int i) =>
-        new Coord3(Mathf.FloorToInt((float) x / i), Mathf.FloorToInt((float) y / i), Mathf.FloorToInt((float) z / i));
+            new Coord3(Mathf.FloorToInt((float) x / i), Mathf.FloorToInt((float) y / i), Mathf.FloorToInt((float) z / i));
 
         public bool InRange(int incLower, int excUpper) =>
-        x >= incLower && x < excUpper && y >= incLower &&
-        y < excUpper && z >= incLower && z < excUpper;
+            x >= incLower && x < excUpper && y >= incLower &&
+            y < excUpper && z >= incLower && z < excUpper;
 
         public float magnitude { get => Mathf.Sqrt((float) (x * x + y * y + z * z)); }
         public int sqrMagnitude { get => x * x + y * y + z * z; }
 
         public static Coord3 FloorToInt(Vector3 v) =>
-        new Coord3(Mathf.FloorToInt(v.x), Mathf.FloorToInt(v.y), Mathf.FloorToInt(v.z));
+            new Coord3(Mathf.FloorToInt(v.x), Mathf.FloorToInt(v.y), Mathf.FloorToInt(v.z));
 
         public static float Distance(Coord3 a, Coord3 b) => (a - b).magnitude;
         public static float SqrDistance(Coord3 a, Coord3 b) => (a - b).sqrMagnitude;
 
         public static Coord3 RaycastToBlock(in RaycastHit hit, bool adjacent) =>
-        Coord3.FloorToInt(hit.point + Vector3.one * 0.5f +
-            (adjacent ? -Vector3.Max(hit.normal, Vector3.zero) : Vector3.Min(hit.normal, Vector3.zero)));
+            Coord3.FloorToInt(hit.point + Vector3.one * 0.5f +
+                (adjacent ? -Vector3.Max(hit.normal, Vector3.zero) : Vector3.Min(hit.normal, Vector3.zero)));
+
+        public void Serialize(BinaryWriter writer) {
+            writer.Write(x);
+            writer.Write(y);
+            writer.Write(z);
+        }
+
+        public void Deserialize(BinaryReader reader) {
+            x = reader.ReadInt32();
+            y = reader.ReadInt32();
+            z = reader.ReadInt32();
+        }
 
         #region operators
 
         public static Coord3 operator +(Coord3 a, Coord3 b) =>
-        new Coord3(a.x + b.x, a.y + b.y, a.z + b.z);
+            new Coord3(a.x + b.x, a.y + b.y, a.z + b.z);
 
         public static Coord3 operator -(Coord3 a, Coord3 b) =>
-        new Coord3(a.x - b.x, a.y - b.y, a.z - b.z);
+            new Coord3(a.x - b.x, a.y - b.y, a.z - b.z);
 
         public static Coord3 operator -(Coord3 c) =>
-        new Coord3(-c.x, -c.y, -c.z);
+            new Coord3(-c.x, -c.y, -c.z);
 
         public static Coord3 operator *(Coord3 a, Coord3 b) =>
-        new Coord3(a.x * b.x, a.y * b.y, a.z * b.z);
+            new Coord3(a.x * b.x, a.y * b.y, a.z * b.z);
 
         public static Coord3 operator *(Coord3 a, int b) =>
-        new Coord3(a.x * b, a.y * b, a.z * b);
+            new Coord3(a.x * b, a.y * b, a.z * b);
 
         public static Coord3 operator /(Coord3 a, Coord3 b) =>
-        new Coord3(a.x / b.x, a.y / b.y, a.z / b.z);
+            new Coord3(a.x / b.x, a.y / b.y, a.z / b.z);
 
         public static Coord3 operator /(Coord3 a, int b) =>
-        new Coord3(a.x / b, a.y / b, a.z / b);
+            new Coord3(a.x / b, a.y / b, a.z / b);
 
         public static Coord3 operator /(Coord3 a, float b) =>
-        new Coord3(Mathf.FloorToInt(a.x / b), Mathf.FloorToInt(a.y / b), Mathf.FloorToInt(a.z / b));
+            new Coord3(Mathf.FloorToInt(a.x / b), Mathf.FloorToInt(a.y / b), Mathf.FloorToInt(a.z / b));
 
         public static Coord3 operator %(Coord3 a, int b) =>
-        new Coord3(a.x % b, a.y % b, a.z % b);
+            new Coord3(a.x % b, a.y % b, a.z % b);
 
         public static bool operator ==(Coord3 lhs, Coord3 rhs) =>
-        lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z;
+            lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z;
 
         public static bool operator !=(Coord3 lhs, Coord3 rhs) =>
-        !(lhs == rhs);
+            !(lhs == rhs);
 
         public static implicit operator Coord3(Vector3 v) =>
-        new Coord3((int) v.x, (int) v.y, (int) v.z);
+            new Coord3((int) v.x, (int) v.y, (int) v.z);
 
         public static implicit operator Vector3(Coord3 v) =>
-        new Vector3(v.x, v.y, v.z);
+            new Vector3(v.x, v.y, v.z);
 
         public static implicit operator Coord3(Vector3Int v) =>
-        new Coord3(v.x, v.y, v.z);
+            new Coord3(v.x, v.y, v.z);
 
         public static explicit operator Coord3(Coord2 c) =>
-        new Coord3(c.x, 0, c.y);
+            new Coord3(c.x, 0, c.y);
 
         #endregion operators
 
@@ -119,7 +133,7 @@ namespace VoxelEngine {
         }
 
         public bool Equals(Coord3 other) =>
-        this == other;
+            this == other;
 
         public override int GetHashCode() {
             var yHash = y.GetHashCode();

@@ -7,13 +7,13 @@ using VoxelEngine.Data;
 using VoxelEngine.Interfaces;
 using VoxelEngine.Internal;
 using VoxelEngine.Pooling;
-using VoxelEngine.ProceduralGeneration;
+using VoxelEngine.TerrainGeneration;
 
 namespace VoxelEngine {
 
     public class VoxelWorld : MonoBehaviour {
         /// The amount of sections in chunk columns
-        public static readonly int ChunkHeight = 4;
+        public static readonly int ChunkHeight = 5;
         /// How many chunk rerenders to do per tick
         public static readonly int MaxRendersPerTick = 5 * ChunkHeight;
 

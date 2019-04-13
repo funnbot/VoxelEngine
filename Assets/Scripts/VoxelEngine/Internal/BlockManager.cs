@@ -127,6 +127,11 @@ namespace VoxelEngine.Internal {
                 DestroyBlock(blocks[localPos.x][localPos.y][localPos.z]);
                 CreateBlock(localPos, data, ref blocks[localPos.x][localPos.y][localPos.z]);
 
+                if (data != null) {
+                    chunk.IsAllAir = false;
+                    if (data.id != stoneID) chunk.IsAllStone = false;
+                }
+
                 chunk.SetDirty();
                 if (updateChunk) {
                     chunk.Render();

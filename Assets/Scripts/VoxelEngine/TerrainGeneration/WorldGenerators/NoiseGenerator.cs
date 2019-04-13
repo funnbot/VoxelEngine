@@ -2,7 +2,7 @@
 using VoxelEngine.Data;
 using VoxelEngine.Internal;
 
-namespace VoxelEngine.ProceduralGeneration {
+namespace VoxelEngine.TerrainGeneration {
 
     public class NoiseGenerator : Generator {
         int baseHeight = 10;

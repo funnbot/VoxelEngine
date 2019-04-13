@@ -124,16 +124,16 @@ namespace VoxelEngine.Internal {
             float x = pos.x, y = pos.y, z = pos.z;
             switch (dir) {
                 case BlockFace.front:
-                    verts.Add(new Vector3(x - F, y + F, z - F));
-                    verts.Add(new Vector3(x + F, y + F, z - F));
-                    verts.Add(new Vector3(x + F, y - F, z - F));
-                    verts.Add(new Vector3(x - F, y - F, z - F));
-                    break;
-                case BlockFace.back:
                     verts.Add(new Vector3(x + F, y + F, z + F));
                     verts.Add(new Vector3(x - F, y + F, z + F));
                     verts.Add(new Vector3(x - F, y - F, z + F));
                     verts.Add(new Vector3(x + F, y - F, z + F));
+                    break;
+                case BlockFace.back:
+                    verts.Add(new Vector3(x - F, y + F, z - F));
+                    verts.Add(new Vector3(x + F, y + F, z - F));
+                    verts.Add(new Vector3(x + F, y - F, z - F));
+                    verts.Add(new Vector3(x - F, y - F, z - F));
                     break;
                 case BlockFace.top:
                     verts.Add(new Vector3(x - F, y + F, z + F));

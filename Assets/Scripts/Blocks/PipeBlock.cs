@@ -82,12 +82,12 @@ namespace VoxelEngine.Blocks {
 
         public override void Serialize(System.IO.BinaryWriter writer) {
             writer.Write((byte)type);
-            writer.Write(rotation);
+            rotation.Serialize(writer);
         }
 
         public override void Deserialize(System.IO.BinaryReader reader) {
             type = (PipeType)reader.ReadByte();
-            rotation = reader.ReadCoord3();
+            rotation.Deserialize(reader);
         }
 
         [System.Serializable]

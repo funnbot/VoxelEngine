@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using VoxelEngine.Pooling;
-using VoxelEngine.ProceduralGeneration;
+using VoxelEngine.TerrainGeneration;
 
 namespace VoxelEngine {
 
@@ -15,7 +15,7 @@ namespace VoxelEngine {
         public static event WorldSpawn OnWorldSpawn;
 
         void Start() {
-            SpawnWorld("Sample", GeneratorType.Test, 192822);
+            SpawnWorld("Sample", GeneratorType.Classic, 192822);
         }
 
         public static VoxelWorld SpawnWorld(string saveName, GeneratorType generator, int seed) {

@@ -5,7 +5,7 @@ using VoxelEngine.Blocks;
 using VoxelEngine.Data;
 using VoxelEngine.Internal;
 
-namespace VoxelEngine.ProceduralGeneration {
+namespace VoxelEngine.TerrainGeneration {
 
     public abstract class Generator {
         private VoxelWorld world;
