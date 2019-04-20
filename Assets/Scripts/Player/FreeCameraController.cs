@@ -13,13 +13,11 @@ namespace VoxelEngine.Player {
 
         void Start() {
             mouse = new Vector2(transform.localEulerAngles.x, transform.localEulerAngles.y);
+            Lock();
         }
 
         void Update() {
-            if (Input.GetKeyDown(KeyCode.Escape)) Unlock();
-            if (locked && Input.GetMouseButtonDown(0)) Lock();
-
-            if (locked) return;
+            if (!locked) return;
             var speed = Input.GetKey(KeyCode.LeftShift) ? fastMoveSpeed : moveSpeed;
             // var inputY = (Input.GetKey(KeyCode.E) ? 1 : 0) - (Input.GetKey(KeyCode.Q) ? 1 : 0);
             mouse += new Vector2(-Input.GetAxisRaw("Mouse Y"), Input.GetAxisRaw("Mouse X")) * lookSpeed;
@@ -27,7 +25,7 @@ namespace VoxelEngine.Player {
         }
 
         void LateUpdate() {
-            if (locked) return;
+            if (!locked) return;
             transform.localEulerAngles = mouse;
             transform.Translate(input * Time.deltaTime);
         }
@@ -35,13 +33,13 @@ namespace VoxelEngine.Player {
         public void Lock() {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
-            locked = false;
+            locked = true;
         }
 
         public void Unlock() {
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
-            locked = true;
+            locked = false;
         }
     }
 

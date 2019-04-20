@@ -71,7 +71,8 @@ namespace VoxelEngine {
 
             for (int i = 0; i < loaded.Length; i++) {
                 var block = (BlockData) loaded[i];
-                var id = block.id;
+                byte id = (byte)i;
+                block.id = id;
                 block.blockId = block.name;
                 blockMap.Add(block.blockId, (byte) id);
                 blocks[id] = block;

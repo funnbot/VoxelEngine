@@ -16,20 +16,12 @@ namespace VoxelEngine {
         public static readonly int ChunkHeight = 5;
         /// How many chunk rerenders to do per tick
         public static readonly int MaxRendersPerTick = 5 * ChunkHeight;
-
-        public VoxelWorldOptions Options = new VoxelWorldOptions();
-
-        public class VoxelWorldOptions {
-            public string SaveName { get; set; } = "Sample";
-            public int Seed { get; set; } = 1337;
-            public GeneratorType WorldGenerator { get; set; } = GeneratorType.Classic;
-        }
-
+        
         public string saveName;
         public int seed;
         public GeneratorType generatorType = GeneratorType.Classic;
         public Generator generator;
-        private int spawnSize = 2;
+        private int spawnSize = 10;
 
         public int chunkRenders;
 
@@ -58,11 +50,6 @@ namespace VoxelEngine {
                 chunkRenders = 0;
                 OnTick?.Invoke();
             }
-        }
-
-        public void SpawnEntity(BlockData data, Coord3 pos, Coord3 rotation) {
-            var go = Instantiate(data.prefab, pos, Quaternion.Euler(rotation * 90), transform);
-            go.name = data.blockId + " (Entity)";
         }
 
         public Block GetBlock(Coord3 pos) {

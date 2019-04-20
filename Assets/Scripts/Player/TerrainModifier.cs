@@ -3,23 +3,31 @@ using VoxelEngine.Blocks;
 using VoxelEngine.Data;
 using VoxelEngine.Interfaces;
 using VoxelEngine.Internal;
+using VoxelEngine.UI;
 
 namespace VoxelEngine.Player {
 
     public class TerrainModifier : MonoBehaviour {
         public Vector3Int rotation;
         private VoxelWorld world;
+        public FreeCameraController controller;
         
-        BlockData selected;
+        public UIBlockList blockList;
+        private BlockData selected;
 
         void Start() {
-            selected = ResourceStore.Blocks["miner"];
+            blockList.OnClicked += OnClick;
+            blockList.Disable();
+        }
+
+        void OnClick(BlockData data) {
+            selected = data;
         }
 
         void Update() {
             world = WorldManager.ActiveWorld;
 
-            if (Input.GetMouseButtonDown(0)) {
+            if (controller.locked && Input.GetMouseButtonDown(0)) {
                 RaycastHit hit;
                 Ray ray = new Ray(transform.position, transform.forward);
                 if (Physics.Raycast(ray, out hit, 10f)) {
@@ -42,6 +50,16 @@ namespace VoxelEngine.Player {
                         }
                     }
 
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.E)) {
+                if (!controller.locked) {
+                    controller.Lock();
+                    blockList.Disable();
+                } else {
+                    controller.Unlock();
+                    blockList.Enable();
                 }
             }
         }
