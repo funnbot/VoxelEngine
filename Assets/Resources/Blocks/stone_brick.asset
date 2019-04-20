@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ba0e9bb57a82d4ebc98580cb3c739582, type: 3}
-  m_Name: stone
+  m_Name: stone_brick
   m_EditorClassIdentifier: 
-  id: 9
-  blockName: stone
+  id: 10
+  blockName: stone brick
   description: 
   icon: {fileID: 0}
   isCustomType: 0
@@ -26,14 +26,14 @@ MonoBehaviour:
   placementType: 0
   stackable: 1
   placeable: 1
-  spawnType: 0
+  spawnType: 1
   spawnFrequency: 0
   spawnDensity: 0
-  textureIndices: 150000001500000015000000150000001500000015000000
+  textureIndices: 160000001600000016000000160000001600000016000000
   textures:
-  - {fileID: 11400000, guid: 35504e03644a74e33a5190ee5fe0d3c8, type: 2}
-  - {fileID: 11400000, guid: 35504e03644a74e33a5190ee5fe0d3c8, type: 2}
-  - {fileID: 11400000, guid: 35504e03644a74e33a5190ee5fe0d3c8, type: 2}
-  - {fileID: 11400000, guid: 35504e03644a74e33a5190ee5fe0d3c8, type: 2}
-  - {fileID: 11400000, guid: 35504e03644a74e33a5190ee5fe0d3c8, type: 2}
-  - {fileID: 11400000, guid: 35504e03644a74e33a5190ee5fe0d3c8, type: 2}
+  - {fileID: 11400000, guid: d3c59c120117e4e618c52bb069823d1a, type: 2}
+  - {fileID: 11400000, guid: d3c59c120117e4e618c52bb069823d1a, type: 2}
+  - {fileID: 11400000, guid: d3c59c120117e4e618c52bb069823d1a, type: 2}
+  - {fileID: 11400000, guid: d3c59c120117e4e618c52bb069823d1a, type: 2}
+  - {fileID: 11400000, guid: d3c59c120117e4e618c52bb069823d1a, type: 2}
+  - {fileID: 11400000, guid: d3c59c120117e4e618c52bb069823d1a, type: 2}

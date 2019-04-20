@@ -17,6 +17,7 @@ namespace VoxelEngine.TerrainGeneration {
         }
 
         public void GenerateChunk(Chunk col) {
+            GenerateColumn(col);
             for (int i = 0; i < VoxelWorld.ChunkHeight; i++) {
                 var chunk = col.GetSection(i);
                 GenerateSection(chunk);
@@ -27,6 +28,8 @@ namespace VoxelEngine.TerrainGeneration {
                 }
             }
         }
+
+        protected virtual void GenerateColumn(Chunk col) { }
 
         protected virtual void GenerateChunk(ChunkSection chunk, int x, int z) {
             var stone = ResourceStore.Blocks["stone"];

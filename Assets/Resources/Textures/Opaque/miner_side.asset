@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b12ad806af8c14830b39cdb0f60c08ec, type: 3}
   m_Name: miner_side
   m_EditorClassIdentifier: 
-  index: 10
+  index: 11
   texture: {fileID: 2800000, guid: 99fbe27eb794a41099c9b3f7e84be1da, type: 3}

@@ -10,30 +10,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ba0e9bb57a82d4ebc98580cb3c739582, type: 3}
-  m_Name: wood
+  m_Name: sand
   m_EditorClassIdentifier: 
-  id: 13
-  blockName: wood
+  id: 8
+  blockName: sand
   description: 
   icon: {fileID: 0}
-  isCustomType: 1
-  dataType: 1
+  isCustomType: 0
+  dataType: 0
   blockType: 1
   prefab: {fileID: 0}
   collision: 1
   boundingSize: 1
   subMesh: 0
-  placementType: 4
+  placementType: 0
   stackable: 1
   placeable: 1
   spawnType: 0
   spawnFrequency: 0
   spawnDensity: 0
-  textureIndices: 060000000600000007000000070000000600000006000000
+  textureIndices: 140000001400000014000000140000001400000014000000
   textures:
-  - {fileID: 11400000, guid: 790e51ce2bc33487f82ecd1d825e6a0f, type: 2}
-  - {fileID: 11400000, guid: 790e51ce2bc33487f82ecd1d825e6a0f, type: 2}
-  - {fileID: 11400000, guid: bbe18dae12430463c9abebc5deea87b8, type: 2}
-  - {fileID: 11400000, guid: bbe18dae12430463c9abebc5deea87b8, type: 2}
-  - {fileID: 11400000, guid: 790e51ce2bc33487f82ecd1d825e6a0f, type: 2}
-  - {fileID: 11400000, guid: 790e51ce2bc33487f82ecd1d825e6a0f, type: 2}
+  - {fileID: 11400000, guid: f5bc36534202a4362a3e4c9525450d0b, type: 2}
+  - {fileID: 11400000, guid: f5bc36534202a4362a3e4c9525450d0b, type: 2}
+  - {fileID: 11400000, guid: f5bc36534202a4362a3e4c9525450d0b, type: 2}
+  - {fileID: 11400000, guid: f5bc36534202a4362a3e4c9525450d0b, type: 2}
+  - {fileID: 11400000, guid: f5bc36534202a4362a3e4c9525450d0b, type: 2}
+  - {fileID: 11400000, guid: f5bc36534202a4362a3e4c9525450d0b, type: 2}

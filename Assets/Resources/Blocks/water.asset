@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ba0e9bb57a82d4ebc98580cb3c739582, type: 3}
-  m_Name: stone
+  m_Name: water
   m_EditorClassIdentifier: 
-  id: 9
-  blockName: stone
+  id: 12
+  blockName: water
   description: 
   icon: {fileID: 0}
   isCustomType: 0
   dataType: 0
   blockType: 1
   prefab: {fileID: 0}
-  collision: 1
+  collision: 0
   boundingSize: 1
   subMesh: 0
   placementType: 0
@@ -29,11 +29,11 @@ MonoBehaviour:
   spawnType: 0
   spawnFrequency: 0
   spawnDensity: 0
-  textureIndices: 150000001500000015000000150000001500000015000000
+  textureIndices: 050000000500000005000000050000000500000005000000
   textures:
-  - {fileID: 11400000, guid: 35504e03644a74e33a5190ee5fe0d3c8, type: 2}
-  - {fileID: 11400000, guid: 35504e03644a74e33a5190ee5fe0d3c8, type: 2}
-  - {fileID: 11400000, guid: 35504e03644a74e33a5190ee5fe0d3c8, type: 2}
-  - {fileID: 11400000, guid: 35504e03644a74e33a5190ee5fe0d3c8, type: 2}
-  - {fileID: 11400000, guid: 35504e03644a74e33a5190ee5fe0d3c8, type: 2}
-  - {fileID: 11400000, guid: 35504e03644a74e33a5190ee5fe0d3c8, type: 2}
+  - {fileID: 11400000, guid: e18fb66c3e220484494a64ad0b105d1a, type: 2}
+  - {fileID: 11400000, guid: e18fb66c3e220484494a64ad0b105d1a, type: 2}
+  - {fileID: 11400000, guid: e18fb66c3e220484494a64ad0b105d1a, type: 2}
+  - {fileID: 11400000, guid: e18fb66c3e220484494a64ad0b105d1a, type: 2}
+  - {fileID: 11400000, guid: e18fb66c3e220484494a64ad0b105d1a, type: 2}
+  - {fileID: 11400000, guid: e18fb66c3e220484494a64ad0b105d1a, type: 2}

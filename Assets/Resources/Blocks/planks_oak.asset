@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ba0e9bb57a82d4ebc98580cb3c739582, type: 3}
-  m_Name: stone
+  m_Name: planks_oak
   m_EditorClassIdentifier: 
-  id: 9
-  blockName: stone
+  id: 7
+  blockName: oak planks
   description: 
   icon: {fileID: 0}
   isCustomType: 0
@@ -29,11 +29,11 @@ MonoBehaviour:
   spawnType: 0
   spawnFrequency: 0
   spawnDensity: 0
-  textureIndices: 150000001500000015000000150000001500000015000000
+  textureIndices: 0d0000000d0000000d0000000d0000000d0000000d000000
   textures:
-  - {fileID: 11400000, guid: 35504e03644a74e33a5190ee5fe0d3c8, type: 2}
-  - {fileID: 11400000, guid: 35504e03644a74e33a5190ee5fe0d3c8, type: 2}
-  - {fileID: 11400000, guid: 35504e03644a74e33a5190ee5fe0d3c8, type: 2}
-  - {fileID: 11400000, guid: 35504e03644a74e33a5190ee5fe0d3c8, type: 2}
-  - {fileID: 11400000, guid: 35504e03644a74e33a5190ee5fe0d3c8, type: 2}
-  - {fileID: 11400000, guid: 35504e03644a74e33a5190ee5fe0d3c8, type: 2}
+  - {fileID: 11400000, guid: 28fe01bedd92a4df39f237076545696a, type: 2}
+  - {fileID: 11400000, guid: 28fe01bedd92a4df39f237076545696a, type: 2}
+  - {fileID: 11400000, guid: 28fe01bedd92a4df39f237076545696a, type: 2}
+  - {fileID: 11400000, guid: 28fe01bedd92a4df39f237076545696a, type: 2}
+  - {fileID: 11400000, guid: 28fe01bedd92a4df39f237076545696a, type: 2}
+  - {fileID: 11400000, guid: 28fe01bedd92a4df39f237076545696a, type: 2}

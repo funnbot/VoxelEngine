@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b12ad806af8c14830b39cdb0f60c08ec, type: 3}
   m_Name: stone
   m_EditorClassIdentifier: 
-  index: 18
+  index: 21
   texture: {fileID: 2800000, guid: b3a0eb3839c544d2b8991503568603f6, type: 3}
