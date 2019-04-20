@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba0e9bb57a82d4ebc98580cb3c739582, type: 3}
   m_Name: virus
   m_EditorClassIdentifier: 
-  id: 10
+  id: 8
   blockName: virus
   description: 
   icon: {fileID: 0}
-  isCustomType: 0
+  isCustomType: 1
   dataType: 3
   blockType: 1
   prefab: {fileID: 0}

@@ -4,8 +4,15 @@ using Controller = UnityStandardAssets.Characters.FirstPerson.FirstPersonControl
 namespace VoxelEngine.Player {
 
     public class PlayerSpawner : MonoBehaviour {
-        void Start() {
+        Controller contr;
+        CharacterController ccontr;
 
+        public bool locked;
+
+        void Start() {
+            ccontr = GetComponent<CharacterController>();
+            contr = GetComponent<Controller>();
+            Lock();
             WorldManager.ActiveWorld.OnSpawnLoad += OnSpawnLoad;
         }
 
@@ -13,17 +20,31 @@ namespace VoxelEngine.Player {
             RaycastHit hit;
             Vector3 origin = new Vector3(8, 400, 8);
             Ray ray = new Ray(origin, Vector3.down);
-            var cc = GetComponent<CharacterController>();
-            var c = GetComponent<Controller>();
             if (Physics.Raycast(ray, out hit, Mathf.Infinity)) {
-                cc.enabled = false;
-                c.enabled = false;
+                ccontr.enabled = false;
+                contr.enabled = false;
 
-                cc.transform.position = hit.point + Vector3.up * 3;
+                ccontr.transform.position = hit.point + Vector3.up * 3;
 
-                cc.enabled = true;
-                c.enabled = true;
+                ccontr.enabled = true;
+                contr.enabled = true;
             }
+        }
+
+        public void Lock() {
+            ccontr.enabled = true;
+            contr.enabled = true;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            locked = true;
+        }
+
+        public void Unlock() {
+            ccontr.enabled = false;
+            contr.enabled = false;
+            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.visible = true;
+            locked = false;
         }
     }
 

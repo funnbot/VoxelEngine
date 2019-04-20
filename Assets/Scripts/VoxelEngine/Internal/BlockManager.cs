@@ -266,7 +266,6 @@ namespace VoxelEngine.Internal {
             var data = ResourceStore.Blocks[block.id];
 
             if (data.IsCustomType || data.IsStandalone) {
-                Debug.Log(data.blockName);
                 var customBlock = (CustomBlock) block;
                 customBlock.OnBreak();
                 UnloadBlock(customBlock);

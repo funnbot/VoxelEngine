@@ -10,7 +10,7 @@ namespace VoxelEngine.Player {
     public class TerrainModifier : MonoBehaviour {
         public Vector3Int rotation;
         private VoxelWorld world;
-        public FreeCameraController controller;
+        public PlayerSpawner controller;
         
         public UIBlockList blockList;
         private BlockData selected;

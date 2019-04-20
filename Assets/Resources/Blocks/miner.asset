@@ -16,7 +16,7 @@ MonoBehaviour:
   blockName: miner
   description: Mines blocks
   icon: {fileID: 0}
-  isCustomType: 0
+  isCustomType: 1
   dataType: 5
   blockType: 1
   prefab: {fileID: 0}
