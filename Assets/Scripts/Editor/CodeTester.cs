@@ -22,7 +22,7 @@ public class CodeTester : MonoBehaviour {
 
         filter.sharedMesh = mesh.ToMesh();
 
-        AssetDatabase.CreateAsset(filter.sharedMesh, "Assets/indexed_cube.asset");
+        // AssetDatabase.CreateAsset(filter.sharedMesh, "Assets/indexed_cube.asset");
     }
 
     bool runOnAwake = false;

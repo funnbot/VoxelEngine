@@ -12,8 +12,6 @@ GameObject:
   - component: {fileID: 6818899227645528266}
   - component: {fileID: 6818899227645528277}
   - component: {fileID: 6818899227645528265}
-  - component: {fileID: 6818899227645528270}
-  - component: {fileID: 6818899227645528271}
   m_Layer: 0
   m_Name: FreeCameraController
   m_TagString: MainCamera
@@ -100,34 +98,3 @@ MonoBehaviour:
   moveSpeed: 7
   fastMoveSpeed: 29
   lookSpeed: 6
---- !u!114 &6818899227645528270
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6818899227645528276}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5a978709a2ab4e30a2f5bbabd630e77, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rotation: {x: 0, y: 0, z: 1}
---- !u!114 &6818899227645528271
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6818899227645528276}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d663c21100cba49c99251b002d507ee7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  BoundsOutliner: {fileID: 0}
-  ChunkLoader: {fileID: 0}
-  Spawner: {fileID: 0}
-  Terrain: {fileID: 6818899227645528270}
-  CameraController: {fileID: 6818899227645528265}
-  activeStack: {fileID: 0}

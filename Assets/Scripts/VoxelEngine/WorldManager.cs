@@ -15,7 +15,7 @@ namespace VoxelEngine {
         public static event WorldSpawn OnWorldSpawn;
 
         void Start() {
-            SpawnWorld("Sample", GeneratorType.Classic, 192822);
+            SpawnWorld("Sample", GeneratorType.Classic, 19282);
         }
 
         public static VoxelWorld SpawnWorld(string saveName, GeneratorType generator, int seed) {

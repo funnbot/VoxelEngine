@@ -69,7 +69,7 @@ namespace VoxelEngine.Internal {
             var mesh = new Mesh();
             mesh.SetVertices(verts);
             mesh.SetTriangles(tris[0], 0);
-            mesh.UploadMeshData(true);
+           // mesh.UploadMeshData(true);
             return mesh;
         }
 

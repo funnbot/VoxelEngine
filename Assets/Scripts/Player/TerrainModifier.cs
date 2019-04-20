@@ -62,6 +62,10 @@ namespace VoxelEngine.Player {
                     blockList.Enable();
                 }
             }
+
+            if (Input.GetKeyDown(KeyCode.Escape)) {
+                UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+            }
         }
     }
 
