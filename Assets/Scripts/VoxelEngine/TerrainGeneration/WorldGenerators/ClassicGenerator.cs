@@ -1,43 +1,48 @@
 ﻿using OpenSimplexNoise;
+using UnityEngine;
 using VoxelEngine.Data;
 using VoxelEngine.Internal;
 
 namespace VoxelEngine.TerrainGeneration {
 
     public class ClassicGenerator : Generator {
-        float biomeNoiseScale = 0.02f;
-        int waterBiome = 0;
-        int plainsBiome = 1;
-        int mountainBiome = 2;
+        // Base water level
+        const int waterLevel = 30;
+        const int beachLevel = 33;
+        const int plainsLevel = 50;
 
-        // water
-        int waterSandMinHeight;
-        int waterSandMaxHeight;
-        float waterSandNoise;
+        const int terrainMaxHeight = 80;
+        const float terrainNoiseScale = 0.012f;
 
-        int waterHeight = 50;
+        const int minorTerrainMaxHeight = 4;
+        const float minorTerrainNoiseScale = 0.101f;
 
-        int waterIslandNoise;
-        int waterIslandSize;
+        const int sandMaxHeight = 4;
+        const float sandNoiseScale = 0.15f;
 
-        // plains
-        int plainsStoneHeight;
+        const int stoneMinHeight = 10;
+        const float stoneMinNoiseScale = 0.28f;
 
-        int stoneBaseHeight = 24;
-        float stoneBaseNoise = 0.02f;
-        int stoneBaseNoiseHeight = 4;
-        int stoneMountainHeight = 48;
-        float stoneMountainFrequency = 0.04f;
-        int stoneMinHeight = 34;
-        int dirtBaseHeight = 1;
-        float dirtNoise = 0.04f;
-        int dirtNoiseHeight = 3;
-        float caveFrequency = 0.05f;
-        int caveSize = 20;
-        float treeFrequency = 0.7f;
-        int treeDensity = 16;
-        float grassFrequency = 0.4f;
-        int grassDensity = 26;
+        const float caveNoiseScale1 = 0.026f;
+        const float caveNoiseScale2 = 0.13f;
+        const float caveNoiseScale3 = 0.078f;
+
+        const float treeFrequency = 0.7f;
+        const int treeDensity = 16;
+
+        const float grassFrequency = 0.4f;
+        const int grassDensity = 26;
+
+        const float ruinsFrequency = 0.8f;
+        const int ruinsDensity = 10;
+
+        // Noise
+        // Base terrain height for deciding biome
+        int terrainHeight;
+        int sandHeight;
+
+        int grassNoise;
+        int treeNoise;
 
         BlockData stone, dirt, grass, grass_decal, water, sand;
 
@@ -50,66 +55,48 @@ namespace VoxelEngine.TerrainGeneration {
             sand = GetBlockData("sand");
         }
 
-        protected void GeneratesChunk(ChunkSection chunk, int x, int z) {
-            var worldPos = new Coord3(x, 0, z).BlockToWorld(chunk.worldPosition);
+        protected override void GenerateNoise(Chunk col, int x, int z) {
+            terrainHeight = GetNoiseFloored(x, z, terrainNoiseScale, terrainMaxHeight);
+            terrainHeight += GetNoiseFloored(x, z, minorTerrainNoiseScale, minorTerrainMaxHeight);
 
-            // Get current biome
-            int biomeIndex = GetNoise(worldPos.x, worldPos.z, biomeNoiseScale, 2);
-
-            int stoneHeight = stoneBaseHeight;
-            stoneHeight += GetNoise(worldPos.x, worldPos.z, stoneMountainFrequency, stoneMountainHeight);
-
-            if (stoneHeight < stoneMinHeight) stoneHeight = stoneMinHeight;
-            stoneHeight += GetNoise(worldPos.x, worldPos.z, stoneBaseNoise, stoneBaseNoiseHeight);
-
-            int dirtHeight = stoneHeight + dirtBaseHeight;
-            dirtHeight += GetNoise(worldPos.x, worldPos.z, dirtNoise, dirtNoiseHeight);
-
-            for (int y = 0; y < ChunkSection.Size; y++) {
-                var localPos = new Coord3(x, y, z);
-                worldPos = localPos.BlockToWorld(chunk.worldPosition);
-
-                int caveChance = GetNoise(worldPos, caveFrequency, 100);
-                if (worldPos.y <= stoneHeight && caveSize < caveChance) {
-                    SetBlock(chunk, localPos, stone);
-                } else if (worldPos.y <= dirtHeight && caveSize < caveChance) {
-                    if (worldPos.y == dirtHeight) SetBlock(chunk, localPos, grass);
-                    else SetBlock(chunk, localPos, dirt);
-
-                    if (worldPos.y == dirtHeight && GetNoise(worldPos.x, worldPos.z, treeFrequency, 100) < treeDensity)
-                        GenerateStructure(chunk, localPos.x, localPos.y + 1, localPos.z, "tree");
-                    else if (worldPos.y == dirtHeight && GetNoise(worldPos.x, worldPos.z, grassFrequency, 100) < grassDensity)
-                        SetBlock(chunk, new Coord3(localPos.x, localPos.y + 1, localPos.z), grass_decal);
-                }
+            if (terrainHeight <= waterLevel) {
+                sandHeight = GetNoiseFloored(x, z, sandNoiseScale, sandMaxHeight);
             }
-        }
-
-        int biomeIndex;
-        int stoneHeight;
-
-        protected override void GenerateColumn(Chunk col) {
-            int x = col.position.x, z = col.position.y;
-            biomeIndex = GetNoise(x, z, biomeNoiseScale, 3);
-            
         }
 
         protected override void GenerateChunk(ChunkSection chunk, int x, int z) {
             var worldPos = new Coord3(x, 0, z).BlockToWorld(chunk.worldPosition);
 
-
-
             for (int y = 0; y < ChunkSection.Size; y++) {
                 var localPos = new Coord3(x, y, z);
                 worldPos = localPos.BlockToWorld(chunk.worldPosition);
 
-                if (biomeIndex == waterBiome) {
-                    SetBlock(chunk, localPos, water);
-                } else if (biomeIndex == plainsBiome) {
-                    SetBlock(chunk, localPos, dirt);
-                } else if (biomeIndex == mountainBiome) {
-                    SetBlock(chunk, localPos, stone);
+                if (terrainHeight <= waterLevel) {
+                    if (worldPos.y <= terrainHeight - sandHeight && NotCave(worldPos)) SetBlock(chunk, localPos, sand);
+                    else if (worldPos.y <= waterLevel) SetBlock(chunk, localPos, water);
+                } else if (terrainHeight <= beachLevel) {
+                    if (worldPos.y <= terrainHeight && NotCave(worldPos)) SetBlock(chunk, localPos, sand);
+                } else {
+                    if (worldPos.y <= terrainHeight - stoneMinHeight && NotCave(worldPos)) SetBlock(chunk, localPos, stone);
+                    else if (worldPos.y < terrainHeight && NotCave(worldPos)) SetBlock(chunk, localPos, dirt);
+                    else if (worldPos.y == terrainHeight && NotCave(worldPos)) SetBlock(chunk, localPos, grass);
+                    else if (worldPos.y == terrainHeight + 1 && NotCave(worldPos)) {
+                        if (GetNoiseFloored(worldPos, grassFrequency, 100) < grassDensity)
+                            SetBlock(chunk, localPos, grass_decal);
+                        else if (GetNoiseFloored(worldPos, treeFrequency, 100) < treeDensity)
+                            GenerateStructure(chunk, x, y, z, "tree");
+                        else if (GetNoiseFloored(worldPos, ruinsFrequency, 100) < ruinsDensity)
+                            GenerateStructure(chunk, x, y, z, "ruins");
+                    }   
                 }
             }
+        }
+
+        private bool NotCave(Coord3 wpos) {
+            int caveNoise = GetNoiseFloored(wpos.y, wpos.x, wpos.z, caveNoiseScale1, 10 / 3);
+            caveNoise += GetNoiseFloored(wpos.x, wpos.y, wpos.z, caveNoiseScale2, 10 / 3);
+            caveNoise += GetNoiseFloored(wpos.x, wpos.z, wpos.y, caveNoiseScale3, 10 / 3);
+            return caveNoise < 5;
         }
 
     }

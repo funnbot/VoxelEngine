@@ -43,15 +43,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77056ec78c8e34076935505ed0eb97d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  renderAverage: 0
-  renderTime: 0
-  renderCount: 0
   saveName: DefaultWorld
-  ColumnFab: {fileID: 6536367198004749814, guid: e4d6563326cbd4d838d259c7d02691e2,
-    type: 3}
   seed: 1337
-  texturePixelResolution: 16
   generatorType: 0
-  spawnSize: 1
+  WaterBlockMaterial: {fileID: 2100000, guid: 97fec76d824a74874a94e8f82073bf6c, type: 2}
+  chunkRenders: 0
   tickSpeed: 2
   columnPool: {fileID: 0}

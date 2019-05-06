@@ -20,20 +20,20 @@ MonoBehaviour:
   dataType: 0
   blockType: 1
   prefab: {fileID: 0}
-  collision: 0
+  collision: 1
   boundingSize: 1
-  subMesh: 0
+  subMesh: 2
   placementType: 0
-  stackable: 1
-  placeable: 1
+  stackable: 0
+  placeable: 0
   spawnType: 0
   spawnFrequency: 0
   spawnDensity: 0
-  textureIndices: 050000000500000005000000050000000500000005000000
+  textureIndices: 000000000000000000000000000000000000000000000000
   textures:
-  - {fileID: 11400000, guid: e18fb66c3e220484494a64ad0b105d1a, type: 2}
-  - {fileID: 11400000, guid: e18fb66c3e220484494a64ad0b105d1a, type: 2}
-  - {fileID: 11400000, guid: e18fb66c3e220484494a64ad0b105d1a, type: 2}
-  - {fileID: 11400000, guid: e18fb66c3e220484494a64ad0b105d1a, type: 2}
-  - {fileID: 11400000, guid: e18fb66c3e220484494a64ad0b105d1a, type: 2}
-  - {fileID: 11400000, guid: e18fb66c3e220484494a64ad0b105d1a, type: 2}
+  - {fileID: 11400000, guid: 1e3018108dc8b46a7957feabd3360469, type: 2}
+  - {fileID: 11400000, guid: 1e3018108dc8b46a7957feabd3360469, type: 2}
+  - {fileID: 11400000, guid: 1e3018108dc8b46a7957feabd3360469, type: 2}
+  - {fileID: 11400000, guid: 1e3018108dc8b46a7957feabd3360469, type: 2}
+  - {fileID: 11400000, guid: 1e3018108dc8b46a7957feabd3360469, type: 2}
+  - {fileID: 11400000, guid: 1e3018108dc8b46a7957feabd3360469, type: 2}

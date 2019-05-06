@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b12ad806af8c14830b39cdb0f60c08ec, type: 3}
   m_Name: log_oak_side
   m_EditorClassIdentifier: 
-  index: 6
+  index: 5
   texture: {fileID: 2800000, guid: 326b3c60f42db425b907c467ffc5a96d, type: 3}

@@ -6,7 +6,7 @@ namespace VoxelEngine.Internal {
 
     public class MeshBuilder {
         private const int MaxVertexCount = 65000;
-        private const int SubMeshCount = 2;
+        private const int SubMeshCount = 3;
 
         List<Vector3> verts;
         List<Vector3> normals;

@@ -88,7 +88,8 @@ namespace VoxelEngine.Data {
     [System.Serializable]
     public enum SubMesh {
         Opaque = 0,
-        Transparent = 1
+        Transparent = 1,
+        Water = 2
     }
 
 #if UNITY_EDITOR

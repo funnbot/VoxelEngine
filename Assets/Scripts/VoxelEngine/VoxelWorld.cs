@@ -16,12 +16,16 @@ namespace VoxelEngine {
         public static readonly int ChunkHeight = 5;
         /// How many chunk rerenders to do per tick
         public static readonly int MaxRendersPerTick = 5 * ChunkHeight;
-        
+
         public string saveName;
         public int seed;
         public GeneratorType generatorType = GeneratorType.Classic;
         public Generator generator;
-        private int spawnSize = 5;
+        private int spawnSize = 20;
+
+        public Material WaterBlockMaterial;
+        private int waterUpdateIndex;
+        private int waterUpdateTick;
 
         public int chunkRenders;
 
@@ -37,6 +41,7 @@ namespace VoxelEngine {
         public delegate void SpawnLoaded();
         public event SpawnLoaded OnSpawnLoad;
 
+        [ContextMenu("Start")]
         void Start() {
             generator = new ProceduralGenerator(this).Use(generatorType);
             chunks = new ChunkManager(columnPool);
@@ -49,6 +54,10 @@ namespace VoxelEngine {
                 tick = 0;
                 chunkRenders = 0;
                 OnTick?.Invoke();
+            }
+            if (++waterUpdateTick == tickSpeed ) {
+                waterUpdateTick = 0;
+                UpdateWaterMaterial();
             }
         }
 
@@ -91,6 +100,15 @@ namespace VoxelEngine {
         public ChunkSection PlaceBlock(RaycastHit hit, BlockData data, out Block block, bool adjacent = false) {
             var pos = Coord3.RaycastToBlock(hit, adjacent);
             return PlaceBlock(pos, data, out block, true);
+        }
+
+        private int waterSize = 32;
+        void UpdateWaterMaterial() {
+            float offset = 1f / waterSize;
+            WaterBlockMaterial.mainTextureOffset = 
+                new Vector2(0, waterUpdateIndex * offset);
+            if (++waterUpdateIndex >= waterSize)
+                waterUpdateIndex = 0;
         }
 
         void LoadSpawn() {

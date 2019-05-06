@@ -17,19 +17,19 @@ namespace VoxelEngine.TerrainGeneration {
         }
 
         public void GenerateChunk(Chunk col) {
-            GenerateColumn(col);
-            for (int i = 0; i < VoxelWorld.ChunkHeight; i++) {
-                var chunk = col.GetSection(i);
-                GenerateSection(chunk);
-                for (int x = 0; x < ChunkSection.Size; x++) {
-                    for (int z = 0; z < ChunkSection.Size; z++) {
+            for (int x = 0; x < ChunkSection.Size; x++) {
+                for (int z = 0; z < ChunkSection.Size; z++) {
+                    GenerateNoise(col, x + col.position.x * ChunkSection.Size, z + col.position.y * ChunkSection.Size);
+
+                    for (int i = 0; i < VoxelWorld.ChunkHeight; i++) {
+                        var chunk = col.GetSection(i);
                         GenerateChunk(chunk, x, z);
                     }
                 }
             }
         }
 
-        protected virtual void GenerateColumn(Chunk col) { }
+        protected virtual void GenerateNoise(Chunk col, int x, int z) { }
 
         protected virtual void GenerateChunk(ChunkSection chunk, int x, int z) {
             var stone = ResourceStore.Blocks["stone"];
@@ -51,13 +51,17 @@ namespace VoxelEngine.TerrainGeneration {
             return null;
         }
 
-        protected int GetNoise(int x, int y, int z, float scale, int max) {
-            return Mathf.FloorToInt((GetNoise(x * scale, y * scale, z * scale) + 1f) * (max / 2f));
-        }
-        protected int GetNoise(Coord3 pos, float scale, int max) =>
-            GetNoise(pos.x, pos.y, pos.z, scale, max);
-        protected int GetNoise(int x, int z, float scale, int max) =>
+        protected int GetNoiseFloored(int x, int y, int z, float scale, int max) =>
+            Mathf.FloorToInt(GetNoise(x, y, z, scale, max));
+        protected int GetNoiseFloored(Coord3 pos, float scale, int max) =>
+            GetNoiseFloored(pos.x, pos.y, pos.z, scale, max);
+        protected int GetNoiseFloored(int x, int z, float scale, int max) =>
+            GetNoiseFloored(x, 0, z, scale, max);
+
+        protected float GetNoise(int x, int z, float scale, int max) =>
             GetNoise(x, 0, z, scale, max);
+        protected float GetNoise(int x, int y, int z, float scale, int max) =>
+            (GetNoise(x * scale, y * scale, z * scale) + 1f) * (max / 2f);
         private float GetNoise(float x, float y, float z) {
             return (float) noise.Evaluate(x, y, z);
         }

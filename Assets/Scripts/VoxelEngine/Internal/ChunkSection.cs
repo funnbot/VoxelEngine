@@ -206,8 +206,15 @@ namespace VoxelEngine.Internal {
             } else {
                 adjacent = blocks.GetBlock(adjPos);
             }
-            // If block is not null/air, and block isnt transparent, don't render;
-            return adjacent != null && ResourceStore.Blocks[adjacent.id].subMesh != SubMesh.Transparent;
+
+            if (adjacent == null) return false;
+            var adjData = ResourceStore.Blocks[adjacent.id];
+
+            if (adjData.subMesh == SubMesh.Transparent) return false;
+
+            if (adjData.subMesh == SubMesh.Water && data.subMesh != SubMesh.Water) return false;
+
+            return true;
         }
     }
 

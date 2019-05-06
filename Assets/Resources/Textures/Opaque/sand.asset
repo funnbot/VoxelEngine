@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b12ad806af8c14830b39cdb0f60c08ec, type: 3}
   m_Name: sand
   m_EditorClassIdentifier: 
-  index: 20
+  index: 19
   texture: {fileID: 2800000, guid: 463eea84c2a0a40fa8b0197819cd8f0b, type: 3}

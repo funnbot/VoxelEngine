@@ -29,7 +29,7 @@ MonoBehaviour:
   spawnType: 1
   spawnFrequency: 0
   spawnDensity: 0
-  textureIndices: 160000001600000016000000160000001600000016000000
+  textureIndices: 150000001500000015000000150000001500000015000000
   textures:
   - {fileID: 11400000, guid: d3c59c120117e4e618c52bb069823d1a, type: 2}
   - {fileID: 11400000, guid: d3c59c120117e4e618c52bb069823d1a, type: 2}

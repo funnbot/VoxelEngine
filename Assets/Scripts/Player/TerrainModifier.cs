@@ -27,26 +27,17 @@ namespace VoxelEngine.Player {
         void Update() {
             world = WorldManager.ActiveWorld;
 
-            if (controller.locked && Input.GetMouseButtonDown(0)) {
+            if (controller.locked && (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))) {
                 RaycastHit hit;
                 Ray ray = new Ray(transform.position, transform.forward);
                 if (Physics.Raycast(ray, out hit, 10f)) {
-
                     if (hit.transform.CompareTag("Chunk")) {
-                        if (!Input.GetKey(KeyCode.LeftAlt)) {
+                        if (!Input.GetKey(KeyCode.LeftAlt) && !Input.GetMouseButtonDown(1)) {
                             Block placed;
                             var chunk = world.PlaceBlock(hit, selected, out placed, false);
                             chunk.blocks.GetCustomBlock<RotatedBlock>(placed, b => b.SetRotation(rotation), true);
                         } else {
                             world.PlaceBlock(hit, null, true);
-                        }
-                    } else {
-                        if (!Input.GetKey(KeyCode.LeftAlt)) {
-                            Block placed;
-                            var chunk = world.PlaceBlock(hit, selected, out placed, false);
-                            chunk.blocks.GetCustomBlock<RotatedBlock>(placed, b => b.SetRotation(rotation), true);
-                        } else {
-                            Destroy(hit.transform.gameObject);
                         }
                     }
 
