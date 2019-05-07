@@ -53,3 +53,4 @@ crashlytics-build.properties
 # Voxel world temp saves
 Worlds/
 MemoryCaptures/
+.DS_Store
