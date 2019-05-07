@@ -14,7 +14,7 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
-  m_Fog: 1
+  m_Fog: 0
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.02
@@ -539,6 +539,25 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 054d8e3155dd54a31995a8f63e9f222f, type: 3}
+--- !u!1 &1371230696 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6818899227645528276, guid: 054d8e3155dd54a31995a8f63e9f222f,
+    type: 3}
+  m_PrefabInstance: {fileID: 1371230695}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1371230697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1371230696}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff26db721962cdf4a8edcdfa9a767d2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  profile: {fileID: 11400000, guid: 543d6bbf59005402a96a8aa23c665617, type: 2}
 --- !u!1 &1976678596
 GameObject:
   m_ObjectHideFlags: 0
