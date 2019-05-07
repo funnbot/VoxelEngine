@@ -21,7 +21,7 @@ namespace VoxelEngine {
         public int seed;
         public GeneratorType generatorType = GeneratorType.Classic;
         public Generator generator;
-        private int spawnSize = 20;
+        private int spawnSize = 5;
 
         public Material WaterBlockMaterial;
         private int waterUpdateIndex;
