@@ -194,7 +194,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e41914e6c49a045e68b96fa89acab142, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CycleInSeconds: 10
+  CycleInSeconds: 100
   SunlightLerpSpeed: 1
   AxisOfRotation: 1
 --- !u!224 &573712098 stripped
