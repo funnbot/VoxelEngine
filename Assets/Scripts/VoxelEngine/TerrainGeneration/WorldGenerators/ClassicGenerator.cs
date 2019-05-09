@@ -14,11 +14,11 @@ namespace VoxelEngine.TerrainGeneration {
         const int terrainMaxHeight = 80;
         const float terrainNoiseScale = 0.012f;
 
-        const int minorTerrainMaxHeight = 4;
+        const int minorTerrainMaxHeight = 6;
         const float minorTerrainNoiseScale = 0.101f;
 
         const int sandMaxHeight = 4;
-        const float sandNoiseScale = 0.15f;
+        const float sandNoiseScale = 0.13f;
 
         const int stoneMinHeight = 10;
         const float stoneMinNoiseScale = 0.28f;
@@ -27,8 +27,8 @@ namespace VoxelEngine.TerrainGeneration {
         const float caveNoiseScale2 = 0.13f;
         const float caveNoiseScale3 = 0.078f;
 
-        const float treeFrequency = 0.7f;
-        const int treeDensity = 16;
+        const float treeFrequency = 0.8f;
+        const int treeDensity = 12;
 
         const float grassFrequency = 0.4f;
         const int grassDensity = 26;
@@ -77,10 +77,11 @@ namespace VoxelEngine.TerrainGeneration {
                 } else if (terrainHeight <= beachLevel) {
                     if (worldPos.y <= terrainHeight && NotCave(worldPos)) SetBlock(chunk, localPos, sand);
                 } else {
-                    if (worldPos.y <= terrainHeight - stoneMinHeight && NotCave(worldPos)) SetBlock(chunk, localPos, stone);
-                    else if (worldPos.y < terrainHeight && NotCave(worldPos)) SetBlock(chunk, localPos, dirt);
-                    else if (worldPos.y == terrainHeight && NotCave(worldPos)) SetBlock(chunk, localPos, grass);
-                    else if (worldPos.y == terrainHeight + 1 && NotCave(worldPos)) {
+                    int hgt = beachLevel + (terrainHeight - beachLevel) / 2;
+                    if (worldPos.y <= hgt - stoneMinHeight && NotCave(worldPos)) SetBlock(chunk, localPos, stone);
+                    else if (worldPos.y < hgt && NotCave(worldPos)) SetBlock(chunk, localPos, dirt);
+                    else if (worldPos.y == hgt && NotCave(worldPos)) SetBlock(chunk, localPos, grass);
+                    else if (worldPos.y == hgt + 1 && NotCave(worldPos)) {
                         if (GetNoiseFloored(worldPos, grassFrequency, 100) < grassDensity)
                             SetBlock(chunk, localPos, grass_decal);
                         else if (GetNoiseFloored(worldPos, treeFrequency, 100) < treeDensity)
