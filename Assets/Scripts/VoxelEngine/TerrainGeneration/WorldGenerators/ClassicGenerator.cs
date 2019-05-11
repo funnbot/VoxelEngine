@@ -40,6 +40,9 @@ namespace VoxelEngine.TerrainGeneration {
         const float ruinsFrequency = 0.8f;
         const int ruinsDensity = 10;
 
+        const float ironOreFrequency = 0.8f;
+        const int ironOreDensity = 12;
+
         // Noise
         // Base terrain height for deciding biome
         int terrainHeight;
@@ -49,7 +52,7 @@ namespace VoxelEngine.TerrainGeneration {
         int grassNoise;
         int treeNoise;
 
-        BlockData stone, dirt, grass, grass_decal, water, sand;
+        BlockData stone, dirt, grass, grass_decal, water, sand, iron_ore;
 
         public ClassicGenerator(VoxelWorld world, SimplexNoise noise) : base(world, noise) {
             stone = GetBlockData("stone");
@@ -58,6 +61,7 @@ namespace VoxelEngine.TerrainGeneration {
             grass_decal = GetBlockData("grass_decal");
             water = GetBlockData("water");
             sand = GetBlockData("sand");
+            iron_ore = GetBlockData("iron_ore");
         }
 
         protected override void GenerateNoise(Chunk col, int x, int z) {
@@ -68,7 +72,7 @@ namespace VoxelEngine.TerrainGeneration {
                 sandHeight = GetNoiseFloored(x, z, sandNoiseScale, sandMaxHeight);
             }
         }
-
+        // agile#9002
         protected override void GenerateChunk(ChunkSection chunk, int x, int z) {
             var worldPos = new Coord3(x, 0, z).BlockToWorld(chunk.worldPosition);
 
@@ -86,7 +90,10 @@ namespace VoxelEngine.TerrainGeneration {
                 } else {
                     int hgt = beachLevel + (terrainHeight - beachLevel) / (2);
                     bool IsNotCave = NotCave(worldPos);
-                    if (worldPos.y <= hgt - stoneDepth && IsNotCave) SetBlock(chunk, localPos, stone);
+                    if (worldPos.y <= hgt - stoneDepth && IsNotCave) {
+                        if (GetNoiseFloored(x, y, z, ironOreFrequency, 100) < ironOreDensity) SetBlock(chunk, localPos, iron_ore);
+                        else SetBlock(chunk, localPos, stone);
+                    }
                     else if (worldPos.y < hgt && IsNotCave) SetBlock(chunk, localPos, dirt);
                     else if (worldPos.y == hgt && IsNotCave) SetBlock(chunk, localPos, grass);
                     else if (worldPos.y == hgt + 1 && IsNotCave) {
