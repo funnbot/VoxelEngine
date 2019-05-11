@@ -40,8 +40,8 @@ namespace VoxelEngine.TerrainGeneration {
         const float ruinsFrequency = 0.8f;
         const int ruinsDensity = 10;
 
-        const float ironOreFrequency = 0.8f;
-        const int ironOreDensity = 12;
+        const float ironOreFrequency = 0.4f;
+        const int ironOreDensity = 26;
 
         // Noise
         // Base terrain height for deciding biome
