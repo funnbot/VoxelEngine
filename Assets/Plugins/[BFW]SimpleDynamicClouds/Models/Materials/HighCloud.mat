@@ -9,13 +9,12 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: HighCloud
   m_Shader: {fileID: 4800000, guid: ac2b0859971724c4f9138c653f11b8a0, type: 3}
-  m_ShaderKeywords: _ALPHABLEND_ON _EMISSION
-  m_LightmapFlags: 1
+  m_ShaderKeywords: _ALPHAPREMULTIPLY_ON _MAPPING_LATITUDE_LONGITUDE_LAYOUT
+  m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap:
-    RenderType: Transparent
+  stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
@@ -45,8 +44,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
+        m_Texture: {fileID: 2800000, guid: 9a8c4e85494624038982b3edff08f692, type: 3}
+        m_Scale: {x: 4, y: 4}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
@@ -90,31 +89,57 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _Alpha: 2
+    - _BlendOp: 0
     - _Brightness: 1
     - _BumpScale: 1
+    - _CameraFadingEnabled: 0
+    - _CameraFarFadeDistance: 2
+    - _CameraNearFadeDistance: 1
+    - _Cull: 0
     - _Cutoff: 0.5
     - _Density: 1.8
     - _DetailNormalMapScale: 1
+    - _DistortionBlend: 0.5
+    - _DistortionEnabled: 0
+    - _DistortionStrength: 1
+    - _DistortionStrengthScaled: 0
     - _DstBlend: 10
+    - _EmissionEnabled: 0
     - _Emptiness: 0.096
+    - _Exposure: 7.6
+    - _FlipbookMode: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _ImageType: 0
+    - _Layout: 0
+    - _LightingEnabled: 1
+    - _Mapping: 1
     - _Metallic: 0
-    - _Mode: 2
+    - _MirrorOnBack: 0
+    - _Mode: 3
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _Rotation: 0
     - _Sharpness: 0.712
     - _SmoothnessTextureChannel: 0
+    - _SoftParticlesEnabled: 0
+    - _SoftParticlesFarFadeDistance: 1
+    - _SoftParticlesNearFadeDistance: 0
     - _SpecularHighlights: 1
     - _Speed: 0.15
-    - _SrcBlend: 5
+    - _SrcBlend: 1
     - _UVSec: 0
+    - _ZBias: 0
+    - _ZTest: 4
     - _ZWrite: 0
     m_Colors:
-    - _CloudColor: {r: 1, g: 1, b: 1, a: 0.8627451}
-    - _Color: {r: 1, g: 1, b: 1, a: 0.422}
+    - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
+    - _CloudColor: {r: 1, g: 1, b: 1, a: 0.078431375}
+    - _Color: {r: 1, g: 1, b: 1, a: 0.5529412}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SkyColor: {r: 0, g: 0.036156174, b: 0.16911763, a: 1}
     - _SkyColor0: {r: 0.6503027, g: 0.70802695, b: 0.71323526, a: 0.5}
     - _SkyColor1: {r: 0.3825692, g: 0.42283732, b: 0.42647058, a: 0.5}
+    - _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}
+    - _Tint: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}

@@ -21,7 +21,7 @@ namespace VoxelEngine {
         public int seed;
         public GeneratorType generatorType = GeneratorType.Classic;
         public Generator generator;
-        private int spawnSize = 5;
+        private int spawnSize = 15;
 
         public Material WaterBlockMaterial;
         private int waterUpdateIndex;
@@ -46,7 +46,7 @@ namespace VoxelEngine {
             generator = new ProceduralGenerator(this).Use(generatorType);
             chunks = new ChunkManager(columnPool);
 
-            LoadSpawn();
+            StartCoroutine(LoadSpawnRoutine());
         }
 
         void Update() {
@@ -55,7 +55,7 @@ namespace VoxelEngine {
                 chunkRenders = 0;
                 OnTick?.Invoke();
             }
-            if (++waterUpdateTick == tickSpeed ) {
+            if (++waterUpdateTick == tickSpeed) {
                 waterUpdateTick = 0;
                 UpdateWaterMaterial();
             }
@@ -105,7 +105,7 @@ namespace VoxelEngine {
         private int waterSize = 32;
         void UpdateWaterMaterial() {
             float offset = 1f / waterSize;
-            WaterBlockMaterial.mainTextureOffset = 
+            WaterBlockMaterial.mainTextureOffset =
                 new Vector2(0, waterUpdateIndex * offset);
             if (++waterUpdateIndex >= waterSize)
                 waterUpdateIndex = 0;
@@ -135,6 +135,46 @@ namespace VoxelEngine {
                     chunk.GenerateMesh();
                     chunk.ApplyMesh();
                 }
+            }
+
+            OnSpawnLoad?.Invoke();
+        }
+
+        IEnumerator LoadSpawnRoutine() {
+            int loadSize = spawnSize + 1;
+            for (int x = -loadSize; x <= loadSize; x++) {
+                for (int z = -loadSize; z <= loadSize; z++) {
+                    var pos = new Coord2(x, z);
+                    var chunk = chunks.CreateChunk(pos);
+                }
+            }
+
+            var task = Task.Run(() => {
+                for (int x = -spawnSize; x <= spawnSize; x++) {
+                    for (int z = -spawnSize; z <= spawnSize; z++) {
+                        var pos = new Coord2(x, z);
+                        var chunk = chunks.GetChunk(pos);
+                        chunk.Build();
+                    }
+                }
+            });
+            yield return task.WaitTillComplete();
+
+            Parallel.For(-spawnSize, spawnSize + 1, x => {
+                for (int z = -spawnSize; z <= spawnSize; z++) {
+                    var pos = new Coord2(x, z);
+                    var chunk = chunks.GetChunk(pos);
+                    chunk.GenerateMesh();
+                }
+            });
+
+            for (int x = -spawnSize; x <= spawnSize; x++) {
+                for (int z = -spawnSize; z <= spawnSize; z++) {
+                    var pos = new Coord2(x, z);
+                    var chunk = chunks.GetChunk(pos);
+                    chunk.ApplyMesh();
+                }
+                yield return null;
             }
 
             OnSpawnLoad?.Invoke();

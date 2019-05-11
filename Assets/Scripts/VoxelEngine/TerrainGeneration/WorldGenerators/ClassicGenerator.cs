@@ -10,6 +10,7 @@ namespace VoxelEngine.TerrainGeneration {
         const int waterLevel = 30;
         const int beachLevel = 33;
         const int plainsLevel = 50;
+        const int mountainsLevel = 70;
 
         const int terrainMaxHeight = 80;
         const float terrainNoiseScale = 0.012f;
@@ -20,8 +21,11 @@ namespace VoxelEngine.TerrainGeneration {
         const int sandMaxHeight = 4;
         const float sandNoiseScale = 0.13f;
 
-        const int stoneMinHeight = 10;
-        const float stoneMinNoiseScale = 0.28f;
+        const int stoneDepth = 5;
+        const int stoneMaxHeight = 15;
+
+        const int mountainMaxHeight = 20;
+        const float mountainNoiseScale = 0.013f;
 
         const float caveNoiseScale1 = 0.026f;
         const float caveNoiseScale2 = 0.13f;
@@ -40,6 +44,7 @@ namespace VoxelEngine.TerrainGeneration {
         // Base terrain height for deciding biome
         int terrainHeight;
         int sandHeight;
+        int mountainHeight;
 
         int grassNoise;
         int treeNoise;
@@ -72,23 +77,26 @@ namespace VoxelEngine.TerrainGeneration {
                 worldPos = localPos.BlockToWorld(chunk.worldPosition);
 
                 if (terrainHeight <= waterLevel) {
-                    if (worldPos.y <= terrainHeight - sandHeight && NotCave(worldPos)) SetBlock(chunk, localPos, sand);
+                    bool IsNotCave = NotCave(worldPos);
+                    if (worldPos.y < stoneMaxHeight && IsNotCave) SetBlock(chunk, localPos, stone);
+                    else if (worldPos.y <= terrainHeight - sandHeight && IsNotCave) SetBlock(chunk, localPos, sand);
                     else if (worldPos.y <= waterLevel) SetBlock(chunk, localPos, water);
                 } else if (terrainHeight <= beachLevel) {
                     if (worldPos.y <= terrainHeight && NotCave(worldPos)) SetBlock(chunk, localPos, sand);
                 } else {
-                    int hgt = beachLevel + (terrainHeight - beachLevel) / 2;
-                    if (worldPos.y <= hgt - stoneMinHeight && NotCave(worldPos)) SetBlock(chunk, localPos, stone);
-                    else if (worldPos.y < hgt && NotCave(worldPos)) SetBlock(chunk, localPos, dirt);
-                    else if (worldPos.y == hgt && NotCave(worldPos)) SetBlock(chunk, localPos, grass);
-                    else if (worldPos.y == hgt + 1 && NotCave(worldPos)) {
+                    int hgt = beachLevel + (terrainHeight - beachLevel) / (2);
+                    bool IsNotCave = NotCave(worldPos);
+                    if (worldPos.y <= hgt - stoneDepth && IsNotCave) SetBlock(chunk, localPos, stone);
+                    else if (worldPos.y < hgt && IsNotCave) SetBlock(chunk, localPos, dirt);
+                    else if (worldPos.y == hgt && IsNotCave) SetBlock(chunk, localPos, grass);
+                    else if (worldPos.y == hgt + 1 && IsNotCave) {
                         if (GetNoiseFloored(worldPos, grassFrequency, 100) < grassDensity)
                             SetBlock(chunk, localPos, grass_decal);
                         else if (GetNoiseFloored(worldPos, treeFrequency, 100) < treeDensity)
                             GenerateStructure(chunk, x, y, z, "tree");
                         else if (GetNoiseFloored(worldPos, ruinsFrequency, 100) < ruinsDensity)
                             GenerateStructure(chunk, x, y, z, "ruins");
-                    }   
+                    }
                 }
             }
         }
