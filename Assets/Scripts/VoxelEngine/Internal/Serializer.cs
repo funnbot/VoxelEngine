@@ -3,6 +3,7 @@ using System.IO;
 using LZ4;
 using VoxelEngine.Data;
 using VoxelEngine.Internal;
+using UnityEngine;
 
 namespace VoxelEngine.Serialization {
 
@@ -48,7 +49,7 @@ namespace VoxelEngine.Serialization {
             $"{pos.x},{pos.y}.chunk";
 
         static string FolderName(string worldSave) {
-            string saveLocation = $"{SaveFolder}/{worldSave}/";
+            string saveLocation = $"{Application.persistentDataPath}/{SaveFolder}/{worldSave}/";
             if (!Directory.Exists(saveLocation))
                 Directory.CreateDirectory(saveLocation);
             return saveLocation;

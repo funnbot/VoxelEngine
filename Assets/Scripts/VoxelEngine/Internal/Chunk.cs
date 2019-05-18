@@ -77,10 +77,11 @@ namespace VoxelEngine.Internal {
 
         /// Load blocks into the chunk
         public void Build() {
-            if (Serializer.IsChunkSaved(world.saveName, position)) {
-                Serializer.LoadChunk(world.saveName, position, this);
-                LoadBlocks();
-            } else world.generator.GenerateChunk(this);
+            // if (Serializer.IsChunkSaved(world.saveName, position)) {
+            //     Serializer.LoadChunk(world.saveName, position, this);
+            //     LoadBlocks();
+            // } else 
+            world.generator.GenerateChunk(this);
             IsBuilt = true;
         }
 
